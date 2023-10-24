@@ -8,7 +8,7 @@ HEADER_DIR				= header/
 HEADER_FILES			= main.hpp
 	
 DIR						=	src/
-SRC						=	main.cpp 
+SRC						=	main.cpp server.cpp
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 
