@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 09:26:39 by gclement         ###   ########.fr       */
+/*   Updated: 2023/10/31 13:35:57 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <vector>
 # include <fcntl.h>
 # include <cerrno>
+# include <cstring>
 
 
 void   initServer(void);

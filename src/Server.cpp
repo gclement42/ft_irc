@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 10:45:58 by gclement         ###   ########.fr       */
+/*   Updated: 2023/10/31 16:58:58 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ Server::Server(int port): _port(port)
 {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
 	fcntl(_socketServer, F_SETFL, O_NONBLOCK);
-	_allClients = NULL;
-	_nbClients = 0;
+	_allFds = NULL;
+	_nbFds = 0;
 }
 
 Server::Server(const Server &src)
@@ -26,8 +26,8 @@ Server::Server(const Server &src)
 }
 
 Server::~Server(void) {
-	if (_allClients)
-		delete [] _allClients;
+	if (_allFds)
+		delete [] _allFds;
 }
 
 Server	&Server::operator=(const Server &src)
@@ -37,14 +37,14 @@ Server	&Server::operator=(const Server &src)
 	i = 0;
 	if (&src == this)
 		return (*this);
-	delete [] _allClients;
-	_allClients = new pollfd[src._nbClients];
-	while (i < src._nbClients)
+	delete [] _allFds;
+	_allFds = new pollfd[src._nbFds];
+	while (i < src._nbFds)
 	{
-		_allClients[i] = src._allClients[i];
+		_allFds[i] = src._allFds[i];
 		i++;
 	}
-	_nbClients = src._nbClients;
+	_nbFds = src._nbFds;
 	_socketServer = src._socketServer;
 	_port = src._port;
 	return (*this);
@@ -79,53 +79,55 @@ void Server::acceptClientConnexion(void)
 		}
 	}
 	client.events = POLLIN;
-	insertClient(client);
+	insertFd(client);
 	recv(client.fd, buffer, 1024, 0);
-	std::cout << "accept : "<< buffer << std::endl;
+	std::cout << "accept : " << buffer << std::endl;
 	//std::cout << "Client.fd : " << client.fd << std::endl;
-	std::cout << "NbClient : " << _nbClients << std::endl;
+	//std::cout << "NbClient : " << _nbFds << std::endl;
+	memset(buffer, 0, 1024);
 }
 
-void Server::checkClientEvent(void)
+void Server::checkFdsEvent(void)
 {
 	char	buffer[1024];
 	int 	ret;
 
-	ret = poll(_allClients, _nbClients, 0);
+	ret = poll(_allFds, _nbFds, 0);
 	if (ret == -1) {
 		//Rajouter gestions des erreurs
 		return ;
 	} else {
-		for (size_t i = 0; i < _nbClients; i++)
+		for (size_t i = 0; i < _nbFds; i++)
 		{
-			if (_allClients[i].revents == POLLIN)
+			if (_allFds[i].revents == POLLIN)
 			{
-				recv(_allClients[i].fd, buffer, 1024, 0);
-				std::cout << "check : "<< buffer << std::endl;
+				recv(_allFds[i].fd, buffer, 1024, 0);
+				std::cout << "check : " << std::endl << buffer << std::endl; 
+				memset(buffer, 0, 1024);
 			}
 		}
 	}
 }
 
-void	Server::insertClient(pollfd client)
+void	Server::insertFd(pollfd client)
 {
 	pollfd	*tmp;
 	size_t	i;
 
 	i = 0;
-	tmp = new pollfd[_nbClients + 1];
-	while (i < _nbClients)
+	tmp = new pollfd[_nbFds + 1];
+	while (i < _nbFds)
 	{
-		tmp[i] = _allClients[i];
+		tmp[i] = _allFds[i];
 		i++;
 	}
 	tmp[i] = client;
-	delete [] _allClients;
-	_allClients = tmp;
-	_nbClients++;
+	delete [] _allFds;
+	_allFds = tmp;
+	_nbFds++;
 }
 
-void	Server::eraseClient(pollfd client)
+void	Server::eraseFd(pollfd client)
 {
 	pollfd		*tmp;
 	size_t		i;
@@ -133,29 +135,29 @@ void	Server::eraseClient(pollfd client)
 
 	i = 0;
 	j = 0;
-	tmp = new pollfd[_nbClients - 1];
-	while (i < _nbClients)
+	tmp = new pollfd[_nbFds - 1];
+	while (i < _nbFds)
 	{
-		if (_allClients[i].fd != client.fd)
+		if (_allFds[i].fd != client.fd)
 		{
-			tmp[j] = _allClients[i];
+			tmp[j] = _allFds[i];
 			j++;
 		}
 		i++;
 	}
-	delete [] _allClients;
-	_allClients = tmp;
-	_nbClients--;
+	delete [] _allFds;
+	_allFds = tmp;
+	_nbFds--;
 }
 
-pollfd *Server::getAllClients(void)
+pollfd *Server::getAllFds(void)
 {
-	return (_allClients);
+	return (_allFds);
 }
 
-size_t Server::getNbClients(void) const
+size_t Server::getNbFd(void) const
 {
-	return (_nbClients);
+	return (_nbFds);
 }
 
 void Server::joinCommand(void)

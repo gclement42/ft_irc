@@ -1,29 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   clientQuit.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 14:46:15 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 13:00:07 by gclement         ###   ########.fr       */
+/*   Created: 2023/10/31 11:06:34 by gclement          #+#    #+#             */
+/*   Updated: 2023/10/31 11:24:43 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.hpp"
-#include "Server.hpp"
+# include "main.hpp"
+# include "Server.hpp"
 
-int main(int argc, char **argv)
+void clientQuit(Server &server)
 {
-	(void)argc;
-	(void)argv;
-	
-	Server server(5000);
-	server.start();
-	while (1)
-	{
-		server.acceptClientConnexion();
-		server.checkFdsEvent();
-	}
-	return (0);
+	(void)server;
+	return ;
 }

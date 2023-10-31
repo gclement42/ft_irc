@@ -1,29 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   parseClientData.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 14:46:15 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 13:00:07 by gclement         ###   ########.fr       */
+/*   Created: 2023/10/31 14:14:12 by gclement          #+#    #+#             */
+/*   Updated: 2023/10/31 14:21:26 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.hpp"
-#include "Server.hpp"
+# include "main.hpp"
 
-int main(int argc, char **argv)
+void parseClientData(char *buffer)
 {
-	(void)argc;
-	(void)argv;
-	
-	Server server(5000);
-	server.start();
-	while (1)
-	{
-		server.acceptClientConnexion();
-		server.checkFdsEvent();
-	}
-	return (0);
+	std::stringstream ss(buffer);
+	std::string token;
+
+	(void)ss;
+	(void)token;
+	// while (std::getline(ss, token))
+	// {
+		
+	// }
+	return ;
 }

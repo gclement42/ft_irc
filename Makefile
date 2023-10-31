@@ -8,7 +8,7 @@ HEADER_DIR				= header/
 HEADER_FILES			= main.hpp Server.hpp Pollfds.hpp 
 	
 DIR						=	src/
-SRC						=	main.cpp Server.cpp Pollfds.cpp
+SRC						=	main.cpp Server.cpp Pollfds.cpp clientQuit.cpp
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 
