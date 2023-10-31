@@ -6,18 +6,15 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 14:10:25 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/24 15:31:19 by gclement         ###   ########.fr       */
+/*   Updated: 2023/10/31 10:29:35 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include <sys/socket.h>
-# include <iostream>
-# include <netinet/in.h>
-# include <arpa/inet.h>
-# include <poll.h>
+# include "Pollfds.hpp"
+# include "main.hpp"
 
 class Server
 {
@@ -27,12 +24,14 @@ class Server
 		~Server(void);
 		Server	&operator=(const Server &src);
 		void	start(void);
-		void	update(void);
+		void	acceptClientConnexion(void);
+		void	checkClientEvent(void);
+		void 	joinCommand(void);
+		Pollfds	&getAllClients(void);
 	private:
-		pollfd	*_socketClient;
+		Pollfds	_allClients;
 		int		_socketServer;
 		int		_port;
-		
 };
 
 #endif

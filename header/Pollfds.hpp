@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.hpp                                           :+:      :+:    :+:   */
+/*   Pollfds.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 09:26:39 by gclement         ###   ########.fr       */
+/*   Created: 2023/10/30 14:40:54 by gclement          #+#    #+#             */
+/*   Updated: 2023/10/31 10:29:37 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAIN_HPP
-# define MAIN_HPP
+#ifndef Pollfds_HPP
+# define Pollfds_HPP
 
-# include <iostream>
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <arpa/inet.h>
-# include <poll.h>
-# include <unistd.h>
-# include <string.h>
-# include <sstream>
-# include <vector>
-# include <fcntl.h>
-# include <cerrno>
+# include "main.hpp"
 
-
-void   initServer(void);
+class Pollfds
+{
+	public:
+		Pollfds(void);
+		Pollfds(const Pollfds &src);
+		~Pollfds(void);
+		Pollfds	&operator=(const Pollfds &src);
+		void	insert(pollfd client);
+		void	erase(pollfd client);
+		pollfd	*getFds(void) const;
+		size_t	getNbClients(void) const;
+	private:
+		pollfd	*_fds;
+		size_t	_nbClients;
+};
 
 #endif

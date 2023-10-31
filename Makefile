@@ -5,10 +5,10 @@ NAME					= ircserv
 BUILD_DIR				= build/
 
 HEADER_DIR				= header/
-HEADER_FILES			= main.hpp
+HEADER_FILES			= main.hpp Server.hpp Pollfds.hpp 
 	
 DIR						=	src/
-SRC						=	main.cpp server.cpp
+SRC						=	main.cpp Server.cpp Pollfds.cpp
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 
