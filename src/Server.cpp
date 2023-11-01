@@ -58,13 +58,13 @@ void Server::start(void)
 	sockaddr_in.sin_port = htons(_port);
 	bind(_socketServer, (sockaddr *)(&sockaddr_in), sizeof(sockaddr_in));
 	listen(_socketServer, 1);
+	std::cout << "Server started on port " << _port << std::endl;
 }
 
 void Server::acceptClientConnexion(void)
 {
 	struct sockaddr_in	sockaddr_in_client;
 	pollfd 				client;
-	char 				buffer[1024];
 
 	socklen_t len = sizeof(sockaddr_in_client);
 	client.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
@@ -81,17 +81,14 @@ void Server::acceptClientConnexion(void)
 	client.events = POLLIN;
 	client.revents = 0;
 	insertFd(client);
-	recv(client.fd, buffer, 1024, 0);
-	std::cout << "accept : " << buffer << std::endl;
 	//std::cout << "Client.fd : " << client.fd << std::endl;
 	//std::cout << "NbClient : " << _nbFds << std::endl;
-	memset(buffer, 0, 1024);
 }
 
 void Server::checkFdsEvent(void)
 {
-	char	buffer[1024];
-	int 	ret;
+	char			buffer[1024];
+	int				ret;
 
 	ret = poll(_allFds, _nbFds, 0);
 	if (ret == -1) {
@@ -103,8 +100,7 @@ void Server::checkFdsEvent(void)
 			if (_allFds[i].revents == POLLIN)
 			{
 				recv(_allFds[i].fd, buffer, 1024, 0);
-				std::cout << "check : " << std::endl << buffer << std::endl; 
-				memset(buffer, 0, 1024);
+				std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
 			}
 		}
 	}
