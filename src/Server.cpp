@@ -79,6 +79,7 @@ void Server::acceptClientConnexion(void)
 		}
 	}
 	client.events = POLLIN;
+	client.revents = 0;
 	insertFd(client);
 	recv(client.fd, buffer, 1024, 0);
 	std::cout << "accept : " << buffer << std::endl;
