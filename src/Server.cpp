@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 16:58:58 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:44:21 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ Server::Server(const Server &src)
 }
 
 Server::~Server(void) {
+	std::cout << "Server destructor called" << std::endl;
+	for (size_t i = 0; i < _nbFds; i++)
+		close(_allFds[i].fd);
+	close (_socketServer);
 	if (_allFds)
 		delete [] _allFds;
 }
@@ -45,6 +49,7 @@ Server	&Server::operator=(const Server &src)
 		i++;
 	}
 	_nbFds = src._nbFds;
+	close(_socketServer);
 	_socketServer = src._socketServer;
 	_port = src._port;
 	return (*this);
@@ -61,10 +66,51 @@ void Server::start(void)
 	std::cout << "Server started on port " << _port << std::endl;
 }
 
+void Server::stop(void)
+{
+	std::cout << "Server stopped" << std::endl;
+	close(_socketServer);
+}
+
+std::string Server::readInBuffer(int fd)
+{
+	char		buffer[1024];
+	std::string	concatenateBuffer;
+	int			i;
+	int			bytes;
+
+	i = 0;
+	while (_allFds[i].fd != fd)
+		i++;
+	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
+	concatenateBuffer = buffer;
+	std::cout << "bytes : " << bytes << std::endl;
+	while (bytes > 1)
+	{
+		concatenateBuffer += buffer;
+		bytes = recv(_allFds[i].fd, buffer, 1024, 0);
+		//memset(buffer, 0, 1024);
+		std::cout << "bytes : " << bytes << std::endl;
+	}
+	if (bytes == -1)
+	{
+		if (errno == EAGAIN || errno == EWOULDBLOCK)
+			return ("");
+		else
+		{
+			// throw exception (????)
+			return ("error");
+		}
+	}
+	concatenateBuffer = buffer;
+	return (concatenateBuffer);
+}
+
 void Server::acceptClientConnexion(void)
 {
 	struct sockaddr_in	sockaddr_in_client;
 	pollfd 				client;
+	std::string 		buffer;
 
 	socklen_t len = sizeof(sockaddr_in_client);
 	client.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
@@ -81,6 +127,9 @@ void Server::acceptClientConnexion(void)
 	client.events = POLLIN;
 	client.revents = 0;
 	insertFd(client);
+	buffer = readInBuffer(client.fd);
+	std::cout << "Client is connected : " << buffer << std::endl;
+	//memset(buffer, 0, 1024);
 	//std::cout << "Client.fd : " << client.fd << std::endl;
 	//std::cout << "NbClient : " << _nbFds << std::endl;
 }
@@ -155,6 +204,11 @@ pollfd *Server::getAllFds(void)
 size_t Server::getNbFd(void) const
 {
 	return (_nbFds);
+}
+
+int Server::getSocketServer(void) const
+{
+	return (_socketServer);
 }
 
 void Server::joinCommand(void)

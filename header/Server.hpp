@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 14:10:25 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 12:59:19 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:04:02 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,16 @@ class Server {
 		~Server(void);
 		Server	&operator=(const Server &src);
 		void			start(void);
+		void			stop(void);
 		void			insertFd(pollfd client);
 		void			eraseFd(pollfd client);
 		size_t			getNbFd(void) const;
+		int				getSocketServer(void) const;
 		void			acceptClientConnexion(void);
 		void			checkFdsEvent(void);
 		void 			joinCommand(void);
 		pollfd			*getAllFds(void);
+		std::string		readInBuffer(int fd);
 	private:
 		pollfd	*_allFds;
 		size_t	_nbFds;
