@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/02 10:44:21 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/02 13:29:45 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void Server::acceptClientConnexion(void)
 {
 	struct sockaddr_in	sockaddr_in_client;
 	pollfd 				client;
-	std::string 		buffer;
+	char 				buffer[1024];
 
 	socklen_t len = sizeof(sockaddr_in_client);
 	client.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
@@ -127,7 +127,7 @@ void Server::acceptClientConnexion(void)
 	client.events = POLLIN;
 	client.revents = 0;
 	insertFd(client);
-	buffer = readInBuffer(client.fd);
+	recv(client.fd, buffer, 1024, 0);
 	std::cout << "Client is connected : " << buffer << std::endl;
 	//memset(buffer, 0, 1024);
 	//std::cout << "Client.fd : " << client.fd << std::endl;
@@ -149,7 +149,8 @@ void Server::checkFdsEvent(void)
 			if (_allFds[i].revents == POLLIN)
 			{
 				recv(_allFds[i].fd, buffer, 1024, 0);
-				std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
+				(void)buffer;
+				//std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
 			}
 		}
 	}
