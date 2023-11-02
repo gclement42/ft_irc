@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 16:58:58 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:39:28 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void Server::checkFdsEvent(void)
 			{
 				recv(_allFds[i].fd, buffer, 1024, 0);
 				std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
+				check_channel_name(buffer, _allFds[i].fd);
 			}
 		}
 	}

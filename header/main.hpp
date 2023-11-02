@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 13:35:57 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:40:44 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,14 @@
 # include <cerrno>
 # include <cstring>
 
+# define FAILURE 0
+# define SUCCESS 1
 
-void   initServer(void);
+void   	initServer(void);
+
+//========== Channels ==========
+int		check_channel_name(char *buffer, int fd);
+void	print_error(std::string msg);
+
 
 #endif

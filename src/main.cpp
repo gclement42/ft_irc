@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:15 by gclement          #+#    #+#             */
-/*   Updated: 2023/10/31 13:00:07 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:42:38 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,15 @@ int main(int argc, char **argv)
 {
 	(void)argc;
 	(void)argv;
+	
+	
+	//---------------------------
+	// char str[1024] = "JOIN #boulaokptdrtest";
+	// check_channel_name(str);
+	// std::cout << "\n\n";
+
+	//----------------------------
+	
 	
 	Server server(5000);
 	server.start();
