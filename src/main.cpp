@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:15 by gclement          #+#    #+#             */
 /*   Updated: 2023/11/02 10:30:07 by gclement         ###   ########.fr       */
@@ -25,6 +25,13 @@ int main(int argc, char **argv)
 	}
 	int port = atoi(argv[1]);
 	Server server(port);
+	
+	//---------------------------
+	// char str[1024] = "JOIN #boulaokptdrtest";
+	// check_channel_name(str);
+	// std::cout << "\n\n";
+
+	//----------------------------
 	server.start();
 	while (1)
 	{
