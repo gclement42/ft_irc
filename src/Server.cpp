@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 09:05:37 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/03 11:07:08 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ std::string Server::readInBuffer(int fd)
 	std::string	concatenateBuffer;
 	int			i;
 	int			bytes;
+	int			lastNewline;
 
 	i = 0;
 	while (_allFds[i].fd != fd)
@@ -91,6 +92,8 @@ std::string Server::readInBuffer(int fd)
 		bytes = recv(_allFds[i].fd, buffer, 1024, MSG_DONTWAIT);
 		memset(buffer, 0, 1024);
 	}
+	lastNewline = concatenateBuffer.find_last_of("\r\n");
+	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
 	if (bytes == -1)
 	{
 		if ((errno == EAGAIN || errno == EWOULDBLOCK))
@@ -124,10 +127,9 @@ void Server::acceptClientConnexion(void)
 	client.revents = 0;
 	insertFd(client);
 	buffer = readInBuffer(client.fd);
-	std::cout << "buffer : " << "'" << buffer << "'" << std::endl;
-	//memset(buffer, 0, 1024);
-	//std::cout << "Client.fd : " << client.fd << std::endl;
-	//std::cout << "NbClient : " << _nbFds << std::endl;
+	while (buffer.find("USER") == std::string::npos)
+		buffer += readInBuffer(client.fd);
+	std::cout << "buffer : " << buffer << std::endl;
 }
 
 void Server::checkFdsEvent(void)
