@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/02 13:29:45 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/02 14:07:42 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,26 +83,22 @@ std::string Server::readInBuffer(int fd)
 	while (_allFds[i].fd != fd)
 		i++;
 	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
-	concatenateBuffer = buffer;
-	std::cout << "bytes : " << bytes << std::endl;
+	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+		return ("");
 	while (bytes > 1)
 	{
 		concatenateBuffer += buffer;
-		bytes = recv(_allFds[i].fd, buffer, 1024, 0);
-		//memset(buffer, 0, 1024);
-		std::cout << "bytes : " << bytes << std::endl;
+		bytes = recv(_allFds[i].fd, buffer, 1024, MSG_DONTWAIT);
+		memset(buffer, 0, 1024);
 	}
 	if (bytes == -1)
 	{
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
-			return ("");
-		else
-		{
-			// throw exception (????)
-			return ("error");
-		}
+		if ((errno == EAGAIN || errno == EWOULDBLOCK))
+			return (concatenateBuffer);
+		std::cerr << "errno : " << errno << std::endl;
+		// throw exception (????)
+		return ("error");
 	}
-	concatenateBuffer = buffer;
 	return (concatenateBuffer);
 }
 
@@ -110,7 +106,7 @@ void Server::acceptClientConnexion(void)
 {
 	struct sockaddr_in	sockaddr_in_client;
 	pollfd 				client;
-	char 				buffer[1024];
+	std::string 		buffer;
 
 	socklen_t len = sizeof(sockaddr_in_client);
 	client.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
@@ -127,8 +123,8 @@ void Server::acceptClientConnexion(void)
 	client.events = POLLIN;
 	client.revents = 0;
 	insertFd(client);
-	recv(client.fd, buffer, 1024, 0);
-	std::cout << "Client is connected : " << buffer << std::endl;
+	buffer = readInBuffer(client.fd);
+	std::cout << "buffer : " << buffer << std::endl;
 	//memset(buffer, 0, 1024);
 	//std::cout << "Client.fd : " << client.fd << std::endl;
 	//std::cout << "NbClient : " << _nbFds << std::endl;
@@ -136,7 +132,7 @@ void Server::acceptClientConnexion(void)
 
 void Server::checkFdsEvent(void)
 {
-	char			buffer[1024];
+	std::string		buffer;
 	int				ret;
 
 	ret = poll(_allFds, _nbFds, 0);
@@ -148,9 +144,8 @@ void Server::checkFdsEvent(void)
 		{
 			if (_allFds[i].revents == POLLIN)
 			{
-				recv(_allFds[i].fd, buffer, 1024, 0);
-				(void)buffer;
-				//std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
+				buffer = readInBuffer(_allFds[i].fd);
+				std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
 			}
 		}
 	}
