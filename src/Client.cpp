@@ -1,26 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parseClientData.cpp                                :+:      :+:    :+:   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/31 14:14:12 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 10:30:39 by gclement         ###   ########.fr       */
+/*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
+/*   Updated: 2023/11/03 10:06:42 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "main.hpp"
-# include "Client.hpp"
+#include "Client.hpp"
+#include "main.hpp"
 
-Client parseClientData(std::string buffer, pollfd pollClient)
+Client::Client()
 {
-	std::stringstream	streamBuffer(buffer);
-	std::string 		token;
-
-	while (getline(streamBuffer, token)
-	{
-		
-	}
-	return ;
+	
 }

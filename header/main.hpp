@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/02 10:06:47 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/03 10:23:38 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 # include <csignal>
 # include <cstdlib>
 
+class Client;
 
-void   initServer(void);
+Client	parseClientData(std::string buffer, pollfd pollClient);
 
 #endif

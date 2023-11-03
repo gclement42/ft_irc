@@ -6,11 +6,12 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 09:39:05 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/03 10:19:11 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "Client.hpp"
 
 Server::Server(int port): _port(port)
 {
@@ -108,12 +109,12 @@ std::string Server::readInBuffer(int fd)
 void Server::acceptClientConnexion(void)
 {
 	struct sockaddr_in	sockaddr_in_client;
-	pollfd 				client;
+	pollfd 				pollClient;
 	std::string 		buffer;
 
 	socklen_t len = sizeof(sockaddr_in_client);
-	client.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
-	if (client.fd == -1)
+	pollClient.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
+	if (pollClient.fd == -1)
 	{
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 			return ;
@@ -123,12 +124,13 @@ void Server::acceptClientConnexion(void)
 			return ;
 		}
 	}
-	client.events = POLLIN;
-	client.revents = 0;
-	insertFd(client);
-	buffer = readInBuffer(client.fd);
+	pollClient.events = POLLIN;
+	pollClient.revents = 0;
+	insertFd(pollClient);
+	buffer = readInBuffer(pollClient.fd);
 	while (buffer.find("USER") == std::string::npos)
-		buffer += readInBuffer(client.fd);
+		buffer += readInBuffer(pollClient.fd);
+	Client client = parseClientData(buffer, pollClient);
 	std::cout << "buffer : " << buffer << std::endl;
 }
 
