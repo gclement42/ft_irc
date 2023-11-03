@@ -6,15 +6,15 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 11:14:15 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/03 15:36:37 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "main.hpp"
 
-Client::Client(std::string nickname, std::string username, pollfd data, std::string password):
- _data(data), _password(password), _nickname(nickname), _username(username)
+Client::Client(std::string nickname, std::string username, int fd, std::string password):
+ _fd(fd), _password(password), _nickname(nickname), _username(username)
 {
 	_channel = "default";
 }
@@ -33,14 +33,17 @@ Client	&Client::operator=(const Client &src)
 {
 	if (&src == this)
 		return (*this);
-	_data = src._data;
+	_fd = src._fd;
 	_channel = src._channel;
+	_password = src._password;
+	_nickname = src._nickname;
+	_username = src._username;
 	return (*this);
 }
 
-pollfd		Client::getData(void) const
+int		Client::getFd(void) const
 {
-	return (_data);
+	return (_fd);
 }
 
 std::string	Client::getPassword(void) const

@@ -6,21 +6,15 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2023/11/03 13:48:32 by gclement         ###   ########.fr       */
-=======
-/*   Updated: 2023/11/03 14:01:24 by gclement         ###   ########.fr       */
->>>>>>> master
+/*   Updated: 2023/11/03 16:01:52 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "Client.hpp"
 
 Server::Server(int port): _port(port)
 {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
-	fcntl(_socketServer, F_SETFL, O_NONBLOCK);
 	_allFds = NULL;
 	_nbFds = 0;
 }
@@ -68,6 +62,7 @@ void Server::start(void)
 	sockaddr_in.sin_port = htons(_port);
 	bind(_socketServer, (sockaddr *)(&sockaddr_in), sizeof(sockaddr_in));
 	listen(_socketServer, 1);
+	fcntl(_socketServer, F_SETFL, O_NONBLOCK);
 	std::cout << "Server started on port " << _port << std::endl;
 }
 
@@ -91,18 +86,7 @@ std::string Server::readInBuffer(int fd)
 	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
 	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
 		return ("");
-<<<<<<< HEAD
-	while (bytes > 1)
-	{
-		concatenateBuffer += buffer;
-		bytes = recv(_allFds[i].fd, buffer, 1024, 0);
-		std::cout << "buffer : " << buffer << std::endl;
-		std::cout << "bytes : " << bytes << std::endl;
-		memset(buffer, 0, 1024);
-	}
-=======
 	concatenateBuffer = buffer;
->>>>>>> master
 	lastNewline = concatenateBuffer.find_last_of("\r\n");
 	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
 	if (bytes == -1)
@@ -141,15 +125,15 @@ void Server::acceptClientConnexion(void)
 	while (buffer.find("USER") == std::string::npos)
 	{
 		buffer += readInBuffer(pollClient.fd);
-		std::cout << "buffer : " << buffer << std::endl;
 	}
-	std::cout << "buffer : " << buffer << std::endl;
-	Client client = parseClientData(buffer, pollClient);
-	std::cout << "New client connected : " << client.getNickname() << std::endl;
-	std::cout << "Client fd : " << client.getData().fd << std::endl;
+	Client client = parseClientData(buffer, pollClient.fd);
+	_clients.insert(std::pair<int, Client>(pollClient.fd, client));
+	std::cout << "New client connected : " << std::endl;
+	std::cout << "Client fd : " << pollClient.fd << std::endl;
+	std::cout << "Client password : " << client.getPassword() << std::endl;
+	std::cout << "Client nickname : " << client.getNickname() << std::endl;
 	std::cout << "Client username : " << client.getUsername() << std::endl;
-	if (!client.getPassword().empty())
-		std::cout << "Client password : " << client.getPassword() << std::endl;
+	
 }
 
 void Server::checkFdsEvent(void)
@@ -167,9 +151,22 @@ void Server::checkFdsEvent(void)
 			if (_allFds[i].revents == POLLIN)
 			{
 				buffer = readInBuffer(_allFds[i].fd);
-				std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
+				std::cout << _clients.find(_allFds[i].fd)->second.getNickname() << " : " << buffer << std::endl;
 			}
 		}
+	}
+}
+
+void Server::displayClients(void)
+{
+	std::map<int, Client>::iterator it;
+
+	for (it = _clients.begin(); it != _clients.end(); it++)
+	{
+		std::cout << "Client fd : " << it->first << std::endl;
+		std::cout << "Client password : " << it->second.getPassword() << std::endl;
+		std::cout << "Client nickname : " << it->second.getNickname() << std::endl;
+		std::cout << "Client username : " << it->second.getUsername() << std::endl;
 	}
 }
 
