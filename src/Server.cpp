@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 10:19:11 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/03 13:48:32 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,9 @@ std::string Server::readInBuffer(int fd)
 	while (bytes > 1)
 	{
 		concatenateBuffer += buffer;
-		bytes = recv(_allFds[i].fd, buffer, 1024, MSG_DONTWAIT);
+		bytes = recv(_allFds[i].fd, buffer, 1024, 0);
+		std::cout << "buffer : " << buffer << std::endl;
+		std::cout << "bytes : " << bytes << std::endl;
 		memset(buffer, 0, 1024);
 	}
 	lastNewline = concatenateBuffer.find_last_of("\r\n");
@@ -129,9 +131,17 @@ void Server::acceptClientConnexion(void)
 	insertFd(pollClient);
 	buffer = readInBuffer(pollClient.fd);
 	while (buffer.find("USER") == std::string::npos)
+	{
 		buffer += readInBuffer(pollClient.fd);
-	Client client = parseClientData(buffer, pollClient);
+		std::cout << "buffer : " << buffer << std::endl;
+	}
 	std::cout << "buffer : " << buffer << std::endl;
+	Client client = parseClientData(buffer, pollClient);
+	std::cout << "New client connected : " << client.getNickname() << std::endl;
+	std::cout << "Client fd : " << client.getData().fd << std::endl;
+	std::cout << "Client username : " << client.getUsername() << std::endl;
+	if (!client.getPassword().empty())
+		std::cout << "Client password : " << client.getPassword() << std::endl;
 }
 
 void Server::checkFdsEvent(void)
