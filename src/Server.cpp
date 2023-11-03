@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/02 14:07:42 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/03 09:05:37 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void Server::acceptClientConnexion(void)
 	client.revents = 0;
 	insertFd(client);
 	buffer = readInBuffer(client.fd);
-	std::cout << "buffer : " << buffer << std::endl;
+	std::cout << "buffer : " << "'" << buffer << "'" << std::endl;
 	//memset(buffer, 0, 1024);
 	//std::cout << "Client.fd : " << client.fd << std::endl;
 	//std::cout << "NbClient : " << _nbFds << std::endl;
@@ -145,7 +145,8 @@ void Server::checkFdsEvent(void)
 			if (_allFds[i].revents == POLLIN)
 			{
 				buffer = readInBuffer(_allFds[i].fd);
-				std::cout << "Message from client " << _allFds[i].fd << " : " << buffer << std::endl;
+				std::cout << "Message from client " << _allFds[i].fd << " : " << "'" << buffer << "'" << std::endl;
+				parsing(buffer);
 			}
 		}
 	}

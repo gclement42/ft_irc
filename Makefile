@@ -17,7 +17,7 @@ HEADER_DIR				= header/
 HEADER_FILES			= main.hpp Server.hpp
 	
 DIR						=	src/
-SRC						=	main.cpp Server.cpp clientQuit.cpp parseClientData.cpp
+SRC						=	main.cpp Server.cpp clientQuit.cpp parseClientData.cpp parsing.cpp
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 
