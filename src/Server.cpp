@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 09:39:05 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/03 14:01:24 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,7 @@ std::string Server::readInBuffer(int fd)
 	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
 	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
 		return ("");
-	while (bytes > 1)
-	{
-		concatenateBuffer += buffer;
-		bytes = recv(_allFds[i].fd, buffer, 1024, MSG_DONTWAIT);
-		memset(buffer, 0, 1024);
-	}
+	concatenateBuffer = buffer;
 	lastNewline = concatenateBuffer.find_last_of("\r\n");
 	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
 	if (bytes == -1)
