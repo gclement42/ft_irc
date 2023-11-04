@@ -70,8 +70,10 @@ void Server::checkIfPasswordIsValid(Client client) {
 	if (client.getPassword() == _password) {
 		return ;
 	} else {
+		std::string message = " Incorrect password";
 		sendMessageToClient(ERR_PASSWDMISMATCH(client.getUsername()), client.getFd());
-		
+		sendMessageToClient(ERROR(message), client.getFd());
+		disconnectClient(client.getFd());
 		return ;
 	}
 }
@@ -111,11 +113,10 @@ void Server::acceptClientConnexion(void) {
 	while (buffer.find("USER") == std::string::npos)
 		buffer += readInBuffer(pollClient.fd);
 	Client client(parseClientData(buffer, pollClient.fd));
-	checkIfPasswordIsValid(client);
 	_clients.insert(std::pair<int, Client>(pollClient.fd, client));
 	std::cout << "New client connected : " << std::endl;
 	std::cout << client << std::endl;
-	
+	checkIfPasswordIsValid(client);
 }
 
 void Server::checkFdsEvent(void) {
@@ -137,6 +138,19 @@ void Server::checkFdsEvent(void) {
 				std::cout << client.getUsername() << " : "<< buffer << std::endl;
 			}
 		}
+	}
+}
+
+void Server::disconnectClient(int fd) {
+	std::map<int, Client>::iterator it;
+
+	it = _clients.find(fd);
+	if (it != _clients.end())
+	{
+		std::cout << it->second.getUsername() << " disconnected" << std::endl;
+		_clients.erase(it);
+		eraseFd(_allFds[fd]);
+		close(fd);
 	}
 }
 
