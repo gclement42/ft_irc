@@ -34,6 +34,8 @@ class Server {
 		pollfd					*getAllFds(void);
 		std::string				readInBuffer(int fd);
 		void					displayClients(void);
+		void					checkIfPasswordIsValid(Client Client);
+		void					sendMessageToClient(std::string message, int fd);
 	private:
 		std::map<int, Client>	_clients;
 		pollfd					*_allFds;

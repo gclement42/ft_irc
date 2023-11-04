@@ -35,4 +35,6 @@ class Client {
 		std::string					_channel;
 };
 
+std::ostream	&operator<<(std::ostream &o, const Client &src);
+
 #endif

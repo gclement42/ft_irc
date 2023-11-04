@@ -66,6 +66,27 @@ void Server::stop(void) {
 	close(_socketServer);
 }
 
+void Server::checkIfPasswordIsValid(Client client) {
+	if (client.getPassword() == _password) {
+		return ;
+	} else {
+		sendMessageToClient(ERR_PASSWDMISMATCH(client.getUsername()), client.getFd());
+		
+		return ;
+	}
+}
+
+void Server::sendMessageToClient(std::string message, int fd) {
+	int ret;
+
+	ret = send(fd, message.c_str(), message.size(), 0);
+	if (ret == -1) {
+		std::cerr << "errno : " << errno << std::endl;
+		// throw exception (????)
+		return ;
+	}
+}
+
 
 void Server::acceptClientConnexion(void) {
 	struct sockaddr_in	sockaddr_in_client;
@@ -90,12 +111,10 @@ void Server::acceptClientConnexion(void) {
 	while (buffer.find("USER") == std::string::npos)
 		buffer += readInBuffer(pollClient.fd);
 	Client client(parseClientData(buffer, pollClient.fd));
+	checkIfPasswordIsValid(client);
 	_clients.insert(std::pair<int, Client>(pollClient.fd, client));
 	std::cout << "New client connected : " << std::endl;
-	std::cout << "Client fd : " << pollClient.fd << std::endl;
-	std::cout << "Client password : " << client.getPassword() << std::endl;
-	std::cout << "Client nickname : " << client.getNickname() << std::endl;
-	std::cout << "Client username : " << client.getUsername() << std::endl;
+	std::cout << client << std::endl;
 	
 }
 
@@ -152,10 +171,7 @@ void Server::displayClients(void) {
 
 	for (it = _clients.begin(); it != _clients.end(); it++)
 	{
-		std::cout << "Client fd : " << it->first << std::endl;
-		std::cout << "Client password : " << it->second.getPassword() << std::endl;
-		std::cout << "Client nickname : " << it->second.getNickname() << std::endl;
-		std::cout << "Client username : " << it->second.getUsername() << std::endl;
+		std::cout << it->second << std::endl;
 	}
 }
 

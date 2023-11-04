@@ -62,3 +62,13 @@ std::string	Client::getChannel(void) const
 {
 	return (_channel);
 }
+
+std::ostream	&operator<<(std::ostream &o, const Client &src)
+{
+	o << "Client fd: " << src.getFd() << std::endl;
+	o << "Client password: " << src.getPassword() << std::endl;
+	o << "Client nickname: " << src.getNickname() << std::endl;
+	o << "Client username: " << src.getUsername() << std::endl;
+	o << "Client channel: " << src.getChannel() << std::endl;
+	return (o);
+}

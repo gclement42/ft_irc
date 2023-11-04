@@ -28,6 +28,7 @@
 # include <csignal>
 # include <cstdlib>
 # include <map>
+# include "errorMessages.hpp"
 
 class Client;
 
