@@ -28,10 +28,10 @@ class Client {
 		std::string	getUsername(void) const;
 		std::string	getChannel(void) const;
 	private :
-		int					_fd;
-		std::string			_password;
-		std::string			_nickname;
-		std::string			_username;
+		const int					_fd;
+		const std::string			_password;
+		const std::string			_nickname;
+		const std::string			_username;
 		std::string			_channel;
 };
 

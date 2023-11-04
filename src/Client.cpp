@@ -19,7 +19,8 @@ Client::Client(std::string nickname, std::string username, int fd, std::string p
 	_channel = "default";
 }
 
-Client::Client(const Client &src)
+Client::Client(const Client &src):
+ _fd(src._fd), _password(src._password), _nickname(src._nickname), _username(src._username)
 {
 	*this = src;
 }
@@ -33,11 +34,7 @@ Client	&Client::operator=(const Client &src)
 {
 	if (&src == this)
 		return (*this);
-	_fd = src._fd;
 	_channel = src._channel;
-	_password = src._password;
-	_nickname = src._nickname;
-	_username = src._username;
 	return (*this);
 }
 

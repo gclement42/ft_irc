@@ -12,15 +12,13 @@
 
 #include "Server.hpp"
 
-Server::Server(int port): _port(port)
-{
+Server::Server(int port): _port(port) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
 	_allFds = NULL;
 	_nbFds = 0;
 }
 
-Server::Server(const Server &src)
-{
+Server::Server(const Server &src) {
 	*this = src;
 }
 
@@ -33,8 +31,7 @@ Server::~Server(void) {
 		delete [] _allFds;
 }
 
-Server	&Server::operator=(const Server &src)
-{
+Server	&Server::operator=(const Server &src) {
 	size_t	i;
 
 	i = 0;
@@ -42,8 +39,7 @@ Server	&Server::operator=(const Server &src)
 		return (*this);
 	delete [] _allFds;
 	_allFds = new pollfd[src._nbFds];
-	while (i < src._nbFds)
-	{
+	while (i < src._nbFds) {
 		_allFds[i] = src._allFds[i];
 		i++;
 	}
@@ -54,8 +50,7 @@ Server	&Server::operator=(const Server &src)
 	return (*this);
 }
 
-void Server::start(void)
-{	
+void Server::start(void) {	
 	struct sockaddr_in sockaddr_in;
 	sockaddr_in.sin_addr.s_addr = inet_addr("127.0.0.1");
 	sockaddr_in.sin_family = AF_INET;
@@ -66,14 +61,12 @@ void Server::start(void)
 	std::cout << "Server started on port " << _port << std::endl;
 }
 
-void Server::stop(void)
-{
+void Server::stop(void) {
 	std::cout << "Server stopped" << std::endl;
 	close(_socketServer);
 }
 
-std::string Server::readInBuffer(int fd)
-{
+std::string Server::readInBuffer(int fd) {
 	char		buffer[1024];
 	std::string	concatenateBuffer;
 	int			i;
@@ -89,8 +82,7 @@ std::string Server::readInBuffer(int fd)
 	concatenateBuffer = buffer;
 	lastNewline = concatenateBuffer.find_last_of("\r\n");
 	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
-	if (bytes == -1)
-	{
+	if (bytes == -1) {
 		if ((errno == EAGAIN || errno == EWOULDBLOCK))
 			return (concatenateBuffer);
 		std::cerr << "errno : " << errno << std::endl;
@@ -100,20 +92,17 @@ std::string Server::readInBuffer(int fd)
 	return (concatenateBuffer);
 }
 
-void Server::acceptClientConnexion(void)
-{
+void Server::acceptClientConnexion(void) {
 	struct sockaddr_in	sockaddr_in_client;
 	pollfd 				pollClient;
 	std::string 		buffer;
 
 	socklen_t len = sizeof(sockaddr_in_client);
 	pollClient.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
-	if (pollClient.fd == -1)
-	{
+	if (pollClient.fd == -1) {
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 			return ;
-		else
-		{
+		else {
 			//Rajouter gestions des erreurs
 			return ;
 		}
@@ -123,10 +112,8 @@ void Server::acceptClientConnexion(void)
 	insertFd(pollClient);
 	buffer = readInBuffer(pollClient.fd);
 	while (buffer.find("USER") == std::string::npos)
-	{
 		buffer += readInBuffer(pollClient.fd);
-	}
-	Client client = parseClientData(buffer, pollClient.fd);
+	Client client(parseClientData(buffer, pollClient.fd));
 	_clients.insert(std::pair<int, Client>(pollClient.fd, client));
 	std::cout << "New client connected : " << std::endl;
 	std::cout << "Client fd : " << pollClient.fd << std::endl;
@@ -136,8 +123,7 @@ void Server::acceptClientConnexion(void)
 	
 }
 
-void Server::checkFdsEvent(void)
-{
+void Server::checkFdsEvent(void) {
 	std::string		buffer;
 	int				ret;
 
@@ -150,15 +136,16 @@ void Server::checkFdsEvent(void)
 		{
 			if (_allFds[i].revents == POLLIN)
 			{
+				Client client(_clients.find(_allFds[i].fd)->second);
 				buffer = readInBuffer(_allFds[i].fd);
-				std::cout << _clients.find(_allFds[i].fd)->second.getNickname() << " : " << buffer << std::endl;
+				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
+				std::cout << client.getUsername() << " : "<< buffer << std::endl;
 			}
 		}
 	}
 }
 
-void Server::displayClients(void)
-{
+void Server::displayClients(void) {
 	std::map<int, Client>::iterator it;
 
 	for (it = _clients.begin(); it != _clients.end(); it++)
@@ -170,8 +157,7 @@ void Server::displayClients(void)
 	}
 }
 
-void	Server::insertFd(pollfd client)
-{
+void	Server::insertFd(pollfd client) {
 	pollfd	*tmp;
 	size_t	i;
 
@@ -188,8 +174,7 @@ void	Server::insertFd(pollfd client)
 	_nbFds++;
 }
 
-void	Server::eraseFd(pollfd client)
-{
+void	Server::eraseFd(pollfd client) {
 	pollfd		*tmp;
 	size_t		i;
 	size_t		j;
@@ -211,22 +196,18 @@ void	Server::eraseFd(pollfd client)
 	_nbFds--;
 }
 
-pollfd *Server::getAllFds(void)
-{
+pollfd *Server::getAllFds(void) {
 	return (_allFds);
 }
 
-size_t Server::getNbFd(void) const
-{
+size_t Server::getNbFd(void) const {
 	return (_nbFds);
 }
 
-int Server::getSocketServer(void) const
-{
+int Server::getSocketServer(void) const {
 	return (_socketServer);
 }
 
-void Server::joinCommand(void)
-{
+void Server::joinCommand(void) {
 	return ;
 }
