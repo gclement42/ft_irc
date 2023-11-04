@@ -12,7 +12,7 @@
 
 #include "Server.hpp"
 
-Server::Server(int port): _port(port) {
+Server::Server(int port, std::string password): _port(port), _password(password) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
 	_allFds = NULL;
 	_nbFds = 0;
@@ -66,31 +66,6 @@ void Server::stop(void) {
 	close(_socketServer);
 }
 
-std::string Server::readInBuffer(int fd) {
-	char		buffer[1024];
-	std::string	concatenateBuffer;
-	int			i;
-	int			bytes;
-	int			lastNewline;
-
-	i = 0;
-	while (_allFds[i].fd != fd)
-		i++;
-	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
-	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
-		return ("");
-	concatenateBuffer = buffer;
-	lastNewline = concatenateBuffer.find_last_of("\r\n");
-	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
-	if (bytes == -1) {
-		if ((errno == EAGAIN || errno == EWOULDBLOCK))
-			return (concatenateBuffer);
-		std::cerr << "errno : " << errno << std::endl;
-		// throw exception (????)
-		return ("error");
-	}
-	return (concatenateBuffer);
-}
 
 void Server::acceptClientConnexion(void) {
 	struct sockaddr_in	sockaddr_in_client;
@@ -103,6 +78,7 @@ void Server::acceptClientConnexion(void) {
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 			return ;
 		else {
+			std::cout << "errno : " << errno << std::endl;
 			//Rajouter gestions des erreurs
 			return ;
 		}
@@ -143,6 +119,32 @@ void Server::checkFdsEvent(void) {
 			}
 		}
 	}
+}
+
+std::string Server::readInBuffer(int fd) {
+	char		buffer[1024];
+	std::string	concatenateBuffer;
+	int			i;
+	int			bytes;
+	int			lastNewline;
+
+	i = 0;
+	while (_allFds[i].fd != fd)
+		i++;
+	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
+	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+		return ("");
+	concatenateBuffer = buffer;
+	lastNewline = concatenateBuffer.find_last_of("\r\n");
+	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
+	if (bytes == -1) {
+		if ((errno == EAGAIN || errno == EWOULDBLOCK))
+			return (concatenateBuffer);
+		std::cerr << "errno : " << errno << std::endl;
+		// throw exception (????)
+		return ("error");
+	}
+	return (concatenateBuffer);
 }
 
 void Server::displayClients(void) {

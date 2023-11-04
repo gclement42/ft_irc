@@ -32,7 +32,7 @@ class Client {
 		const std::string			_password;
 		const std::string			_nickname;
 		const std::string			_username;
-		std::string			_channel;
+		std::string					_channel;
 };
 
 #endif

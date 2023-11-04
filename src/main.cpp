@@ -18,9 +18,9 @@ int main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	
-	if (argc != 2)
+	if (argc < 2)
 	{
-		std::cout << "Usage: ./ft_irc <port>" << std::endl;
+		std::cout << "Usage: ./ft_irc <port> <password>" << std::endl;
 		return (0);
 	}
 	int port = atoi(argv[1]);

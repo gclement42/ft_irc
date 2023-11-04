@@ -18,7 +18,7 @@
 
 class Server {
 	public:
-		Server(int port);
+		Server(int port, std::string password);
 		Server(const Server &src);
 		~Server(void);
 		Server	&operator=(const Server &src);
@@ -40,6 +40,7 @@ class Server {
 		size_t					_nbFds;
 		int						_socketServer;
 		int						_port;
+		std::string				_password;
 };
 
 #endif
