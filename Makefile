@@ -17,10 +17,12 @@ HEADER_DIR				= header/
 HEADER_FILES			= main.hpp \
 							Server.hpp \
 							Client.hpp \
+							Channel.hpp \
 	
 DIR						=	src/
 SRC						=	main.cpp \
 							Server.cpp \
+							Channel.cpp \
 							clientQuit.cpp \
 							parseClientData.cpp \
 							Client.cpp \

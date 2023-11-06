@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 09:34:41 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 09:40:51 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,7 @@
 #include "Client.hpp"
 
 void	parseBuffer(Client client, std::string buffer)
-{
-	std::cout << "begin parsing: " << client.getUsername() << std::endl;
-	
+{	
 	std::string 	cmd;
 	std::string		arg;
 	size_t			first_space;

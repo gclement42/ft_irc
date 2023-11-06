@@ -6,29 +6,39 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 09:35:32 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 10:34:20 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
 #include "Server.hpp"
 #include "Client.hpp"
+#include "Channel.hpp"
 
 static std::string parseChannelName(std::string buffer);
 static std::string parseKey(std::string arg);
 
 void	commandJoin(Client client, std::string buffer)
 {
+	(void)client;
+	
 	std::string		channelName = parseChannelName(buffer);
 	std::string		key 		= parseKey(buffer);
 	std::string		joinMessage = "Now talking on " + channelName + "\r\n";
 	
 	if (channelName.empty())
 		return ;
-		
+	
+	Channel 		channel(channelName, "", key, "", 0, USER_LIMITS);
+	
+	std::string 	clientMessage = "Client " + client.getNickname() + " joined channel " + channel.getName() + "\r\n";
+	std::string 	topicMessage = "Topic: " + channel.getTopic() + "\r\n";
+
+	if (channel.getTopic().empty() != true)
+		send(client.getFd(), topicMessage.c_str(), topicMessage.length(), 0);
+	send(client.getFd(), clientMessage.c_str(), clientMessage.length(), 0);
 	send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
 
-	std::cout << "Channel name: '" << channelName << "'" << std::endl;
 }
 
 static std::string parseChannelName(std::string arg)
@@ -68,16 +78,5 @@ static std::string parseKey(std::string arg)
 		printError("Key is empty");
 		return ("");
 	}
-	std::cout << "Key: '" << key << "'" << std::endl;
 	return (key);
 }
-
-// static void displayChannelInfos(Client client)
-// {
-// 	std::string clientMessage = "Client " + client.nickname + " joined channel " + channel.name;
-// 	std::string topicMessage = "Topic: " + channel.topic;
-
-// 	if (channel.topic.empty() != true)
-// 		send(4, topicMessage.c_str(), topicMessage.length(), 0);
-// 	send(4, clientMessage.c_str(), clientMessage.length(), 0);
-// }
