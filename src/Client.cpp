@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 15:17:29 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:35:08 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,10 @@ void Client::sendMessageToClient(std::string message, int fd) {
 		// throw exception (????)
 		return ;
 	}
+}
+
+void Client::addMessageToSend(std::string message) {
+	_messagesToSend.push_back(message);
 }
 
 int		Client::getFd(void) const

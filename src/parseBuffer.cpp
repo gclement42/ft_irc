@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.cpp                                        :+:      :+:    :+:   */
+/*   parseBuffer.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 14:12:12 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:48:41 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-void	parseBuffer(Client client, std::string buffer)
+void	parseBuffer(Client &client, std::string buffer)
 {	
 	std::string 	cmd;
 	std::string		arg;

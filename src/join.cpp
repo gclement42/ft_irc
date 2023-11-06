@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 15:05:57 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 16:26:15 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ void	commandJoin(Client client, std::string buffer)
 	
 	std::string 	clientMessage = "Client " + client.getNickname() + " joined channel " + channelName + "\r\n";
 
-	send(client.getFd(), clientMessage.c_str(), clientMessage.length(), 0);
-	send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
+	client.addMessageToSend(clientMessage);
+	client.addMessageToSend(joinMessage);
 
 	std::string 	createChannel = ":" + client.getUsername() + " JOIN " + channelName + "\r\n";
-	send(client.getFd(), createChannel.c_str(), createChannel.length(), 0);
+	client.addMessageToSend(createChannel);
 }
 
 static std::string parseChannelName(std::string arg)
@@ -51,7 +51,6 @@ static std::string parseChannelName(std::string arg)
 		printError("Wrong channel name. Please use `#` or `&` to start a channel name.");
 		return ("");
 	}
-
 	first_space = arg.find(" ", 0);
 	if (first_space == std::string::npos)
 		return (arg);
