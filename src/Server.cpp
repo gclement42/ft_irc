@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 08:58:20 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 10:42:30 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,24 @@ void Server::checkIfPasswordIsValid(Client client) {
 	if (client.getPassword() == _password) {
 		return ;
 	} else {
+		std::string message = " Incorrect password";
 		sendMessageToClient(ERR_PASSWDMISMATCH(client.getUsername()), client.getFd());
-		
+		sendMessageToClient(ERROR(message), client.getFd());
+		disconnectClient(client.getFd());
 		return ;
 	}
+}
+
+bool Server::checkIfClientIsStillConnected(Client client) {
+	std::string buffer = readInBuffer(client.getFd());
+	
+	if (buffer != "PONG localhost\r\n")
+	{
+		
+		disconnectClient(client.getFd());
+		return (false);
+	}
+	return (true);
 }
 
 void Server::sendMessageToClient(std::string message, int fd) {
@@ -87,7 +101,6 @@ void Server::sendMessageToClient(std::string message, int fd) {
 		return ;
 	}
 }
-
 
 void Server::acceptClientConnexion(void) {
 	struct sockaddr_in	sockaddr_in_client;
@@ -105,18 +118,17 @@ void Server::acceptClientConnexion(void) {
 			return ;
 		}
 	}
-	pollClient.events = POLLIN;
+	pollClient.events = POLLIN | POLLHUP | POLLERR;
 	pollClient.revents = 0;
 	insertFd(pollClient);
 	buffer = readInBuffer(pollClient.fd);
 	while (buffer.find("USER") == std::string::npos)
 		buffer += readInBuffer(pollClient.fd);
 	Client client(parseClientData(buffer, pollClient.fd));
-	checkIfPasswordIsValid(client);
 	_clients.insert(std::pair<int, Client>(pollClient.fd, client));
 	std::cout << "New client connected : " << std::endl;
 	std::cout << client << std::endl;
-	
+	checkIfPasswordIsValid(client);
 }
 
 void Server::checkFdsEvent(void) {
@@ -130,15 +142,37 @@ void Server::checkFdsEvent(void) {
 	} else {
 		for (size_t i = 0; i < _nbFds; i++)
 		{
-			if (_allFds[i].revents == POLLIN)
+			if (_allFds[i].revents & POLLIN)
 			{
 				Client client(_clients.find(_allFds[i].fd)->second);
 				buffer = readInBuffer(_allFds[i].fd);
 				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-				parseBuffer(client, buffer);
-				std::cout << client.getUsername() << " : "<< buffer << std::endl;
+				if (buffer != "")
+				{
+					parseBuffer(client, buffer);
+					std::cout << client.getUsername() << " : "<< buffer << std::endl;
+				}
+				checkIfClientIsStillConnected(client);
+			}
+			if (_allFds[i].revents & (POLLHUP | POLLERR))
+			{
+				std::cout << "POLLHUP or POLLERR" << std::endl;
+				disconnectClient(_allFds[i].fd);
 			}
 		}
+	}
+}
+
+void Server::disconnectClient(int fd) {
+	std::map<int, Client>::iterator it;
+
+	it = _clients.find(fd);
+	if (it != _clients.end())
+	{
+		std::cout << it->second.getUsername() << " disconnected" << std::endl;
+		_clients.erase(it);
+		eraseFd(_allFds[fd]);
+		close(fd);
 	}
 }
 
@@ -154,14 +188,20 @@ std::string Server::readInBuffer(int fd) {
 		i++;
 	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
 	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+	{
+		std::cout << "EAGAIN" << std::endl;
 		return ("");
+	}
 	concatenateBuffer = buffer;
 	lastNewline = concatenateBuffer.find_last_of("\r\n");
 	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
 	if (bytes == -1) {
 		if ((errno == EAGAIN || errno == EWOULDBLOCK))
+		{
+			std::cout << "EAGAIN after while" << std::endl;
 			return (concatenateBuffer);
-		std::cerr << "errno : " << errno << std::endl;
+		}
+		//std::cerr << "errno : " << errno << std::endl;
 		// throw exception (????)
 		return ("error");
 	}

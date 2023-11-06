@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 14:10:25 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 15:58:21 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/06 09:24:22 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ class Server {
 		pollfd					*getAllFds(void);
 		std::string				readInBuffer(int fd);
 		void					displayClients(void);
-		void					checkIfPasswordIsValid(Client Client);
+		void					checkIfPasswordIsValid(Client client);
+		bool					checkIfClientIsStillConnected(Client client);
 		void					sendMessageToClient(std::string message, int fd);
+		void					disconnectClient(int fd);
 	private:
 		std::map<int, Client>	_clients;
 		pollfd					*_allFds;
