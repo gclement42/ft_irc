@@ -6,15 +6,17 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 11:25:03 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 12:53:14 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
 #include "Client.hpp"
+#include "Channel.hpp"
 
-void	parseBuffer(Client client, std::string buffer)
+void	parseBuffer(std::vector<Channel> channels, Client client, std::string buffer)
 {	
+	(void)channels;
 	std::string 	cmd;
 	std::string		arg;
 	size_t			first_space;
@@ -27,7 +29,7 @@ void	parseBuffer(Client client, std::string buffer)
 	
 	// tableau arguments pr clement
 	if (cmd == "JOIN")
-		commandJoin(client, arg);
+		commandJoin(channels, client, arg);
 	// else if (cmd == "KICK")
 	// 	// cmd_kick(buffer);
 	// 	std::cout << "KICK" << std::endl;

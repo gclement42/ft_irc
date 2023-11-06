@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 11:20:46 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 13:08:13 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@
 static std::string parseChannelName(std::string buffer);
 static std::string parseKey(std::string arg);
 
-void	commandJoin(Client client, std::string buffer)
+void	commandJoin(std::vector<Channel> channels, Client client, std::string buffer)
 {
 	(void)client;
+	(void)channels;
 	
 	std::string		channelName = parseChannelName(buffer);
 	std::string		key 		= parseKey(buffer);
@@ -39,8 +40,8 @@ void	commandJoin(Client client, std::string buffer)
 	send(client.getFd(), clientMessage.c_str(), clientMessage.length(), 0);
 	send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
 
-	std::string 	tt = ":" + client.getUsername() + " JOIN " + channelName +"\r\n";
-	send(client.getFd(), tt.c_str(), tt.length(), 0);
+	std::string 	createChannel = ":" + client.getUsername() + " JOIN " + channelName +"\r\n";
+	send(client.getFd(), createChannel.c_str(), createChannel.length(), 0);
 }
 
 static std::string parseChannelName(std::string arg)
@@ -82,3 +83,5 @@ static std::string parseKey(std::string arg)
 	}
 	return (key);
 }
+
+// static Channel 

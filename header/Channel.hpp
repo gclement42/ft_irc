@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:41:57 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 10:09:48 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 12:57:29 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 # include "main.hpp"
 # include "Server.hpp"
 # include "Client.hpp"
+
+class Server;
+class Client;
 
 class Channel
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 14:10:25 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 09:24:22 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/06 12:56:45 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 
 # include "main.hpp"
 # include "Client.hpp"
+# include "Channel.hpp"
+
+class Channel;
+class Client;
 
 class Server {
 	public:
@@ -40,6 +44,7 @@ class Server {
 		void					disconnectClient(int fd);
 	private:
 		std::map<int, Client>	_clients;
+		std::vector<Channel>	_channels;
 		pollfd					*_allFds;
 		size_t					_nbFds;
 		int						_socketServer;

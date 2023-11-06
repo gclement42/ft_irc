@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maujogue <maujogue@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 11:15:01 by maujogue         ###   ########.fr       */
+/*   Updated: 2023/11/06 12:54:40 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "Server.hpp"
+#include "main.hpp"
 
 Server::Server(int port, std::string password): _port(port), _password(password) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -151,7 +150,7 @@ void Server::checkFdsEvent(void) {
 				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
 				if (buffer != "")
 				{
-					parseBuffer(client, buffer);
+					parseBuffer(this->_channels, client, buffer);
 					std::cout << client.getUsername() << " : "<< buffer << std::endl;
 				}
 				else
