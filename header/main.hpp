@@ -6,9 +6,10 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 11:29:13 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 08:44:43 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MAIN_HPP
 # define MAIN_HPP
@@ -28,19 +29,7 @@
 # include <csignal>
 # include <cstdlib>
 
-# define FAILURE 		0
-# define SUCCESS 		1
 
-void			initServer(void);
-
-// ====== PARSING ======
-void			parseBuffer(std::string buffer);
-
-// ====== COMMANDS ======
-
-void	commandJoin(std::string buffer);
-
-// ====== UTILS ======
-void 			printError(std::string error);
+Client parseClientData(std::string buffer, int fd);
 
 #endif

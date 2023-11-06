@@ -15,16 +15,17 @@
 
 int main(int argc, char **argv)
 {
-	(void)argc;
-	(void)argv;
 	
-	if (argc != 2)
+	if (argc < 2)
 	{
-		std::cout << "Usage: ./ft_irc <port>" << std::endl;
+		std::cout << "Usage: ./ft_irc <port> <password>" << std::endl;
 		return (0);
 	}
+	std::string password = "123soleil";
 	int port = atoi(argv[1]);
-	Server server(port);
+	if (argv[2])
+		password = argv[2];
+	Server server(port, password);
 	server.start();
 	while (1)
 	{

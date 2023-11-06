@@ -6,22 +6,20 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 13:55:24 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 08:44:10 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "Server.hpp"
 
-Server::Server(int port): _port(port)
-{
+Server::Server(int port, std::string password): _port(port), _password(password) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
-	fcntl(_socketServer, F_SETFL, O_NONBLOCK);
 	_allFds = NULL;
 	_nbFds = 0;
 }
 
-Server::Server(const Server &src)
-{
+Server::Server(const Server &src) {
 	*this = src;
 }
 
@@ -34,8 +32,7 @@ Server::~Server(void) {
 		delete [] _allFds;
 }
 
-Server	&Server::operator=(const Server &src)
-{
+Server	&Server::operator=(const Server &src) {
 	size_t	i;
 
 	i = 0;
@@ -43,8 +40,7 @@ Server	&Server::operator=(const Server &src)
 		return (*this);
 	delete [] _allFds;
 	_allFds = new pollfd[src._nbFds];
-	while (i < src._nbFds)
-	{
+	while (i < src._nbFds) {
 		_allFds[i] = src._allFds[i];
 		i++;
 	}
@@ -55,85 +51,75 @@ Server	&Server::operator=(const Server &src)
 	return (*this);
 }
 
-void Server::start(void)
-{	
+void Server::start(void) {	
 	struct sockaddr_in sockaddr_in;
 	sockaddr_in.sin_addr.s_addr = inet_addr("127.0.0.1");
 	sockaddr_in.sin_family = AF_INET;
 	sockaddr_in.sin_port = htons(_port);
 	bind(_socketServer, (sockaddr *)(&sockaddr_in), sizeof(sockaddr_in));
 	listen(_socketServer, 1);
+	fcntl(_socketServer, F_SETFL, O_NONBLOCK);
 	std::cout << "Server started on port " << _port << std::endl;
 }
 
-void Server::stop(void)
-{
+void Server::stop(void) {
 	std::cout << "Server stopped" << std::endl;
 	close(_socketServer);
 }
 
-std::string Server::readInBuffer(int fd)
-{
-	char		buffer[1024];
-	std::string	concatenateBuffer;
-	int			i;
-	int			bytes;
-	int			lastNewline;
-
-	i = 0;
-	while (_allFds[i].fd != fd)
-		i++;
-	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
-	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
-		return ("");
-	while (bytes > 1)
-	{
-		concatenateBuffer += buffer;
-		bytes = recv(_allFds[i].fd, buffer, 1024, MSG_DONTWAIT);
-		memset(buffer, 0, 1024);
+void Server::checkIfPasswordIsValid(Client client) {
+	if (client.getPassword() == _password) {
+		return ;
+	} else {
+		sendMessageToClient(ERR_PASSWDMISMATCH(client.getUsername()), client.getFd());
+		
+		return ;
 	}
-	lastNewline = concatenateBuffer.find_last_of("\r\n");
-	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
-	if (bytes == -1)
-	{
-		if ((errno == EAGAIN || errno == EWOULDBLOCK))
-			return (concatenateBuffer);
-		std::cerr << "errno : " << errno << std::endl;
-		// throw exception (????)
-		return ("error");
-	}
-	return (concatenateBuffer);
 }
 
-void Server::acceptClientConnexion(void)
-{
+void Server::sendMessageToClient(std::string message, int fd) {
+	int ret;
+
+	ret = send(fd, message.c_str(), message.size(), 0);
+	if (ret == -1) {
+		std::cerr << "errno : " << errno << std::endl;
+		// throw exception (????)
+		return ;
+	}
+}
+
+
+void Server::acceptClientConnexion(void) {
 	struct sockaddr_in	sockaddr_in_client;
-	pollfd 				client;
+	pollfd 				pollClient;
 	std::string 		buffer;
 
 	socklen_t len = sizeof(sockaddr_in_client);
-	client.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
-	if (client.fd == -1)
-	{
+	pollClient.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
+	if (pollClient.fd == -1) {
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 			return ;
-		else
-		{
+		else {
+			std::cout << "errno : " << errno << std::endl;
 			//Rajouter gestions des erreurs
 			return ;
 		}
 	}
-	client.events = POLLIN;
-	client.revents = 0;
-	insertFd(client);
-	// buffer = readInBuffer(client.fd);
-	// while (buffer.find("USER") == std::string::npos)
-	// 	buffer += readInBuffer(client.fd);
-	std::cout << "buffer : " << buffer << std::endl;
+	pollClient.events = POLLIN;
+	pollClient.revents = 0;
+	insertFd(pollClient);
+	buffer = readInBuffer(pollClient.fd);
+	while (buffer.find("USER") == std::string::npos)
+		buffer += readInBuffer(pollClient.fd);
+	Client client(parseClientData(buffer, pollClient.fd));
+	checkIfPasswordIsValid(client);
+	_clients.insert(std::pair<int, Client>(pollClient.fd, client));
+	std::cout << "New client connected : " << std::endl;
+	std::cout << client << std::endl;
+	
 }
 
-void Server::checkFdsEvent(void)
-{
+void Server::checkFdsEvent(void) {
 	std::string		buffer;
 	int				ret;
 
@@ -146,16 +132,51 @@ void Server::checkFdsEvent(void)
 		{
 			if (_allFds[i].revents == POLLIN)
 			{
+				Client client(_clients.find(_allFds[i].fd)->second);
 				buffer = readInBuffer(_allFds[i].fd);
-				std::cout << "Message from client " << _allFds[i].fd << " : " << "'" << buffer << "'" << std::endl;
-				parseBuffer(buffer);
+				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
+				std::cout << client.getUsername() << " : "<< buffer << std::endl;
 			}
 		}
 	}
 }
 
-void	Server::insertFd(pollfd client)
-{
+std::string Server::readInBuffer(int fd) {
+	char		buffer[1024];
+	std::string	concatenateBuffer;
+	int			i;
+	int			bytes;
+	int			lastNewline;
+
+	i = 0;
+	while (_allFds[i].fd != fd)
+		i++;
+	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
+	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+		return ("");
+	concatenateBuffer = buffer;
+	lastNewline = concatenateBuffer.find_last_of("\r\n");
+	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
+	if (bytes == -1) {
+		if ((errno == EAGAIN || errno == EWOULDBLOCK))
+			return (concatenateBuffer);
+		std::cerr << "errno : " << errno << std::endl;
+		// throw exception (????)
+		return ("error");
+	}
+	return (concatenateBuffer);
+}
+
+void Server::displayClients(void) {
+	std::map<int, Client>::iterator it;
+
+	for (it = _clients.begin(); it != _clients.end(); it++)
+	{
+		std::cout << it->second << std::endl;
+	}
+}
+
+void	Server::insertFd(pollfd client) {
 	pollfd	*tmp;
 	size_t	i;
 
@@ -172,8 +193,7 @@ void	Server::insertFd(pollfd client)
 	_nbFds++;
 }
 
-void	Server::eraseFd(pollfd client)
-{
+void	Server::eraseFd(pollfd client) {
 	pollfd		*tmp;
 	size_t		i;
 	size_t		j;
@@ -195,22 +215,18 @@ void	Server::eraseFd(pollfd client)
 	_nbFds--;
 }
 
-pollfd *Server::getAllFds(void)
-{
+pollfd *Server::getAllFds(void) {
 	return (_allFds);
 }
 
-size_t Server::getNbFd(void) const
-{
+size_t Server::getNbFd(void) const {
 	return (_nbFds);
 }
 
-int Server::getSocketServer(void) const
-{
+int Server::getSocketServer(void) const {
 	return (_socketServer);
 }
 
-void Server::joinCommand(void)
-{
+void Server::joinCommand(void) {
 	return ;
 }
