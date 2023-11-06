@@ -6,18 +6,17 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:45:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 10:09:45 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:07:52 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 #include "main.hpp"
 
-Channel::Channel(std::string name, std::string topic, std::string key, std::string mode, int id, int userLimit):
+Channel::Channel(std::string name, std::string topic, std::string key, std::string mode, int userLimit):
 	_name(name), _topic(topic), _key(key), _mode(mode)
 {
-	this->_id = id;
-	this->_userLimit = userLimit;	
+	this->_userLimit = userLimit;
 	return ;
 }
 
@@ -36,11 +35,6 @@ Channel		&Channel::operator=(const Channel &src)
 {
 	(void)src;
 	return (*this);
-}
-
-int			Channel::getId(void) const
-{
-	return (this->_id);
 }
 
 int			Channel::getUserLimit(void) const

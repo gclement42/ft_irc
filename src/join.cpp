@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 14:21:42 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:05:57 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-static std::string parseChannelName(std::string buffer);
-static std::string parseKey(std::string arg);
+static std::string 	parseChannelName(std::string buffer);
+static std::string 	parseKey(std::string arg);
+static void	 		createNewChannel(std::vector<Channel> channels, std::string channelName, std::string key);
 
 void	commandJoin(Client client, std::string buffer)
 {	
@@ -26,6 +27,8 @@ void	commandJoin(Client client, std::string buffer)
 	
 	if (channelName.empty())
 		return ;
+	
+	createNewChannel(client.getChannels(), channelName, key);
 	
 	std::string 	clientMessage = "Client " + client.getNickname() + " joined channel " + channelName + "\r\n";
 
@@ -74,4 +77,10 @@ static std::string parseKey(std::string arg)
 		return ("");
 	}
 	return (key);
+}
+
+static void createNewChannel(std::vector<Channel> channels, std::string channelName, std::string key)
+{
+	Channel newChannel(channelName, "", key, "", USER_LIMITS);
+	channels.push_back(newChannel);
 }

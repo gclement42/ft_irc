@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:41:57 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 12:57:29 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:09:04 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,12 @@ class Channel
 {
 	public:
 
-		Channel(std::string name, std::string topic, std::string key, std::string mode, int id, int userLimit);
+		Channel(std::string name, std::string topic, std::string key, std::string mode, int userLimit);
 		Channel(const Channel &src);
 		~Channel(void);
 
 		Channel					&operator=(const Channel &src);
 
-		int						getId(void) const;
 		int						getUserLimit(void) const;
 		std::string				getName(void) const;
 		std::string				getTopic(void) const;
@@ -43,7 +42,6 @@ class Channel
 		const std::string		_topic;
 		const std::string		_key;
 		const std::string		_mode;
-		int						_id;
 		int						_userLimit;
 
 };
