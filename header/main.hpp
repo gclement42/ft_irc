@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 10:12:47 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 12:46:10 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,13 @@
 class Client;
 class Channel;
 
-Client 	parseClientData(std::string buffer, int fd);
-void	parseBuffer(Client client, std::string buffer);
+std::string readInBuffer(int fd);
 
-void	commandJoin(Client client, std::string buffer);
+Client 		parseClientData(std::string buffer, int fd);
+void		parseBuffer(Client client, std::string buffer);
 
-void 	printError(std::string error);
+void		commandJoin(Client client, std::string buffer);
+
+void 		printError(std::string error);
 
 #endif
