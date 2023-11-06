@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 15:17:43 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:28:16 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,10 @@ void Server::checkFdsEvent(void) {
 				Client client(_clients.find(_allFds[i].fd)->second);
 				buffer = readInBuffer(_allFds[i].fd);
 				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-				if (buffer != "")
+				if ((buffer != "" || buffer != "error") && client.checkIfClientIsStillConnected())
 				{
 					parseBuffer(client, buffer);
-					std::cout << client.getUsername() << " : "<< buffer << std::endl;
+					std::cout << client.getUsername() << " : " << buffer << std::endl;
 				}
 				else
 					if (!client.checkIfClientIsStillConnected())
