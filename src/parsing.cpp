@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 09:40:51 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 11:25:03 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	parseBuffer(Client client, std::string buffer)
 	cmd = buffer.substr(0, first_space);
 	arg = buffer.substr(first_space + 1, length);
 	
+	// tableau arguments pr clement
 	if (cmd == "JOIN")
 		commandJoin(client, arg);
 	// else if (cmd == "KICK")

@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 10:34:20 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 11:20:46 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	commandJoin(Client client, std::string buffer)
 	send(client.getFd(), clientMessage.c_str(), clientMessage.length(), 0);
 	send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
 
+	std::string 	tt = ":" + client.getUsername() + " JOIN " + channelName +"\r\n";
+	send(client.getFd(), tt.c_str(), tt.length(), 0);
 }
 
 static std::string parseChannelName(std::string arg)
