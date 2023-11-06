@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 16:01:52 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/06 10:21:01 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,18 @@ void Server::checkIfPasswordIsValid(Client client) {
 	}
 }
 
+bool Server::checkIfClientIsStillConnected(Client client) {
+	std::string buffer = readInBuffer(client.getFd());
+	
+	if (buffer != "PONG localhost\r\n")
+	{
+		
+		disconnectClient(client.getFd());
+		return (false);
+	}
+	return (true);
+}
+
 void Server::sendMessageToClient(std::string message, int fd) {
 	int ret;
 
@@ -88,7 +100,6 @@ void Server::sendMessageToClient(std::string message, int fd) {
 		return ;
 	}
 }
-
 
 void Server::acceptClientConnexion(void) {
 	struct sockaddr_in	sockaddr_in_client;
@@ -106,7 +117,7 @@ void Server::acceptClientConnexion(void) {
 			return ;
 		}
 	}
-	pollClient.events = POLLIN;
+	pollClient.events = POLLIN | POLLHUP | POLLERR;
 	pollClient.revents = 0;
 	insertFd(pollClient);
 	buffer = readInBuffer(pollClient.fd);
@@ -130,12 +141,19 @@ void Server::checkFdsEvent(void) {
 	} else {
 		for (size_t i = 0; i < _nbFds; i++)
 		{
-			if (_allFds[i].revents == POLLIN)
+			if (_allFds[i].revents & POLLIN)
 			{
 				Client client(_clients.find(_allFds[i].fd)->second);
 				buffer = readInBuffer(_allFds[i].fd);
 				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-				std::cout << client.getUsername() << " : "<< buffer << std::endl;
+				if (buffer != "")
+					std::cout << client.getUsername() << " : "<< buffer << std::endl;
+				checkIfClientIsStillConnected(client);
+			}
+			if (_allFds[i].revents & (POLLHUP | POLLERR))
+			{
+				std::cout << "POLLHUP or POLLERR" << std::endl;
+				disconnectClient(_allFds[i].fd);
 			}
 		}
 	}
@@ -166,14 +184,20 @@ std::string Server::readInBuffer(int fd) {
 		i++;
 	bytes = recv(_allFds[i].fd, buffer, 1024, 0);
 	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+	{
+		std::cout << "EAGAIN" << std::endl;
 		return ("");
+	}
 	concatenateBuffer = buffer;
 	lastNewline = concatenateBuffer.find_last_of("\r\n");
 	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
 	if (bytes == -1) {
 		if ((errno == EAGAIN || errno == EWOULDBLOCK))
+		{
+			std::cout << "EAGAIN after while" << std::endl;
 			return (concatenateBuffer);
-		std::cerr << "errno : " << errno << std::endl;
+		}
+		//std::cerr << "errno : " << errno << std::endl;
 		// throw exception (????)
 		return ("error");
 	}
