@@ -6,7 +6,7 @@
 /*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 15:36:37 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/06 12:55:06 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,36 @@ Client	&Client::operator=(const Client &src)
 		return (*this);
 	_channel = src._channel;
 	return (*this);
+}
+
+void Client::checkIfPasswordIsValid(Client client, std::string passwordServer) {
+	if (client.getPassword() == passwordServer) {
+		return ;
+	} else {
+		std::string message = " Incorrect password";
+		sendMessageToClient(ERR_PASSWDMISMATCH(client.getUsername()), client.getFd());
+		sendMessageToClient(ERROR(message), client.getFd());
+		return ;
+	}
+}
+
+bool Client::checkIfClientIsStillConnected(void) {
+	std::string buffer = readInBuffer(this->getFd());
+	
+	if (buffer != "PONG localhost\r\n")
+		return (false);
+	return (true);
+}
+
+void Client::sendMessageToClient(std::string message, int fd) {
+	int ret;
+
+	ret = send(fd, message.c_str(), message.size(), 0);
+	if (ret == -1) {
+		std::cerr << "errno : " << errno << std::endl;
+		// throw exception (????)
+		return ;
+	}
 }
 
 int		Client::getFd(void) const
