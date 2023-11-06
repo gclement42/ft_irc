@@ -6,9 +6,10 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:10:34 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 12:57:42 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 13:11:49 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
@@ -30,6 +31,9 @@ class Client {
 		std::string	getNickname(void) const;
 		std::string	getUsername(void) const;
 		std::string	getChannel(void) const;
+		void 		checkIfPasswordIsValid(Client client, std::string passwordServer);
+		bool		checkIfClientIsStillConnected(void);
+		void		sendMessageToClient(std::string message, int fd);
 	private :
 		const int					_fd;
 		const std::string			_password;

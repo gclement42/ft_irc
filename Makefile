@@ -28,6 +28,7 @@ SRC						=	main.cpp \
 							Client.cpp \
 							parsing.cpp \
 							join.cpp \
+							readInBuffer.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

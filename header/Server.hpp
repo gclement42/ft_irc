@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 14:10:25 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 12:56:45 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 13:14:03 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,8 @@ class Server {
 		void					checkFdsEvent(void);
 		void 					joinCommand(void);
 		pollfd					*getAllFds(void);
-		std::string				readInBuffer(int fd);
 		void					displayClients(void);
-		void					checkIfPasswordIsValid(Client client);
-		bool					checkIfClientIsStillConnected(Client client);
-		void					sendMessageToClient(std::string message, int fd);
-		void					disconnectClient(int fd);
+		void 					disconnectClient(int fd);
 	private:
 		std::map<int, Client>	_clients;
 		std::vector<Channel>	_channels;

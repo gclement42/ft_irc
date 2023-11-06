@@ -6,9 +6,10 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 12:53:39 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 13:12:48 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 
 #ifndef MAIN_HPP
@@ -46,5 +47,13 @@ Client 	parseClientData(std::string buffer, int fd);
 void	commandJoin(std::vector<Channel>, Client client, std::string buffer);
 void 	printError(std::string error);
 void	parseBuffer(std::vector<Channel> channels, Client client, std::string buffer);
+std::string readInBuffer(int fd);
+
+Client 		parseClientData(std::string buffer, int fd);
+void		parseBuffer(Client client, std::string buffer);
+
+void		commandJoin(Client client, std::string buffer);
+
+void 		printError(std::string error);
 
 #endif
