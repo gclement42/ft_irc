@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: maujogue <maujogue@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 10:42:30 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 11:13:09 by maujogue         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 Server::Server(int port, std::string password): _port(port), _password(password) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
+	int iSetOption = 1; 
+	setsockopt(_socketServer, SOL_SOCKET, SO_REUSEADDR, (char*)&iSetOption,
+        sizeof(iSetOption));
 	_allFds = NULL;
 	_nbFds = 0;
 }
