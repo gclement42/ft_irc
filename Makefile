@@ -14,10 +14,18 @@ NAME					= ircserv
 BUILD_DIR				= build/
 
 HEADER_DIR				= header/
-HEADER_FILES			= main.hpp Server.hpp Client.hpp
+HEADER_FILES			= main.hpp \
+							Server.hpp \
+							Client.hpp \
 	
 DIR						=	src/
-SRC						=	main.cpp Server.cpp clientQuit.cpp parseClientData.cpp Client.cpp
+SRC						=	main.cpp \
+							Server.cpp \
+							clientQuit.cpp \
+							parseClientData.cpp \
+							Client.cpp \
+							parsing.cpp \
+							join.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

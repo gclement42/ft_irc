@@ -6,14 +6,17 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/03 14:37:11 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 09:34:41 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
+#include "Client.hpp"
 
-void	parseBuffer(std::string buffer)
+void	parseBuffer(Client client, std::string buffer)
 {
+	std::cout << "begin parsing: " << client.getUsername() << std::endl;
+	
 	std::string 	cmd;
 	std::string		arg;
 	size_t			first_space;
@@ -25,19 +28,19 @@ void	parseBuffer(std::string buffer)
 	arg = buffer.substr(first_space + 1, length);
 	
 	if (cmd == "JOIN")
-		commandJoin(arg);
-	else if (cmd == "KICK")
-		// cmd_kick(buffer);
-		std::cout << "KICK" << std::endl;
-	else if (cmd == "INVITE")
-		// cmd_invite(buffer);
-		std::cout << "INVITE" << std::endl;
-	else if (cmd == "TOPIC")
-		// cmd_topic(buffer);
-		std::cout << "TOPIC" << std::endl;
-	else if (cmd == "MODE")
-		// cmd_mode(buffer);
-		std::cout << "MODE" << std::endl;
+		commandJoin(client, arg);
+	// else if (cmd == "KICK")
+	// 	// cmd_kick(buffer);
+	// 	std::cout << "KICK" << std::endl;
+	// else if (cmd == "INVITE")
+	// 	// cmd_invite(buffer);
+	// 	std::cout << "INVITE" << std::endl;
+	// else if (cmd == "TOPIC")
+	// 	// cmd_topic(buffer);
+	// 	std::cout << "TOPIC" << std::endl;
+	// else if (cmd == "MODE")
+	// 	// cmd_mode(buffer);
+	// 	std::cout << "MODE" << std::endl;
 	else
 	{
 		printError("This command does not exist.");

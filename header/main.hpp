@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 08:44:43 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 09:07:52 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,19 @@
 # include <cstring>
 # include <csignal>
 # include <cstdlib>
+# include <map>
+# include "errorMessages.hpp"
 
+# define FAILURE 0
+# define SUCCESS 1
 
-Client parseClientData(std::string buffer, int fd);
+class Client;
+
+Client 	parseClientData(std::string buffer, int fd);
+void	parseBuffer(Client client, std::string buffer);
+
+void	commandJoin(Client client, std::string buffer);
+
+void 	printError(std::string error);
 
 #endif

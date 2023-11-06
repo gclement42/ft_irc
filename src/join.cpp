@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/03 15:07:57 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 09:35:32 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,24 @@
 static std::string parseChannelName(std::string buffer);
 static std::string parseKey(std::string arg);
 
-void	commandJoin(std::string buffer)
+void	commandJoin(Client client, std::string buffer)
 {
 	std::string		channelName = parseChannelName(buffer);
-	std::string		key = parseKey(buffer);
-	std::string		joinMessage = "Now talking on " + channelName;
+	std::string		key 		= parseKey(buffer);
+	std::string		joinMessage = "Now talking on " + channelName + "\r\n";
+	
 	if (channelName.empty())
-	{
-		printError("Channel name is empty");
 		return ;
-	}
-
-	send(4, joinMessage.c_str(), joinMessage.length(), 0);
-	// send(client.fd, joinMessage.c_str(), joinMessage.length(), 0);
+		
+	send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
 
 	std::cout << "Channel name: '" << channelName << "'" << std::endl;
 }
 
 static std::string parseChannelName(std::string arg)
 {
-	int				status = FAILURE;
+	int		status = FAILURE;
+	size_t	first_space;
 	
 	if (arg.find("#", 0) == 0 || arg.find("&", 0) == 0)
 		status = SUCCESS;
@@ -46,11 +44,11 @@ static std::string parseChannelName(std::string arg)
 		return ("");
 	}
 
-	if (arg.find(" ", 0) < 1024 || arg.find(",", 0) < 1024)
-	{
-		printError("Wrong channel name. You cannot use a ` ` or a `,` in the channel name.");
-		return ("");
-	}
+	first_space = arg.find(" ", 0);
+	if (first_space == std::string::npos)
+		return (arg);
+	else
+		arg = arg.substr(0, first_space);
 	return (arg);
 }
 
@@ -61,7 +59,9 @@ static std::string parseKey(std::string arg)
 	size_t			length;
 
 	first_space = arg.find(" ", 0);
-	length = arg.length() - 1;
+	if (first_space == std::string::npos)
+		return ("");
+	length = arg.length();
 	key = arg.substr(first_space + 1, length);
 	if (key.empty())
 	{
@@ -72,7 +72,7 @@ static std::string parseKey(std::string arg)
 	return (key);
 }
 
-// static void displayChannelInfos(Client client, Channel channel)
+// static void displayChannelInfos(Client client)
 // {
 // 	std::string clientMessage = "Client " + client.nickname + " joined channel " + channel.name;
 // 	std::string topicMessage = "Topic: " + channel.topic;
