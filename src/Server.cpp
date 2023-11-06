@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 10:42:30 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 10:56:56 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ bool Server::checkIfClientIsStillConnected(Client client) {
 	
 	if (buffer != "PONG localhost\r\n")
 	{
-		
 		disconnectClient(client.getFd());
 		return (false);
 	}
@@ -152,7 +151,8 @@ void Server::checkFdsEvent(void) {
 					parseBuffer(client, buffer);
 					std::cout << client.getUsername() << " : "<< buffer << std::endl;
 				}
-				checkIfClientIsStillConnected(client);
+				else
+					checkIfClientIsStillConnected(client);
 			}
 			if (_allFds[i].revents & (POLLHUP | POLLERR))
 			{
