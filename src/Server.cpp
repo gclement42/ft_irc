@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 11:07:08 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/03 13:55:24 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,9 +126,9 @@ void Server::acceptClientConnexion(void)
 	client.events = POLLIN;
 	client.revents = 0;
 	insertFd(client);
-	buffer = readInBuffer(client.fd);
-	while (buffer.find("USER") == std::string::npos)
-		buffer += readInBuffer(client.fd);
+	// buffer = readInBuffer(client.fd);
+	// while (buffer.find("USER") == std::string::npos)
+	// 	buffer += readInBuffer(client.fd);
 	std::cout << "buffer : " << buffer << std::endl;
 }
 
@@ -148,7 +148,7 @@ void Server::checkFdsEvent(void)
 			{
 				buffer = readInBuffer(_allFds[i].fd);
 				std::cout << "Message from client " << _allFds[i].fd << " : " << "'" << buffer << "'" << std::endl;
-				parsing(buffer);
+				parseBuffer(buffer);
 			}
 		}
 	}

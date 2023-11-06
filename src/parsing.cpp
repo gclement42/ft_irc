@@ -6,75 +6,46 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/03 11:03:59 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/03 14:37:11 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
 
-void	parsing(std::string buffer)
+void	parseBuffer(std::string buffer)
 {
-	int				cmd_exist;
 	std::string 	cmd;
+	std::string		arg;
 	size_t			first_space;
-	std::string     commands[5] =
-    {
-        "JOIN",
-        "KICK",
-        "INVITE",
-        "TOPIC",
-		"MODE",
-    };
+	size_t			length;
 
 	first_space = buffer.find(" ", 0);
+	length = buffer.length() - 1;
 	cmd = buffer.substr(0, first_space);
+	arg = buffer.substr(first_space + 1, length);
 	
-	for (int i = 0; i < N_COMMANDS; i++)
+	if (cmd == "JOIN")
+		commandJoin(arg);
+	else if (cmd == "KICK")
+		// cmd_kick(buffer);
+		std::cout << "KICK" << std::endl;
+	else if (cmd == "INVITE")
+		// cmd_invite(buffer);
+		std::cout << "INVITE" << std::endl;
+	else if (cmd == "TOPIC")
+		// cmd_topic(buffer);
+		std::cout << "TOPIC" << std::endl;
+	else if (cmd == "MODE")
+		// cmd_mode(buffer);
+		std::cout << "MODE" << std::endl;
+	else
 	{
-		if (cmd == commands[i])
-		{
-			cmd_exist = SUCCESS;
-			break;
-		}
-		if (i == N_COMMANDS - 1)
-			cmd_exist = FAILURE;
-	}
-
-	if (cmd_exist == FAILURE)
-	{
-		print_error("This command does not exist.");
+		printError("This command does not exist.");
 		return ;
 	}
 }
 
-
-std::string get_channel_name(std::string buffer)
-{
-	int				status = FAILURE;
-	std::string		channel_name;
-	size_t			first_space;
-	
-	first_space = buffer.find(" ", 0) + 1;
-	channel_name = buffer.substr(first_space, buffer.length());
-	std::cout << "Channel name: '" << channel_name << "'" << std::endl;
-	
-	if (channel_name.find("#", 0) == 0 || channel_name.find("&", 0) == 0)
-		status = SUCCESS;
-	else
-	{
-		print_error("Wrong channel name. Please use `#` or `&` to start a channel name.");
-		return (NULL);
-	}
-
-	if (channel_name.find(" ", 0) < 1024 || channel_name.find(",", 0) < 1024)
-	{
-		print_error("Wrong channel name. You cannot use a ` ` or a `,` in the channel name.");
-		return (NULL);
-	}
-	return (channel_name);
-}
-
-void print_error(std::string error)
+void printError(std::string error)
 {
 	std::cout << "\033[44m";
 	std::cout << error;

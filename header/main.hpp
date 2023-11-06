@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/03 09:34:01 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/03 11:29:13 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,17 @@
 
 # define FAILURE 		0
 # define SUCCESS 		1
-# define N_COMMANDS 	5
 
 void			initServer(void);
 
 // ====== PARSING ======
-void			parsing(std::string buffer);
-std::string 	get_channel_name(std::string buffer);
+void			parseBuffer(std::string buffer);
+
+// ====== COMMANDS ======
+
+void	commandJoin(std::string buffer);
 
 // ====== UTILS ======
-void 			print_error(std::string error);
+void 			printError(std::string error);
 
 #endif
