@@ -1,4 +1,5 @@
 /build
 /.vscode
-ircserv
 .nfs*
+outfile
+ircserv

@@ -24,6 +24,7 @@ Client parseClientData(std::string buffer, int fd)
 	password = "";
 	while (getline(streamBuffer, token))
 	{
+		token = token.substr(0, token.find("\r"));
 		if (token.find("PASS") != std::string::npos)
 			password = token.substr(token.find("PASS") + 5);
 		if (token.find("NICK") != std::string::npos)
