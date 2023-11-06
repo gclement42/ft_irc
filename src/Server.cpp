@@ -6,7 +6,7 @@
 /*   By: maujogue <maujogue@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 11:13:09 by maujogue         ###   ########.fr       */
+/*   Updated: 2023/11/06 11:15:01 by maujogue         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ bool Server::checkIfClientIsStillConnected(Client client) {
 	
 	if (buffer != "PONG localhost\r\n")
 	{
-		
 		disconnectClient(client.getFd());
 		return (false);
 	}
@@ -155,7 +154,8 @@ void Server::checkFdsEvent(void) {
 					parseBuffer(client, buffer);
 					std::cout << client.getUsername() << " : "<< buffer << std::endl;
 				}
-				checkIfClientIsStillConnected(client);
+				else
+					checkIfClientIsStillConnected(client);
 			}
 			if (_allFds[i].revents & (POLLHUP | POLLERR))
 			{
