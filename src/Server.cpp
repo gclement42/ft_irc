@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 13:17:13 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 14:10:32 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void Server::checkFdsEvent(void) {
 				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
 				if (buffer != "")
 				{
-					parseBuffer(this->_channels, client, buffer);
+					parseBuffer(client, buffer);
 					std::cout << client.getUsername() << " : "<< buffer << std::endl;
 				}
 				else

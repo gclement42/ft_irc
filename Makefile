@@ -26,7 +26,7 @@ SRC						=	main.cpp \
 							clientQuit.cpp \
 							parseClientData.cpp \
 							Client.cpp \
-							parsing.cpp \
+							parseBuffer.cpp \
 							join.cpp \
 							readInBuffer.cpp \
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 12:55:06 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/06 14:08:30 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 Client::Client(std::string nickname, std::string username, int fd, std::string password):
  _fd(fd), _password(password), _nickname(nickname), _username(username)
 {
-	_channel = "default";
+	return ;
 }
 
 Client::Client(const Client &src):
@@ -88,17 +88,11 @@ std::string	Client::getUsername(void) const
 	return (_username);
 }
 
-std::string	Client::getChannel(void) const
-{
-	return (_channel);
-}
-
 std::ostream	&operator<<(std::ostream &o, const Client &src)
 {
 	o << "Client fd: " << src.getFd() << std::endl;
 	o << "Client password: " << src.getPassword() << std::endl;
 	o << "Client nickname: " << src.getNickname() << std::endl;
 	o << "Client username: " << src.getUsername() << std::endl;
-	o << "Client channel: " << src.getChannel() << std::endl;
 	return (o);
 }

@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:10:34 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 13:11:49 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 14:07:43 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ class Client {
 		std::string	getPassword(void) const;
 		std::string	getNickname(void) const;
 		std::string	getUsername(void) const;
-		std::string	getChannel(void) const;
 		void 		checkIfPasswordIsValid(Client client, std::string passwordServer);
 		bool		checkIfClientIsStillConnected(void);
 		void		sendMessageToClient(std::string message, int fd);
@@ -39,7 +38,7 @@ class Client {
 		const std::string			_password;
 		const std::string			_nickname;
 		const std::string			_username;
-		std::string					_channel;
+		std::vector<Channel>		_channel;
 };
 
 std::ostream	&operator<<(std::ostream &o, const Client &src);

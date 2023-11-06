@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 13:08:13 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 14:21:42 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,8 @@
 static std::string parseChannelName(std::string buffer);
 static std::string parseKey(std::string arg);
 
-void	commandJoin(std::vector<Channel> channels, Client client, std::string buffer)
-{
-	(void)client;
-	(void)channels;
-	
+void	commandJoin(Client client, std::string buffer)
+{	
 	std::string		channelName = parseChannelName(buffer);
 	std::string		key 		= parseKey(buffer);
 	std::string		joinMessage = "Now talking on " + channelName + "\r\n";
@@ -30,17 +27,12 @@ void	commandJoin(std::vector<Channel> channels, Client client, std::string buffe
 	if (channelName.empty())
 		return ;
 	
-	Channel 		channel(channelName, "", key, "", 0, USER_LIMITS);
-	
-	std::string 	clientMessage = "Client " + client.getNickname() + " joined channel " + channel.getName() + "\r\n";
-	std::string 	topicMessage = "Topic: " + channel.getTopic() + "\r\n";
+	std::string 	clientMessage = "Client " + client.getNickname() + " joined channel " + channelName + "\r\n";
 
-	if (channel.getTopic().empty() != true)
-		send(client.getFd(), topicMessage.c_str(), topicMessage.length(), 0);
 	send(client.getFd(), clientMessage.c_str(), clientMessage.length(), 0);
 	send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
 
-	std::string 	createChannel = ":" + client.getUsername() + " JOIN " + channelName +"\r\n";
+	std::string 	createChannel = ":" + client.getUsername() + " JOIN " + channelName + "\r\n";
 	send(client.getFd(), createChannel.c_str(), createChannel.length(), 0);
 }
 
@@ -83,5 +75,3 @@ static std::string parseKey(std::string arg)
 	}
 	return (key);
 }
-
-// static Channel 

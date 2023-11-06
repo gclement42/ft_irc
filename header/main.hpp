@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 13:17:27 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 14:11:36 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,11 @@ class Server;
 class Client;
 class Channel;
 
-Client 	parseClientData(std::string buffer, int fd);
-void	commandJoin(std::vector<Channel>, Client client, std::string buffer);
-void 	printError(std::string error);
-void	parseBuffer(std::vector<Channel> channels, Client client, std::string buffer);
-std::string readInBuffer(int fd);
-
-Client 		parseClientData(std::string buffer, int fd);
-void		parseBuffer(Client client, std::string buffer);
-
-void		commandJoin(Client client, std::string buffer);
-
-void 		printError(std::string error);
+Client 			parseClientData(std::string buffer, int fd);
+std::string 	readInBuffer(int fd);
+void 			printError(std::string error);
+void			parseBuffer(Client client, std::string buffer);
+void			commandJoin(Client client, std::string buffer);
+void 			printError(std::string error);
 
 #endif
