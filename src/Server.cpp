@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "main.hpp"
+#include "Server.hpp"
+
 
 Server::Server(int port, std::string password): _port(port), _password(password) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
@@ -70,12 +72,12 @@ void Server::stop() const {
 }
 
 void Server::acceptClientConnexion() {
-	struct sockaddr_in	sockaddr_in_client;
-	pollfd 				pollClient;
+	struct sockaddr_in	sockaddrInClient;
+	pollfd 				pollClient = {};
 	std::string 		buffer;
 
-	socklen_t len = sizeof(sockaddr_in_client);
-	pollClient.fd = accept(_socketServer, (sockaddr *)(&sockaddr_in_client), &len);
+	socklen_t len = sizeof(sockaddrInClient);
+	pollClient.fd = accept(_socketServer, (sockaddr *)(&sockaddrInClient), &len);
 	if (pollClient.fd == -1) {
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 			return ;
@@ -85,21 +87,42 @@ void Server::acceptClientConnexion() {
 			return ;
 		}
 	}
-	pollClient.events = POLLIN | POLLHUP | POLLERR;
+	pollClient.events = POLLIN;
 	pollClient.revents = 0;
 	insertFd(pollClient);
-	buffer = readInBuffer(pollClient.fd);
-	while (buffer.find("USER") == std::string::npos)
-		buffer += readInBuffer(pollClient.fd);
-	Client client(parseClientData(buffer, pollClient.fd));
-	_clients.insert(std::pair<int, Client>(pollClient.fd, client));
-	std::cout << "New client connected : " << std::endl;
-	std::cout << client << std::endl;
-	client.checkIfPasswordIsValid(client, _password);
+}
+
+void Server::receiveMessageFromClient(pollfd &pollClient) {
+    std::string		buffer;
+
+    if (_clients.find(pollClient.fd) == _clients.end())
+    {
+        createClient(pollClient.fd);
+        return ;
+    }
+    buffer = readInBuffer(pollClient.fd);
+    Client client(_clients.find(pollClient.fd)->second);
+    if (buffer != "")
+    {
+        buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
+        parseBuffer(client, buffer);
+        std::cout << client.getUsername() << " : " << buffer << std::endl;
+        pollClient.revents |= POLLOUT;
+        _clients.find(pollClient.fd)->second = client;
+    }
+}
+
+void Server::sendMessageToClient(pollfd &pollClient) {
+    if (_clients.find(pollClient.fd) == _clients.end())
+        return ;
+    Client client(_clients.find(pollClient.fd)->second);
+    client.sendAllMessageToClient();
+    _clients.find(pollClient.fd)->second = client;
+    pollClient.revents = 0;
 }
 
 void Server::checkFdsEvent() {
-	std::string		buffer;
+
 	int				ret;
 
 	ret = poll(_allFds, _nbFds, 0);
@@ -110,19 +133,23 @@ void Server::checkFdsEvent() {
 		for (size_t i = 0; i < _nbFds; i++)
 		{
 			if (_allFds[i].revents & POLLIN)
-			{
-				Client client(_clients.find(_allFds[i].fd)->second);
-				buffer = readInBuffer(_allFds[i].fd);
-				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-				if (buffer != "")
-				{
-					parseBuffer(client, buffer);
-					std::cout << client.getUsername() << " : " << buffer << std::endl;
-                    client.sendAllMessageToClient();
-				}
-			}
+                receiveMessageFromClient(_allFds[i]);
+            if (_allFds[i].revents & POLLOUT)
+                sendMessageToClient(_allFds[i]);
 		}
 	}
+}
+
+void Server::createClient(int fd) {
+    std::string buffer = readInBuffer(fd);
+
+    while (buffer.find("USER") == std::string::npos)
+        buffer += readInBuffer(fd);
+    Client client(parseClientData(buffer, fd));
+    _clients.insert(std::pair<int, Client>(fd, client));
+    std::cout << "New client connected : " << std::endl;
+    std::cout << client << std::endl;
+    client.checkIfPasswordIsValid(client, _password);
 }
 
 void Server::disconnectClient(int fd) {
@@ -198,6 +225,3 @@ int Server::getSocketServer() const {
 	return (_socketServer);
 }
 
-void Server::joinCommand() {
-	return ;
-}

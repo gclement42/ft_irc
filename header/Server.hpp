@@ -34,10 +34,10 @@ class Server {
 		int						getSocketServer() const;
 		void					acceptClientConnexion();
 		void					checkFdsEvent();
-		void 					joinCommand();
 		pollfd					*getAllFds();
 		void					displayClients();
 		void 					disconnectClient(int fd);
+        void                    createClient(int fd);
 	private:
 		std::map<int, Client>	_clients;
 		std::vector<Channel>	_channels;
@@ -46,6 +46,8 @@ class Server {
 		int						_socketServer;
 		int						_port;
 		std::string				_password;
+        void receiveMessageFromClient(pollfd &pollClient);
+        void sendMessageToClient(pollfd &pollClient);
 };
 
 #endif
