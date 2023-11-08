@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:41:57 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 15:09:04 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 10:59:30 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,14 @@ class Channel
 
 	private:
 
-		const std::string		_name;
-		const std::string		_topic;
-		const std::string		_key;
-		const std::string		_mode;
+		std::string				_name;
+		std::string				_topic;
+		std::string				_key;
+		std::string				_mode;
 		int						_userLimit;
 
 };
+
+std::ostream	&operator<<(std::ostream &o, const Channel &src);
 
 #endif

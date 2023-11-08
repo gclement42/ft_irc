@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 15:11:26 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 10:34:41 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,21 +88,9 @@ std::string	Client::getUsername(void) const
 	return (_username);
 }
 
-std::vector<Channel>	Client::getChannels(void) const
+std::vector<Channel>	&Client::getChannels(void)
 {
 	return (_channel);
-}
-
-std::string Client::getChannelName(std::string channelName) const 
-{
-	std::vector<Channel>::const_iterator it;
-	std::vector<Channel> channels = this->getChannels();
-
-	for (it = channels.begin(); it != channels.end(); it++) {
-		if (it->getName() == channelName)
-			return (it->getName());
-	}
-	return ("");
 }
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)

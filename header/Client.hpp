@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:10:34 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 15:10:40 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 10:34:58 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ class Client {
 		std::string	getPassword(void) const;
 		std::string	getNickname(void) const;
 		std::string	getUsername(void) const;
-		std::string getChannelName(std::string channelName) const;
-		std::vector<Channel>	getChannels(void) const;
+		std::vector<Channel>	&getChannels(void);
 		void 		checkIfPasswordIsValid(Client client, std::string passwordServer);
 		bool		checkIfClientIsStillConnected(void);
 		void		sendMessageToClient(std::string message, int fd);

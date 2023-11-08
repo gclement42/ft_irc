@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:45:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 15:07:52 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 10:56:02 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,14 @@ Channel::~Channel(void)
 
 Channel		&Channel::operator=(const Channel &src)
 {
-	(void)src;
+	if (&src == this)
+		return (*this);
+	this->_name = src._name;
+	this->_topic = src._topic;
+	this->_key = src._key;
+	this->_mode = src._mode;
+	this->_userLimit = src._userLimit;
+	
 	return (*this);
 }
 
@@ -60,5 +67,15 @@ std::string	Channel::getKey(void) const
 std::string	Channel::getMode(void) const
 {
 	return (this->_mode);
+}
+
+std::ostream	&operator<<(std::ostream &o, const Channel &src)
+{
+	o << "Channel name: " << src.getName() << std::endl;
+	o << "Channel topic: " << src.getTopic() << std::endl;
+	o << "Channel key: " << src.getKey() << std::endl;
+	o << "Channel mode: " << src.getMode() << std::endl;
+	o << "Channel user limit: " << src.getUserLimit() << std::endl;
+	return (o);
 }
 
