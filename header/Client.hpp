@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:10:34 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/08 10:34:58 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:10:40 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,24 @@ class Client {
 	public :
 		Client(std::string nickname, std::string username, int fd, std::string password);
 		Client(const Client &src);
-		~Client(void);
+		~Client();
 		Client		&operator=(const Client &src);
-		int			getFd(void) const;
-		std::string	getPassword(void) const;
-		std::string	getNickname(void) const;
-		std::string	getUsername(void) const;
-		std::vector<Channel>	&getChannels(void);
-		void 		checkIfPasswordIsValid(Client client, std::string passwordServer);
-		bool		checkIfClientIsStillConnected(void);
-		void		sendMessageToClient(std::string message, int fd);
+		int						getFd() const;
+		std::string				getPassword() const;
+		std::string				getNickname() const;
+		std::string				getUsername() const;
+		std::vector<Channel>	&getChannels();
+		void 					checkIfPasswordIsValid(Client client, std::string passwordServer);
+		bool					checkIfClientIsStillConnected() const;
+		void					sendAllMessageToClient();
+		void					addMessageToSend(std::string message);
 	private :
 		const int					_fd;
 		const std::string			_password;
 		const std::string			_nickname;
 		const std::string			_username;
 		std::vector<Channel>		_channel;
+		std::vector<std::string>	_messagesToSend;
 };
 
 std::ostream	&operator<<(std::ostream &o, const Client &src);

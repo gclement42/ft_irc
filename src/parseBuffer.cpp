@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parseBuffer.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/08 10:16:27 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/06 15:48:41 by gclement         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 static std::vector<std::string> splitBuffer(std::string str, char c);
 
-void	parseBuffer(Client client, std::string buffer)
+void	parseBuffer(Client &client, std::string buffer)
 {	
 	std::vector<std::string>	arguments;
 
@@ -55,7 +55,7 @@ static std::vector<std::string> splitBuffer(std::string str, char c)
 	std::vector<std::string>	arguments;
 	std::string					tmp;
 	size_t						i = 0;
-	
+
 	while(i < str.size())
 	{
 		if (str[i] == c)
