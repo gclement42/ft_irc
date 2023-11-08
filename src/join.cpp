@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 15:05:57 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 11:04:43 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,72 +15,49 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-static std::string 	parseChannelName(std::string buffer);
-static std::string 	parseKey(std::string arg);
-static void	 		createNewChannel(std::vector<Channel> channels, std::string channelName, std::string key);
+static std::vector<std::string> 	parseChannelName(std::vector<std::string> arg);
+static std::vector<std::string> 	parseKey(std::vector<std::string> arg);
 
-void	commandJoin(Client client, std::string buffer)
+void	commandJoin(Client &client, std::vector<std::string> arg)
 {	
-	std::string		channelName = parseChannelName(buffer);
-	std::string		key 		= parseKey(buffer);
-	std::string		joinMessage = "Now talking on " + channelName + "\r\n";
-	
-	if (channelName.empty())
-		return ;
-	
-	createNewChannel(client.getChannels(), channelName, key);
-	
-	std::string 	clientMessage = "Client " + client.getNickname() + " joined channel " + channelName + "\r\n";
+	std::vector<std::string> 	argChannel = parseChannelName(arg);
+	std::vector<std::string> 	keys = parseKey(arg);
+	std::string 				tmpKey;
 
-	send(client.getFd(), clientMessage.c_str(), clientMessage.length(), 0);
-	send(client.getFd(), joinMessage.c_str(), joinMessage.length(), 0);
-
-	std::string 	createChannel = ":" + client.getUsername() + " JOIN " + channelName + "\r\n";
-	send(client.getFd(), createChannel.c_str(), createChannel.length(), 0);
-}
-
-static std::string parseChannelName(std::string arg)
-{
-	int		status = FAILURE;
-	size_t	first_space;
-	
-	if (arg.find("#", 0) == 0 || arg.find("&", 0) == 0)
-		status = SUCCESS;
-	else
+	for (size_t i = 0; i < argChannel.size(); i++)
 	{
-		printError("Wrong channel name. Please use `#` or `&` to start a channel name.");
-		return ("");
-	}
+		std::string 	createChannel = ":" + client.getUsername() + " JOIN " + argChannel[i] + "\r\n";
+		
+		Channel newChannel(argChannel[i], "topic", "key", "mode", USER_LIMITS);
 
-	first_space = arg.find(" ", 0);
-	if (first_space == std::string::npos)
-		return (arg);
-	else
-		arg = arg.substr(0, first_space);
-	return (arg);
+		client.getChannels().push_back(newChannel);
+		
+		send(client.getFd(), createChannel.c_str(), createChannel.length(), 0);
+	}
 }
 
-static std::string parseKey(std::string arg)
+static std::vector<std::string> parseChannelName(std::vector<std::string> arg)
 {
-	std::string		key;
-	size_t			first_space;
-	size_t			length;
-
-	first_space = arg.find(" ", 0);
-	if (first_space == std::string::npos)
-		return ("");
-	length = arg.length();
-	key = arg.substr(first_space + 1, length);
-	if (key.empty())
+	std::vector<std::string> 	channelName;
+	
+	for (size_t i = 0; i < arg.size(); i++)
 	{
-		printError("Key is empty");
-		return ("");
+		if (arg[i][0] == '#' || arg[i][0] == '&')
+			channelName.push_back(arg[i]);
 	}
-	return (key);
+	
+	return (channelName);
 }
 
-static void createNewChannel(std::vector<Channel> channels, std::string channelName, std::string key)
+static std::vector<std::string> parseKey(std::vector<std::string> arg)
 {
-	Channel newChannel(channelName, "", key, "", USER_LIMITS);
-	channels.push_back(newChannel);
+	std::vector<std::string> 	keys;
+	
+	for (size_t i = 0; i < arg.size(); i++)
+	{
+		if (!(arg[i][0] == '#' || arg[i][0] == '&'))
+			keys.push_back(arg[i]);
+	}
+	
+	return (keys);
 }

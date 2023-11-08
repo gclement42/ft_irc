@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.cpp                                        :+:      :+:    :+:   */
+/*   parseBuffer.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 14:12:12 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 10:16:27 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,16 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
+static std::vector<std::string> splitBuffer(std::string str, char c);
+
 void	parseBuffer(Client client, std::string buffer)
 {	
-	std::string 	cmd;
-	std::string		arg;
-	size_t			first_space;
-	size_t			length;
+	std::vector<std::string>	arguments;
 
-	first_space = buffer.find(" ", 0);
-	length = buffer.length() - 1;
-	cmd = buffer.substr(0, first_space);
-	arg = buffer.substr(first_space + 1, length);
+	arguments = splitBuffer(buffer, ' ');
 	
-	// tableau arguments pr clement
-	if (cmd == "JOIN")
-		commandJoin(client, arg);
+	if (arguments[0] == "JOIN")
+		commandJoin(client, arguments);
 	// else if (cmd == "KICK")
 	// 	// cmd_kick(buffer);
 	// 	std::cout << "KICK" << std::endl;
@@ -53,4 +48,27 @@ void printError(std::string error)
 	std::cout << "\033[44m";
 	std::cout << error;
 	std::cout << "\033[0m" << std::endl;
+}
+
+static std::vector<std::string> splitBuffer(std::string str, char c)
+{
+	std::vector<std::string>	arguments;
+	std::string					tmp;
+	size_t						i = 0;
+	
+	while(i < str.size())
+	{
+		if (str[i] == c)
+		{
+			arguments.push_back(tmp);
+			tmp.clear();
+		}
+		else
+			tmp += str[i];
+		i++;
+	}
+
+	arguments.push_back(tmp);
+
+	return (arguments);
 }
