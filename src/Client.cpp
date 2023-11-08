@@ -14,10 +14,7 @@
 #include "main.hpp"
 
 Client::Client(std::string nickname, std::string username, int fd, std::string password):
- _fd(fd), _password(password), _nickname(nickname), _username(username)
-{
-	return ;
-}
+ _fd(fd), _password(password), _nickname(nickname), _username(username) {}
 
 Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname), _username(src._username)
@@ -25,10 +22,7 @@ Client::Client(const Client &src):
 	*this = src;
 }
 
-Client::~Client(void)
-{
-	return ;
-}
+Client::~Client() {}
 
 Client	&Client::operator=(const Client &src)
 {
@@ -43,13 +37,13 @@ void Client::checkIfPasswordIsValid(Client client, std::string passwordServer) {
 		return ;
 	} else {
 		std::string message = " Incorrect password";
-		sendMessageToClient(ERR_PASSWDMISMATCH(client.getUsername()), client.getFd());
-		sendMessageToClient(ERROR(message), client.getFd());
+        addMessageToSend(ERR_PASSWDMISMATCH(client.getUsername()));
+        addMessageToSend(ERROR(message));
 		return ;
 	}
 }
 
-bool Client::checkIfClientIsStillConnected(void) {
+bool Client::checkIfClientIsStillConnected() const {
 	std::string buffer = readInBuffer(this->getFd());
 	
 	if (buffer != "PONG localhost\r\n")
@@ -57,42 +51,47 @@ bool Client::checkIfClientIsStillConnected(void) {
 	return (true);
 }
 
-void Client::sendMessageToClient(std::string message, int fd) {
-	int ret;
+void Client::sendAllMessageToClient() {
+	ssize_t ret;
 
-	ret = send(fd, message.c_str(), message.size(), 0);
-	if (ret == -1) {
-		std::cerr << "errno : " << errno << std::endl;
-		// throw exception (????)
-		return ;
-	}
+    for (std::vector<std::string>::iterator it = _messagesToSend.begin(); it != _messagesToSend.end(); it++)
+    {
+        ret = send(_fd, (*it).c_str(), (*it).length(), 0);
+        if (ret == -1)
+        {
+            std::cerr << "errno : " << errno << std::endl;
+            // throw exception (????)
+            return;
+        }
+    }
+    _messagesToSend.clear();
 }
 
 void Client::addMessageToSend(std::string message) {
 	_messagesToSend.push_back(message);
 }
 
-int		Client::getFd(void) const
+int		Client::getFd() const
 {
 	return (_fd);
 }
 
-std::string	Client::getPassword(void) const
+std::string	Client::getPassword() const
 {
 	return (_password);
 }
 
-std::string	Client::getNickname(void) const
+std::string	Client::getNickname() const
 {
 	return (_nickname);
 }
 
-std::string	Client::getUsername(void) const
+std::string	Client::getUsername() const
 {
 	return (_username);
 }
 
-std::vector<Channel>	Client::getChannels(void) const
+std::vector<Channel>	Client::getChannels() const
 {
 	return (_channel);
 }

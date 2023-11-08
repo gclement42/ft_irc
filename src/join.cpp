@@ -15,11 +15,11 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-static std::string 	parseChannelName(std::string buffer);
+static std::string 	parseChannelName(std::string arg);
 static std::string 	parseKey(std::string arg);
 static void	 		createNewChannel(std::vector<Channel> channels, std::string channelName, std::string key);
 
-void	commandJoin(Client client, std::string buffer)
+void	commandJoin(Client &client, std::string buffer)
 {	
 	std::string		channelName = parseChannelName(buffer);
 	std::string		key 		= parseKey(buffer);
@@ -43,7 +43,8 @@ static std::string parseChannelName(std::string arg)
 {
 	int		status = FAILURE;
 	size_t	first_space;
-	
+
+    (void)status;
 	if (arg.find("#", 0) == 0 || arg.find("&", 0) == 0)
 		status = SUCCESS;
 	else

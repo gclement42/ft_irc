@@ -15,11 +15,9 @@
 std::string readInBuffer(int fd) {
 	char		buffer[1024];
 	std::string	concatenateBuffer;
-	int			i;
-	int			bytes;
+	ssize_t 	bytes;
 	int			lastNewline;
 
-	i = 0;
 	bytes = recv(fd, buffer, 1024, 0);
 	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
 	{

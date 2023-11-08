@@ -53,7 +53,7 @@ Server	&Server::operator=(const Server &src) {
 	return (*this);
 }
 
-void Server::start(void) {	
+void Server::start() const {
 	struct sockaddr_in sockaddr_in;
 	sockaddr_in.sin_addr.s_addr = inet_addr("127.0.0.1");
 	sockaddr_in.sin_family = AF_INET;
@@ -64,12 +64,12 @@ void Server::start(void) {
 	std::cout << "Server started on port " << _port << std::endl;
 }
 
-void Server::stop(void) {
+void Server::stop() const {
 	std::cout << "Server stopped" << std::endl;
 	close(_socketServer);
 }
 
-void Server::acceptClientConnexion(void) {
+void Server::acceptClientConnexion() {
 	struct sockaddr_in	sockaddr_in_client;
 	pollfd 				pollClient;
 	std::string 		buffer;
@@ -98,7 +98,7 @@ void Server::acceptClientConnexion(void) {
 	client.checkIfPasswordIsValid(client, _password);
 }
 
-void Server::checkFdsEvent(void) {
+void Server::checkFdsEvent() {
 	std::string		buffer;
 	int				ret;
 
@@ -114,19 +114,12 @@ void Server::checkFdsEvent(void) {
 				Client client(_clients.find(_allFds[i].fd)->second);
 				buffer = readInBuffer(_allFds[i].fd);
 				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-				if ((buffer != "" || buffer != "error") && client.checkIfClientIsStillConnected())
+				if (buffer != "")
 				{
 					parseBuffer(client, buffer);
 					std::cout << client.getUsername() << " : " << buffer << std::endl;
+                    client.sendAllMessageToClient();
 				}
-				else
-					if (!client.checkIfClientIsStillConnected())
-						disconnectClient(_allFds[i].fd);
-			}
-			if (_allFds[i].revents & (POLLHUP | POLLERR))
-			{
-				std::cout << "POLLHUP or POLLERR" << std::endl;
-				disconnectClient(_allFds[i].fd);
 			}
 		}
 	}
@@ -193,18 +186,18 @@ void	Server::eraseFd(pollfd client) {
 	_nbFds--;
 }
 
-pollfd *Server::getAllFds(void) {
+pollfd *Server::getAllFds() {
 	return (_allFds);
 }
 
-size_t Server::getNbFd(void) const {
+size_t Server::getNbFd() const {
 	return (_nbFds);
 }
 
-int Server::getSocketServer(void) const {
+int Server::getSocketServer() const {
 	return (_socketServer);
 }
 
-void Server::joinCommand(void) {
+void Server::joinCommand() {
 	return ;
 }

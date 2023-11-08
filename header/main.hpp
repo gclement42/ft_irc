@@ -47,7 +47,6 @@ Client 			parseClientData(std::string buffer, int fd);
 std::string 	readInBuffer(int fd);
 void 			printError(std::string error);
 void			parseBuffer(Client &client, std::string buffer);
-void			commandJoin(Client client, std::string buffer);
-void 			printError(std::string error);
+void			commandJoin(Client &client, std::string buffer);
 
 #endif

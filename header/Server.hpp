@@ -24,19 +24,19 @@ class Server {
 	public:
 		Server(int port, std::string password);
 		Server(const Server &src);
-		~Server(void);
+		~Server();
 		Server	&operator=(const Server &src);
-		void					start(void);
-		void					stop(void);
+		void					start() const;
+		void					stop() const;
 		void					insertFd(pollfd client);
 		void					eraseFd(pollfd client);
-		size_t					getNbFd(void) const;
-		int						getSocketServer(void) const;
-		void					acceptClientConnexion(void);
-		void					checkFdsEvent(void);
-		void 					joinCommand(void);
-		pollfd					*getAllFds(void);
-		void					displayClients(void);
+		size_t					getNbFd() const;
+		int						getSocketServer() const;
+		void					acceptClientConnexion();
+		void					checkFdsEvent();
+		void 					joinCommand();
+		pollfd					*getAllFds();
+		void					displayClients();
 		void 					disconnectClient(int fd);
 	private:
 		std::map<int, Client>	_clients;
