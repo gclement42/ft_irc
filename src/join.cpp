@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/08 11:04:43 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 12:10:49 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	commandJoin(Client &client, std::vector<std::string> arg)
 
 		client.getChannels().push_back(newChannel);
         client.addMessageToSend(createChannel);
+		
 	}
 }
 
