@@ -18,7 +18,7 @@
 static std::vector<std::string> 	parseChannelName(std::vector<std::string> arg);
 static std::vector<std::string> 	parseKey(std::vector<std::string> arg);
 
-void	commandJoin(Client &client, std::vector<std::string> arg)
+void	commandJoin(Client &client, std::vector<std::string> arg, std::map<std::string, Channel> &channels)
 {	
 	std::vector<std::string> 	argChannel = parseChannelName(arg);
 	std::vector<std::string> 	keys = parseKey(arg);
@@ -30,7 +30,7 @@ void	commandJoin(Client &client, std::vector<std::string> arg)
 
 		Channel newChannel(argChannel[i], "topic", "key", "mode", USER_LIMITS);
 
-		client.getChannels().push_back(newChannel);
+		channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
         client.addMessageToSend(createChannel);
 	}
 }
