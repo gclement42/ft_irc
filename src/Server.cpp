@@ -102,7 +102,7 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
     }
     buffer = readInBuffer(pollClient.fd);
     Client client(_clients.find(pollClient.fd)->second);
-    if (buffer != "")
+    if (buffer != "" || client.getIsConnected())
     {
         buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
         parseBuffer(client, buffer, _channels);
@@ -110,6 +110,8 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
         pollClient.revents |= POLLOUT;
         _clients.find(pollClient.fd)->second = client;
     }
+    else
+        disconnectClient(pollClient.fd);
 }
 
 void Server::sendMessageToClient(pollfd &pollClient) {

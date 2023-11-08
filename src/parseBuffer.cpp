@@ -24,6 +24,8 @@ void	parseBuffer(Client &client, std::string buffer, std::map<std::string, Chann
 	
 	if (arguments[0] == "JOIN")
 		commandJoin(client, arguments, channels);
+    if (arguments[0] == "QUIT")
+        quitCommand(client, arguments);
 	// else if (cmd == "KICK")
 	// 	// cmd_kick(buffer);
 	// 	std::cout << "KICK" << std::endl;
