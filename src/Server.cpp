@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/08 11:11:24 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 11:11:53 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,10 @@ void Server::checkFdsEvent(void) {
 				Client client(_clients.find(_allFds[i].fd)->second);
 				buffer = readInBuffer(_allFds[i].fd);
 				buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-				if (buffer != "")
+				if ((buffer != "" || buffer != "error") && client.checkIfClientIsStillConnected())
 				{
 					parseBuffer(client, buffer);
-					std::cout << client.getUsername() << " : "<< buffer << std::endl;
+					std::cout << client.getUsername() << " : " << buffer << std::endl;
 				}
 				else
 					if (!client.checkIfClientIsStillConnected())
