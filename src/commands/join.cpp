@@ -15,27 +15,24 @@
 #include "Client.hpp"
 #include "Channel.hpp"
 
-static std::vector<std::string> 	parseChannelName(std::vector<std::string> arg);
-static std::vector<std::string> 	parseKey(std::vector<std::string> arg);
-
-void	commandJoin(Client &client, std::vector<std::string> arg, std::map<std::string, Channel> &channels)
+void	Commands::join()
 {	
-	std::vector<std::string> 	argChannel = parseChannelName(arg);
-	std::vector<std::string> 	keys = parseKey(arg);
+	std::vector<std::string> 	argChannel = parseChannelName(_args);
+	std::vector<std::string> 	keys = parseKey(_args);
 	std::string 				tmpKey;
 
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
-		std::string 	createChannel = ":" + client.getUsername() + " JOIN " + argChannel[i] + "\r\n";
+		std::string 	createChannel = ":" + _client.getUsername() + " JOIN " + argChannel[i] + "\r\n";
 
 		Channel newChannel(argChannel[i], "topic", "key", "mode", USER_LIMITS);
 
-		channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
-        client.addMessageToSend(createChannel);
+		_channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
+        _client.addMessageToSend(createChannel);
 	}
 }
 
-static std::vector<std::string> parseChannelName(std::vector<std::string> arg)
+std::vector<std::string>		Commands::parseChannelName(std::vector<std::string> arg)
 {
 	std::vector<std::string> 	channelName;
 
@@ -48,7 +45,7 @@ static std::vector<std::string> parseChannelName(std::vector<std::string> arg)
 	return (channelName);
 }
 
-static std::vector<std::string> parseKey(std::vector<std::string> arg)
+std::vector<std::string>		Commands::parseKey(std::vector<std::string> arg)
 {
 	std::vector<std::string> 	keys;
 

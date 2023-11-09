@@ -16,25 +16,23 @@
 
 static std::vector<std::string> splitBuffer(std::string str, char c);
 
-void	parseBuffer(Client &client, std::string buffer, std::map<std::string, Channel> &channels)
+void	Commands::parseBuffer(std::string buffer)
 {	
-	std::vector<std::string>	arguments;
-
-	arguments = splitBuffer(buffer, ' ');
+	this->_args = splitBuffer(buffer, ' ');
 	
-	if (arguments[0] == "JOIN")
-		commandJoin(client, arguments, channels);
-    if (arguments[0] == "QUIT")
-        quitCommand(client, arguments);
+	if (_args[0] == "JOIN")
+		this->join();
+    if (_args[0] == "QUIT")
+        this->quit();
 	// else if (cmd == "KICK")
 	// 	// cmd_kick(buffer);
 	// 	std::cout << "KICK" << std::endl;
 	// else if (cmd == "INVITE")
 	// 	// cmd_invite(buffer);
 	// 	std::cout << "INVITE" << std::endl;
-	// else if (cmd == "TOPIC")
-	// 	// cmd_topic(buffer);
-	// 	std::cout << "TOPIC" << std::endl;
+	 else if (_args[0] == "TOPIC")
+	 	 this->topic();
+//	 	std::cout << "TOPIC" << std::endl;
 	// else if (cmd == "MODE")
 	// 	// cmd_mode(buffer);
 	// 	std::cout << "MODE" << std::endl;

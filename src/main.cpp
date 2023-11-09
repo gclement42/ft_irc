@@ -15,7 +15,6 @@
 
 int main(int argc, char **argv)
 {
-	
 	if (argc < 2)
 	{
 		std::cout << "Usage: ./ft_irc <port> <password>" << std::endl;

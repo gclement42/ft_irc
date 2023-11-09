@@ -69,6 +69,11 @@ std::string	Channel::getMode(void) const
 	return (this->_mode);
 }
 
+void	Channel::setTopic(std::string topic)
+{
+	this->_topic = topic;
+}
+
 std::ostream	&operator<<(std::ostream &o, const Channel &src)
 {
 	o << "Channel name: " << src.getName() << std::endl;

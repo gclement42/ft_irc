@@ -34,6 +34,7 @@
 # include "Server.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
+# include "Commands.hpp"
 
 # define FAILURE 		0
 # define SUCCESS 		1
@@ -46,8 +47,5 @@ class Channel;
 Client 			parseClientData(std::string buffer, int fd);
 std::string 	readInBuffer(int fd);
 void 			printError(std::string error);
-void			parseBuffer(Client &client, std::string buffer, std::map<std::string, Channel> &channels);
-void	        commandJoin(Client &client, std::vector<std::string> arg, std::map<std::string, Channel> &channels);
-void            quitCommand(Client &client, std::vector<std::string> arg);
 
 #endif
