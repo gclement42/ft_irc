@@ -48,5 +48,6 @@ std::string 	readInBuffer(int fd);
 void 			printError(std::string error);
 void			parseBuffer(Client &client, std::string buffer, std::map<std::string, Channel> &channels);
 void	        commandJoin(Client &client, std::vector<std::string> arg, std::map<std::string, Channel> &channels);
+void            quitCommand(Client &client, std::vector<std::string> arg);
 
 #endif

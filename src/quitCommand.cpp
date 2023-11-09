@@ -13,8 +13,12 @@
 # include "main.hpp"
 # include "Server.hpp"
 
-void clientQuit(Server &server)
+void quitCommand(Client &client, std::vector<std::string> arg)
 {
-	(void)server;
-	return ;
+    std::string reason = "Client quit";
+
+	client.setIsConnected();
+    if (arg.size() > 0)
+        reason = arg[0];
+    client.addMessageToSend("QUIT :" + reason + "\r\n");
 }

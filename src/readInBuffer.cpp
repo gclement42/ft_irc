@@ -35,7 +35,7 @@ std::string readInBuffer(int fd) {
 		}
 		//std::cerr << "errno : " << errno << std::endl;
 		// throw exception (????)
-		return ("error");
+		return ("");
 	}
 	return (concatenateBuffer);
 }

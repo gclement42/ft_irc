@@ -23,7 +23,7 @@ DIR						=	src/
 SRC						=	main.cpp \
 							Server.cpp \
 							Channel.cpp \
-							clientQuit.cpp \
+							quitCommand.cpp \
 							parseClientData.cpp \
 							Client.cpp \
 							parseBuffer.cpp \

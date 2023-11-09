@@ -35,6 +35,8 @@ class Client {
 		bool					    checkIfClientIsStillConnected() const;
 		void					    sendAllMessageToClient();
 		void					    addMessageToSend(std::string message);
+        void                        setIsConnected();
+        bool                        getIsConnected() const;
         std::vector<std::string>    getMessageToSend();
 	private :
 		const int					_fd;
@@ -43,6 +45,7 @@ class Client {
 		const std::string			_username;
 		std::vector<Channel>		_channel;
 		std::vector<std::string>	_messagesToSend;
+        bool                        _isConnected;
 };
 
 std::ostream	&operator<<(std::ostream &o, const Client &src);

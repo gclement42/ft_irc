@@ -14,13 +14,14 @@
 #include "main.hpp"
 
 Client::Client(std::string nickname, std::string username, int fd, std::string password):
- _fd(fd), _password(password), _nickname(nickname), _username(username) {}
+ _fd(fd), _password(password), _nickname(nickname), _username(username), _isConnected(true) {}
 
 Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname),
  _username(src._username)
 {
     _messagesToSend = src._messagesToSend;
+    _isConnected = src._isConnected;
 }
 
 Client::~Client() {}
@@ -31,6 +32,7 @@ Client	&Client::operator=(const Client &src)
 		return (*this);
 	_channel = src._channel;
     _messagesToSend = src._messagesToSend;
+    _isConnected = src._isConnected;
 
 	return (*this);
 }
@@ -102,6 +104,17 @@ std::vector<Channel>	&Client::getChannels()
 
 std::vector<std::string> Client::getMessageToSend() {
     return (_messagesToSend);
+}
+
+void Client::setIsConnected() {
+    if (_isConnected)
+        _isConnected = false;
+    else
+        _isConnected = true;
+}
+
+bool Client::getIsConnected() const {
+    return (_isConnected);
 }
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)
