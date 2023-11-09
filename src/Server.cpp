@@ -125,7 +125,7 @@ void Server::sendMessageToClient(pollfd &pollClient) {
 
 void Server::checkFdsEvent() {
 
-	int				ret;
+	int ret;
 
 	ret = poll(_allFds, _nbFds, 0);
 	if (ret == -1) {
@@ -134,10 +134,10 @@ void Server::checkFdsEvent() {
 	} else {
 		for (size_t i = 0; i < _nbFds; i++)
 		{
-			if (_allFds[i].revents & POLLIN)
-                receiveMessageFromClient(_allFds[i]);
             if (_allFds[i].revents & POLLOUT)
                 sendMessageToClient(_allFds[i]);
+			if (_allFds[i].revents & POLLIN)
+                receiveMessageFromClient(_allFds[i]);
 		}
 	}
 }
@@ -148,10 +148,13 @@ void Server::createClient(int fd) {
     while (buffer.find("USER") == std::string::npos)
         buffer += readInBuffer(fd);
     Client client(parseClientData(buffer, fd));
+    client.checkIfNicknameIsValid(_clients);
+    client.addMessageToSend(":irc 001 " + client.getUsername() + " :Welcome to ft_irc " + client.getNickname() + "\r\n");
     _clients.insert(std::pair<int, Client>(fd, client));
     std::cout << "New client connected : " << std::endl;
     std::cout << client << std::endl;
     client.checkIfPasswordIsValid(client, _password);
+    client.checkIfNicknameIsValid(_clients);
 }
 
 void Server::disconnectClient(int fd) {

@@ -117,6 +117,22 @@ bool Client::getIsConnected() const {
     return (_isConnected);
 }
 
+void Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
+    std::map<int, Client>::iterator it;
+
+    for (it = clients.begin(); it != clients.end(); it++)
+    {
+        if (it->second.getNickname() == this->_nickname && it->second.getFd() != this->_fd)
+        {
+            std::string message = "Nickname already in use";
+            addMessageToSend(ERR_NICKNAMEINUSE(this->getNickname()));
+            setIsConnected();
+            return ;
+        }
+    }
+    return ;
+}
+
 std::ostream	&operator<<(std::ostream &o, const Client &src)
 {
 	o << "Client fd: " << src.getFd() << std::endl;

@@ -33,6 +33,7 @@ class Client {
 		std::vector<Channel>	    &getChannels();
 		void 					    checkIfPasswordIsValid(Client client, std::string passwordServer);
 		bool					    checkIfClientIsStillConnected() const;
+        void                        checkIfNicknameIsValid(std::map<int, Client> clients);
 		void					    sendAllMessageToClient();
 		void					    addMessageToSend(std::string message);
         void                        setIsConnected();
