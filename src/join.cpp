@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/08 12:10:49 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/08 13:12:00 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 static std::vector<std::string> 	parseChannelName(std::vector<std::string> arg);
 static std::vector<std::string> 	parseKey(std::vector<std::string> arg);
+// static int							checkChannelNameAlreadyExist(std::vector<Channel> channels, std::string channelName);
 
 void	commandJoin(Client &client, std::vector<std::string> arg)
 {	
@@ -32,7 +33,6 @@ void	commandJoin(Client &client, std::vector<std::string> arg)
 
 		client.getChannels().push_back(newChannel);
         client.addMessageToSend(createChannel);
-		
 	}
 }
 
@@ -61,3 +61,13 @@ static std::vector<std::string> parseKey(std::vector<std::string> arg)
 
 	return (keys);
 }
+
+// static int	checkChannelNameAlreadyExist(std::vector<Channel> channels, std::string channelName)
+// {
+// 	for (size_t i = 0; i < channels.size(); i++)
+// 	{
+// 		if (channels[i].getName() == channelName)
+// 			return (SUCCESS);
+// 	}
+// 	return (FAILURE);
+// }
