@@ -17,25 +17,12 @@
 static std::vector<std::string> splitBuffer(std::string str, char c);
 
 void	Commands::parseBuffer(std::string buffer)
-{	
+{
 	this->_args = splitBuffer(buffer, ' ');
-	
-	if (_args[0] == "JOIN")
-		this->join();
-    if (_args[0] == "QUIT")
-        this->quit();
-	// else if (cmd == "KICK")
-	// 	// cmd_kick(buffer);
-	// 	std::cout << "KICK" << std::endl;
-	// else if (cmd == "INVITE")
-	// 	// cmd_invite(buffer);
-	// 	std::cout << "INVITE" << std::endl;
-	 else if (_args[0] == "TOPIC")
-	 	 this->topic();
-//	 	std::cout << "TOPIC" << std::endl;
-	// else if (cmd == "MODE")
-	// 	// cmd_mode(buffer);
-	// 	std::cout << "MODE" << std::endl;
+	std::string cmdName = this->_args[0];
+
+	if (this->_cmd.find(cmdName) != this->_cmd.end())
+		(this->*_cmd[cmdName])();
 	else
 	{
 		printError("This command does not exist.");
