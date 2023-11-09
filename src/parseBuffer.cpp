@@ -16,14 +16,14 @@
 
 static std::vector<std::string> splitBuffer(std::string str, char c);
 
-void	parseBuffer(Client &client, std::string buffer)
+void	parseBuffer(Client &client, std::string buffer, std::map<std::string, Channel> &channels)
 {	
 	std::vector<std::string>	arguments;
 
 	arguments = splitBuffer(buffer, ' ');
 	
 	if (arguments[0] == "JOIN")
-		commandJoin(client, arguments);
+		commandJoin(client, arguments, channels);
 	// else if (cmd == "KICK")
 	// 	// cmd_kick(buffer);
 	// 	std::cout << "KICK" << std::endl;

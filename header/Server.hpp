@@ -34,18 +34,20 @@ class Server {
 		int						getSocketServer() const;
 		void					acceptClientConnexion();
 		void					checkFdsEvent();
-		void 					joinCommand();
 		pollfd					*getAllFds();
 		void					displayClients();
 		void 					disconnectClient(int fd);
+        void                    createClient(int fd);
 	private:
-		std::map<int, Client>	_clients;
-		std::vector<Channel>	_channels;
-		pollfd					*_allFds;
-		size_t					_nbFds;
-		int						_socketServer;
-		int						_port;
-		std::string				_password;
+		std::map<int, Client>	        _clients;
+		std::map<std::string, Channel>	_channels;
+		pollfd					        *_allFds;
+		size_t					        _nbFds;
+		int						        _socketServer;
+		int						        _port;
+		std::string				        _password;
+        void receiveMessageFromClient(pollfd &pollClient);
+        void sendMessageToClient(pollfd &pollClient);
 };
 
 #endif

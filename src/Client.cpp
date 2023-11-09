@@ -17,9 +17,10 @@ Client::Client(std::string nickname, std::string username, int fd, std::string p
  _fd(fd), _password(password), _nickname(nickname), _username(username) {}
 
 Client::Client(const Client &src):
- _fd(src._fd), _password(src._password), _nickname(src._nickname), _username(src._username)
+ _fd(src._fd), _password(src._password), _nickname(src._nickname),
+ _username(src._username)
 {
-	*this = src;
+    _messagesToSend = src._messagesToSend;
 }
 
 Client::~Client() {}
@@ -29,6 +30,8 @@ Client	&Client::operator=(const Client &src)
 	if (&src == this)
 		return (*this);
 	_channel = src._channel;
+    _messagesToSend = src._messagesToSend;
+
 	return (*this);
 }
 
@@ -64,7 +67,8 @@ void Client::sendAllMessageToClient() {
             return;
         }
     }
-    _messagesToSend.clear();
+    if (!_messagesToSend.empty())
+        _messagesToSend.clear();
 }
 
 void Client::addMessageToSend(std::string message) {
@@ -94,6 +98,10 @@ std::string	Client::getUsername() const
 std::vector<Channel>	&Client::getChannels()
 {
 	return (_channel);
+}
+
+std::vector<std::string> Client::getMessageToSend() {
+    return (_messagesToSend);
 }
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)

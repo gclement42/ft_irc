@@ -26,15 +26,16 @@ class Client {
 		Client(const Client &src);
 		~Client();
 		Client		&operator=(const Client &src);
-		int						getFd() const;
-		std::string				getPassword() const;
-		std::string				getNickname() const;
-		std::string				getUsername() const;
-		std::vector<Channel>	&getChannels();
-		void 					checkIfPasswordIsValid(Client client, std::string passwordServer);
-		bool					checkIfClientIsStillConnected() const;
-		void					sendAllMessageToClient();
-		void					addMessageToSend(std::string message);
+		int						    getFd() const;
+		std::string				    getPassword() const;
+		std::string				    getNickname() const;
+		std::string				    getUsername() const;
+		std::vector<Channel>	    &getChannels();
+		void 					    checkIfPasswordIsValid(Client client, std::string passwordServer);
+		bool					    checkIfClientIsStillConnected() const;
+		void					    sendAllMessageToClient();
+		void					    addMessageToSend(std::string message);
+        std::vector<std::string>    getMessageToSend();
 	private :
 		const int					_fd;
 		const std::string			_password;
