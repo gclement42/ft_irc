@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/08 10:52:30 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 08:17:19 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 
 # define FAILURE 		0
 # define SUCCESS 		1
+# define N_CMD 			7
 # define USER_LIMITS 	10
 # define USERLEN 		12
 
@@ -49,5 +50,9 @@ class Channel;
 Client 			parseClientData(std::string buffer, int fd);
 std::string 	readInBuffer(int fd);
 void 			printError(std::string error);
+void			parseBuffer(Client &client, std::string buffer, std::map<std::string, Channel> &channels);
+
+void	        joinCommand(Client &client, std::vector<std::string> arg, std::map<std::string, Channel> &channels);
+void            quitCommand(Client &client, std::vector<std::string> arg);
 
 #endif

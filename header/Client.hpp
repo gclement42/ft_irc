@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:10:34 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 15:10:40 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 13:33:49 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ class Client {
 		bool					    checkIfClientIsStillConnected() const;
 		void					    sendAllMessageToClient();
 		void					    addMessageToSend(std::string message);
-        void                        setIsConnected(bool isConnected);
+		void						addChannel(std::string channelName);
+        void                        setIsConnected();
         bool                        getIsConnected() const;
         std::vector<std::string>    getMessageToSend();
 
@@ -48,7 +49,7 @@ class Client {
 		const std::string			_nickname;
 		const std::string			_username;
 		const std::string			_realname;
-		std::vector<Channel>		_channel;
+		std::vector<std::string>	_channel;
 		std::vector<std::string>	_messagesToSend;
         bool                        _isConnected;
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parseBuffer.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/06 15:48:41 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/10 08:59:39 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ static std::vector<std::string> splitBuffer(std::string str, char c);
 
 void	Commands::parseBuffer(std::string buffer)
 {
+	std::cout << "\033[1;35mbuffer: " << buffer << "\033[0m" << std::endl;
+	
 	this->_args = splitBuffer(buffer, ' ');
 	std::string cmdName = this->_args[0];
 
