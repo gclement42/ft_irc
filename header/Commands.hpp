@@ -23,10 +23,15 @@ class Commands {
 		std::vector<std::string>	parseChannelName(std::vector<std::string> arg);
 		std::vector<std::string>	parseKey(std::vector<std::string> arg);
 
-		void	quit();
-        void	join();
-		void	topic();
-//        void	Topic();
+        //Commands
+		void	                    quit();
+        void	                    join();
+		void	                    topic();
+        void                        privateMsg();
+
+        //Utils commands
+        std::vector<std::string>    allClientsOnChannel(std::string channel);
+        void                        sendMsgToAllClients(std::vector<std::string> allClients, std::string msg);
 
 };
 

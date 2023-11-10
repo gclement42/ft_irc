@@ -33,6 +33,7 @@ SRC						=	main.cpp \
 							commands/topic.cpp \
 							commands/parseBuffer.cpp \
 							commands/join.cpp \
+							commands/privateMsg.cpp \
 							commands/Commands.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)

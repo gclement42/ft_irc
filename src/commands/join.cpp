@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/10 08:19:13 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 09:46:01 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	Commands::join()
 		Channel newChannel(argChannel[i], "topic", "key", "mode", USER_LIMITS);
 
 		_channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
+		_client.addChannel(argChannel[i]);
         _client.addMessageToSend(createChannel);
 	}
 }
