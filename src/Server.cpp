@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/10 10:54:20 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 14:37:03 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,15 @@ void Server::acceptClientConnexion() {
 	insertFd(pollClient);
 }
 
+bool Server::checkIfClientIsWaitingForSend(int fd) {
+	if (_clients.find(fd) == _clients.end())
+		return (false);
+	Client client(_clients.find(fd)->second);
+	if (client.getWaitingForSend())
+		return (true);
+	return (false);
+}
+
 void Server::receiveMessageFromClient(pollfd &pollClient) {
     std::string		buffer;
 
@@ -136,6 +145,8 @@ void Server::checkFdsEvent() {
 	} else {
 		for (size_t i = 0; i < _nbFds; i++)
 		{
+			if (checkIfClientIsWaitingForSend(_allFds[i].fd))
+				_allFds[i].revents |= POLLOUT;
 			if (_allFds[i].revents & POLLIN)
                 receiveMessageFromClient(_allFds[i]);
             if (_allFds[i].revents & POLLOUT)

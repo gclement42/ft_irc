@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 09:01:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/10 12:23:29 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 15:14:18 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,9 @@ void	Commands::privateMsg()
 	}
 	msg = msg.substr(2, msg.size());
 	
-	for (size_t i = 0; i < allClients.size(); i++)
-	{
-		finalMsg = ":" + allClients[i] + " " + this->_args[0] + " " + channelName + " :" + msg + "\r\n";
-		std::cout << "finalMsg = '" << finalMsg << "'" << std::endl;
-		this->_client.addMessageToSend(finalMsg);
-	}
+	finalMsg = ":" + this->_client.getUsername() + " " + this->_args[0] + " " + channelName + " :" + msg + "\r\n";
+	std::cout << "finalMsg = '" << finalMsg << "'" << std::endl;
+
 	sendMsgToAllClients(allClients, finalMsg);
 }
 
@@ -60,15 +57,15 @@ std::vector<std::string> Commands::allClientsOnChannel(std::string channel)
 
 void Commands::sendMsgToAllClients(std::vector<std::string> allClients, std::string msg)
 {
-	size_t 						i = 0;
+	size_t	i = 0;
 
 	std::map<int, Client>::iterator it = this->_clients.begin();
 	while (it != this->_clients.end())
 	{
-		if (it->second.getUsername() == allClients[i])
+		if (it->second.getUsername() == allClients[i] && it->second.getNickname() != this->_client.getNickname())
 		{
-			// send(it->second.getFd(), msg.c_str(), msg.size(), 0);
 			it->second.addMessageToSend(msg);
+			it->second.setWaitingForSend(true);
 		}
 		i++;
 		it++;

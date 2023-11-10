@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:10:34 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/10 13:35:36 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 14:28:23 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Client {
 		std::string				    getNickname() const;
 		std::string				    getUsername() const;
 		std::vector<std::string>    &getChannels();
+		bool				    	getWaitingForSend() const;	
 		bool 					    checkIfPasswordIsValid(Client client, std::string passwordServer);
         bool                        checkIfNicknameIsValid(std::map<int, Client> clients);
 		bool						checkIfUsernameIsValid();
@@ -40,8 +41,10 @@ class Client {
 		void					    addMessageToSend(std::string message);
 		void						addChannel(std::string channelName);
         void                        setIsConnected(bool isConnected);
+		void				    	setWaitingForSend(bool waitingForSend);	
         bool                        getIsConnected() const;
         std::vector<std::string>    getMessageToSend();
+		
 
 	private :
 		const int					_fd;
@@ -52,6 +55,7 @@ class Client {
 		std::vector<std::string>	_channel;
 		std::vector<std::string>	_messagesToSend;
         bool                        _isConnected;
+		bool					    _waitingForSend;
 
 		bool 					    checkIfNicknameIsAlreadyUsed(std::map<int, Client> clients);
 		bool				   		checkIfNicknameIsNotEmpty();

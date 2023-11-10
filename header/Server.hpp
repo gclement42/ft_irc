@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 14:10:25 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 13:14:03 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 14:35:30 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Server {
 		void					displayClients();
 		void 					disconnectClient(int fd);
         void                    createClient(int fd);
+		bool                   	checkIfClientIsWaitingForSend(int fd);
 	private:
 		std::map<int, Client>	        _clients;
 		std::map<std::string, Channel>	_channels;

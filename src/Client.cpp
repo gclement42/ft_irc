@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/10 13:34:04 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 14:28:00 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include "main.hpp"
 
 Client::Client(std::string nickname, std::string username, std::string realname, int fd, std::string password):
- _fd(fd), _password(password), _nickname(nickname), _username(username), _realname(realname),_isConnected(true) {}
+ _fd(fd), _password(password), _nickname(nickname),
+  _username(username), _realname(realname),_isConnected(true), _waitingForSend(false) {}
 
 Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname),
@@ -122,8 +123,18 @@ std::vector<std::string> Client::getMessageToSend() {
     return (_messagesToSend);
 }
 
+bool	Client::getWaitingForSend() const
+{
+	return (_waitingForSend);
+}
+
 void Client::setIsConnected(bool isConnected){
     this->_isConnected = isConnected;
+}
+
+void	Client::setWaitingForSend(bool waitingForSend)
+{
+	_waitingForSend = waitingForSend;
 }
 
 bool Client::getIsConnected() const {
