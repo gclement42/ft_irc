@@ -104,8 +104,9 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
     Client client(_clients.find(pollClient.fd)->second);
     if (buffer != "" || client.getIsConnected())
     {
+        Commands        commands(_clients, _channels, client);
         buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-        parseBuffer(client, buffer, _channels);
+        commands.parseBuffer(buffer);
         std::cout << client.getUsername() << " : " << buffer << std::endl;
         pollClient.revents |= POLLOUT;
         _clients.find(pollClient.fd)->second = client;
