@@ -14,12 +14,12 @@
 #include "Server.hpp"
 
 
-Server::Server(int port, std::string password): _port(port), _password(password) {
+Server::Server(int port, const std::string& password): _port(port), _password(password) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
 	int iSetOption = 1; 
 	setsockopt(_socketServer, SOL_SOCKET, SO_REUSEADDR, (char*)&iSetOption,
         sizeof(iSetOption));
-	_allFds = NULL;
+	_allFds =  NULL;
 	_nbFds = 0;
 }
 
@@ -27,13 +27,12 @@ Server::Server(const Server &src) {
 	*this = src;
 }
 
-Server::~Server(void) {
+Server::~Server() {
 	std::cout << "Server destructor called" << std::endl;
 	for (size_t i = 0; i < _nbFds; i++)
 		close(_allFds[i].fd);
 	close (_socketServer);
-	if (_allFds)
-		delete [] _allFds;
+	delete [] _allFds;
 }
 
 Server	&Server::operator=(const Server &src) {
@@ -171,7 +170,7 @@ void Server::disconnectClient(int fd) {
 	}
 }
 
-void Server::displayClients(void) {
+void Server::displayClients() {
 	std::map<int, Client>::iterator it;
 
 	for (it = _clients.begin(); it != _clients.end(); it++)

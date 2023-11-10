@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "main.hpp"
-#include "Client.hpp"
 #include "Channel.hpp"
 
 void	Commands::join()

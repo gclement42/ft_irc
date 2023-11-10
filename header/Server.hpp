@@ -22,7 +22,7 @@ class Client;
 
 class Server {
 	public:
-		Server(int port, std::string password);
+		Server(int port, const std::string& password);
 		Server(const Server &src);
 		~Server();
 		Server	&operator=(const Server &src);
