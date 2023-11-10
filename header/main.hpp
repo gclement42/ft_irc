@@ -31,6 +31,7 @@
 # include <cstdlib>
 # include <map>
 # include "errorMessages.hpp"
+# include "replyMessages.hpp"
 # include "Server.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"

@@ -94,24 +94,21 @@ void Server::acceptClientConnexion() {
 void Server::receiveMessageFromClient(pollfd &pollClient) {
     std::string		buffer;
 
+	pollClient.revents |= POLLOUT;
     if (_clients.find(pollClient.fd) == _clients.end())
-    {
+	{
         createClient(pollClient.fd);
-        return ;
-    }
+	}
     buffer = readInBuffer(pollClient.fd);
     Client client(_clients.find(pollClient.fd)->second);
-    if (buffer != "" || client.getIsConnected())
+    if (buffer != "" && client.getIsConnected())
     {
         Commands        commands(_clients, _channels, client);
         buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
         commands.parseBuffer(buffer);
         std::cout << client.getUsername() << " : " << buffer << std::endl;
-        pollClient.revents |= POLLOUT;
         _clients.find(pollClient.fd)->second = client;
     }
-    else
-        disconnectClient(pollClient.fd);
 }
 
 void Server::sendMessageToClient(pollfd &pollClient) {
@@ -119,7 +116,10 @@ void Server::sendMessageToClient(pollfd &pollClient) {
         return ;
     Client client(_clients.find(pollClient.fd)->second);
     client.sendAllMessageToClient();
-    _clients.find(pollClient.fd)->second = client;
+	if (!client.getIsConnected())
+		disconnectClient(pollClient.fd);
+	else
+    	_clients.find(pollClient.fd)->second = client;
     pollClient.revents = 0;
 }
 
@@ -134,10 +134,10 @@ void Server::checkFdsEvent() {
 	} else {
 		for (size_t i = 0; i < _nbFds; i++)
 		{
-            if (_allFds[i].revents & POLLOUT)
-                sendMessageToClient(_allFds[i]);
 			if (_allFds[i].revents & POLLIN)
                 receiveMessageFromClient(_allFds[i]);
+            if (_allFds[i].revents & POLLOUT)
+                sendMessageToClient(_allFds[i]);
 		}
 	}
 }
@@ -148,9 +148,9 @@ void Server::createClient(int fd) {
     while (buffer.find("USER") == std::string::npos)
         buffer += readInBuffer(fd);
     Client client(parseClientData(buffer, fd));
-    client.checkIfNicknameIsValid(_clients);
-    client.checkIfPasswordIsValid(client, _password);
-    client.addMessageToSend(":irc 001 " + client.getUsername() + " :Welcome to ft_irc " + client.getNickname() + "\r\n");
+	if (client.checkIfNicknameIsValid(_clients)
+		&& client.checkIfPasswordIsValid(client, _password))
+    	client.addMessageToSend(RPL_WELCOME(client.getUsername()));
     _clients.insert(std::pair<int, Client>(fd, client));
     std::cout << "New client connected : " << std::endl;
     std::cout << client << std::endl;

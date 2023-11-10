@@ -37,18 +37,18 @@ Client	&Client::operator=(const Client &src)
 	return (*this);
 }
 
-void Client::checkIfPasswordIsValid(Client client, std::string passwordServer) {
+bool	Client::checkIfPasswordIsValid(Client client, std::string passwordServer) {
 	if (client.getPassword() == passwordServer) {
-		return ;
+		return (true);
 	} else {
 		std::string message = " Incorrect password";
 		this->addMessageToSend(ERR_PASSWDMISMATCH(client.getUsername()));
 		this->addMessageToSend(ERROR(message));
-		return ;
+		return (false);
 	}
 }
 
-bool Client::checkIfClientIsStillConnected() const {
+bool	Client::checkIfClientIsStillConnected() const {
 	std::string buffer = readInBuffer(this->getFd());
 	
 	if (buffer != "PONG localhost\r\n")
@@ -56,26 +56,29 @@ bool Client::checkIfClientIsStillConnected() const {
 	return (true);
 }
 
-void Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
+bool	Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
     std::map<int, Client>::iterator it;
 
 	if (this->_nickname.empty()) {
 		std::cout << "Nickname is empty" << std::endl;
-		this->addMessageToSend(ERR_NONIKNAMEGIVEN(this->_nickname));
+		this->addMessageToSend(ERR_NONIKNAMEGIVEN());
+		this->addMessageToSend(RPL_QUIT(std::string("No nickname given")));
 		this->setIsConnected(false);
+		return (false);
 	}
     for (it = clients.begin(); it != clients.end(); it++) {
         if (it->second.getNickname() == this->_nickname && it->second.getFd() != this->_fd) {
             std::string message = "Nickname already in use";
 			this->addMessageToSend(ERR_NICKNAMEINUSE(this->_nickname));
+			this->addMessageToSend(RPL_QUIT(std::string("Nickname already in use")));
             this->setIsConnected(false);
-            return ;
+            return (false);
         }
     }
-    return ;
+    return (true);
 }
 
-void Client::sendAllMessageToClient() {
+void	Client::sendAllMessageToClient() {
 	ssize_t ret;
 
     for (std::vector<std::string>::iterator it = _messagesToSend.begin(); it != _messagesToSend.end(); it++)
@@ -92,7 +95,7 @@ void Client::sendAllMessageToClient() {
         _messagesToSend.clear();
 }
 
-void Client::addMessageToSend(std::string message) {
+void	Client::addMessageToSend(std::string message) {
 	_messagesToSend.push_back(message);
 }
 

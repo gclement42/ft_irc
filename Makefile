@@ -20,6 +20,7 @@ HEADER_FILES			= main.hpp \
 							Channel.hpp \
 							Commands.hpp \
 							errorMessages.hpp \
+							replyMessages.hpp \
 	
 DIR						=	src/
 SRC						=	main.cpp \
