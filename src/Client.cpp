@@ -20,8 +20,8 @@ Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname),
  _username(src._username)
 {
-    _messagesToSend = src._messagesToSend;
-    _isConnected = src._isConnected;
+	this->_messagesToSend = src._messagesToSend;
+	this->_isConnected = src._isConnected;
 }
 
 Client::~Client() {}
@@ -30,9 +30,9 @@ Client	&Client::operator=(const Client &src)
 {
 	if (&src == this)
 		return (*this);
-	_channel = src._channel;
-    _messagesToSend = src._messagesToSend;
-    _isConnected = src._isConnected;
+	this->_channel = src._channel;
+	this->_messagesToSend = src._messagesToSend;
+	this->_isConnected = src._isConnected;
 
 	return (*this);
 }
@@ -42,8 +42,8 @@ void Client::checkIfPasswordIsValid(Client client, std::string passwordServer) {
 		return ;
 	} else {
 		std::string message = " Incorrect password";
-        addMessageToSend(ERR_PASSWDMISMATCH(client.getUsername()));
-        addMessageToSend(ERROR(message));
+		this->addMessageToSend(ERR_PASSWDMISMATCH(client.getUsername()));
+		this->addMessageToSend(ERROR(message));
 		return ;
 	}
 }
@@ -54,6 +54,25 @@ bool Client::checkIfClientIsStillConnected() const {
 	if (buffer != "PONG localhost\r\n")
 		return (false);
 	return (true);
+}
+
+void Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
+    std::map<int, Client>::iterator it;
+
+	if (this->_nickname.empty()) {
+		std::cout << "Nickname is empty" << std::endl;
+		this->addMessageToSend(ERR_NONIKNAMEGIVEN(this->_nickname));
+		this->setIsConnected(false);
+	}
+    for (it = clients.begin(); it != clients.end(); it++) {
+        if (it->second.getNickname() == this->_nickname && it->second.getFd() != this->_fd) {
+            std::string message = "Nickname already in use";
+			this->addMessageToSend(ERR_NICKNAMEINUSE(this->_nickname));
+            this->setIsConnected(false);
+            return ;
+        }
+    }
+    return ;
 }
 
 void Client::sendAllMessageToClient() {
@@ -106,32 +125,14 @@ std::vector<std::string> Client::getMessageToSend() {
     return (_messagesToSend);
 }
 
-void Client::setIsConnected() {
-    if (_isConnected)
-        _isConnected = false;
-    else
-        _isConnected = true;
+void Client::setIsConnected(bool isConnected){
+    this->_isConnected = isConnected;
 }
 
 bool Client::getIsConnected() const {
     return (_isConnected);
 }
 
-void Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
-    std::map<int, Client>::iterator it;
-
-    for (it = clients.begin(); it != clients.end(); it++)
-    {
-        if (it->second.getNickname() == this->_nickname && it->second.getFd() != this->_fd)
-        {
-            std::string message = "Nickname already in use";
-            addMessageToSend(ERR_NICKNAMEINUSE(this->getNickname()));
-            setIsConnected();
-            return ;
-        }
-    }
-    return ;
-}
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)
 {

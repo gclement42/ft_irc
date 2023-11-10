@@ -16,7 +16,7 @@ void Commands::quit()
 {
     std::string reason = "Client quit";
 
-	this->_client.setIsConnected();
+	this->_client.setIsConnected(false);
     if (this->_args.size() > 0) {
         reason = this->_args[0];
 	}

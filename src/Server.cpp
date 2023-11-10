@@ -149,12 +149,11 @@ void Server::createClient(int fd) {
         buffer += readInBuffer(fd);
     Client client(parseClientData(buffer, fd));
     client.checkIfNicknameIsValid(_clients);
+    client.checkIfPasswordIsValid(client, _password);
     client.addMessageToSend(":irc 001 " + client.getUsername() + " :Welcome to ft_irc " + client.getNickname() + "\r\n");
     _clients.insert(std::pair<int, Client>(fd, client));
     std::cout << "New client connected : " << std::endl;
     std::cout << client << std::endl;
-    client.checkIfPasswordIsValid(client, _password);
-    client.checkIfNicknameIsValid(_clients);
 }
 
 void Server::disconnectClient(int fd) {

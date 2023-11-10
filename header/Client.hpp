@@ -36,7 +36,7 @@ class Client {
         void                        checkIfNicknameIsValid(std::map<int, Client> clients);
 		void					    sendAllMessageToClient();
 		void					    addMessageToSend(std::string message);
-        void                        setIsConnected();
+        void                        setIsConnected(bool isConnected);
         bool                        getIsConnected() const;
         std::vector<std::string>    getMessageToSend();
 	private :
