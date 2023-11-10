@@ -40,6 +40,7 @@
 # define FAILURE 		0
 # define SUCCESS 		1
 # define USER_LIMITS 	10
+# define USERLEN 		12
 
 class Server;
 class Client;

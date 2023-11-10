@@ -13,12 +13,12 @@
 #include "Client.hpp"
 #include "main.hpp"
 
-Client::Client(std::string nickname, std::string username, int fd, std::string password):
- _fd(fd), _password(password), _nickname(nickname), _username(username), _isConnected(true) {}
+Client::Client(std::string nickname, std::string username, std::string realname, int fd, std::string password):
+ _fd(fd), _password(password), _nickname(nickname), _username(username), _realname(realname),_isConnected(true) {}
 
 Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname),
- _username(src._username)
+ _username(src._username), _realname(src._realname)
 {
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
@@ -33,7 +33,6 @@ Client	&Client::operator=(const Client &src)
 	this->_channel = src._channel;
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
-
 	return (*this);
 }
 
@@ -150,6 +149,15 @@ bool Client::checkIfNicknameIsAlreadyUsed(std::map<int, Client> clients) {
 bool Client::checkIfNicknameContainsForbiddenCharacters() {
 	if (this->_nickname.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]\\`_^{|}-") != std::string::npos) {
 		this->addMessageToSend(ERR_ERRONEUSNICKNAME(this->_nickname));
+		return (false);
+	}
+	return (true);
+}
+
+bool Client::checkIfUsernameIsValid() {
+	if (this->_username.empty()) {
+		std::string message = "No username given";
+		this->addMessageToSend(ERR_NEEDMOREPARAMS(std::string("USER")));
 		return (false);
 	}
 	return (true);

@@ -151,7 +151,8 @@ void Server::createClient(int fd) {
         buffer += readInBuffer(fd);
     Client client(parseClientData(buffer, fd));
 	if (client.checkIfNicknameIsValid(_clients)
-		&& client.checkIfPasswordIsValid(client, _password))
+		&& client.checkIfPasswordIsValid(client, _password)
+		&& client.checkIfUsernameIsValid())
 		client.addMessageToSend(RPL_WELCOME(client.getUsername()));
 	else
 	{

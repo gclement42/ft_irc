@@ -13,6 +13,16 @@
 # include "main.hpp"
 # include "Client.hpp"
 
+static std::string searchRealname(std::string str)
+{
+	std::string realname;
+
+	if (str.find(":") == std::string::npos)
+		return ("");
+	realname = str.substr(str.find(":"));
+	return (realname);
+}
+
 Client parseClientData(std::string buffer, int fd)
 {
 	std::stringstream	streamBuffer(buffer);
@@ -20,6 +30,7 @@ Client parseClientData(std::string buffer, int fd)
 	std::string			nickname;
 	std::string			username;
 	std::string			password;
+	std::string 		realname;
 
 	password = "";
 	while (getline(streamBuffer, token))
@@ -33,8 +44,11 @@ Client parseClientData(std::string buffer, int fd)
 		{
 			int endUsername = token.find("0");
 			username = token.substr(token.find("USER") + 5, endUsername - 1 - token.find("USER") - 5);
+			if (username.length() > USERLEN)
+				username = username.substr(0, USERLEN);
+			realname = searchRealname(token);
 		}
 	}
-	Client client(nickname, username, fd, password);
+	Client client(nickname, username, realname, fd, password);
 	return (client);
 }
