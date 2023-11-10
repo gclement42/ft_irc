@@ -94,10 +94,11 @@ void Server::acceptClientConnexion() {
 void Server::receiveMessageFromClient(pollfd &pollClient) {
     std::string		buffer;
 
-	pollClient.revents |= POLLOUT;
     if (_clients.find(pollClient.fd) == _clients.end())
 	{
         createClient(pollClient.fd);
+		pollClient.revents |= POLLOUT;
+		return ;
 	}
     buffer = readInBuffer(pollClient.fd);
     Client client(_clients.find(pollClient.fd)->second);
@@ -108,6 +109,7 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
         commands.parseBuffer(buffer);
         std::cout << client.getUsername() << " : " << buffer << std::endl;
         _clients.find(pollClient.fd)->second = client;
+		pollClient.revents |= POLLOUT;
     }
 }
 
@@ -150,7 +152,12 @@ void Server::createClient(int fd) {
     Client client(parseClientData(buffer, fd));
 	if (client.checkIfNicknameIsValid(_clients)
 		&& client.checkIfPasswordIsValid(client, _password))
-    	client.addMessageToSend(RPL_WELCOME(client.getUsername()));
+		client.addMessageToSend(RPL_WELCOME(client.getUsername()));
+	else
+	{
+		client.addMessageToSend(RPL_QUIT(std::string("Disconnected")));
+		client.setIsConnected(false);
+	}
     _clients.insert(std::pair<int, Client>(fd, client));
     std::cout << "New client connected : " << std::endl;
     std::cout << client << std::endl;

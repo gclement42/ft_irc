@@ -21,6 +21,7 @@ class Server;
 class Channel;
 
 class Client {
+
 	public :
 		Client(std::string nickname, std::string username, int fd, std::string password);
 		Client(const Client &src);
@@ -39,6 +40,7 @@ class Client {
         void                        setIsConnected(bool isConnected);
         bool                        getIsConnected() const;
         std::vector<std::string>    getMessageToSend();
+
 	private :
 		const int					_fd;
 		const std::string			_password;
@@ -47,6 +49,10 @@ class Client {
 		std::vector<Channel>		_channel;
 		std::vector<std::string>	_messagesToSend;
         bool                        _isConnected;
+
+		bool 					    checkIfNicknameIsAlreadyUsed(std::map<int, Client> clients);
+		bool				   		checkIfNicknameIsNotEmpty();
+		bool						checkIfNicknameContainsForbiddenCharacters();
 };
 
 std::ostream	&operator<<(std::ostream &o, const Client &src);

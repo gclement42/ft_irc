@@ -56,25 +56,14 @@ bool	Client::checkIfClientIsStillConnected() const {
 	return (true);
 }
 
-bool	Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
-    std::map<int, Client>::iterator it;
 
-	if (this->_nickname.empty()) {
-		std::cout << "Nickname is empty" << std::endl;
-		this->addMessageToSend(ERR_NONIKNAMEGIVEN());
-		this->addMessageToSend(RPL_QUIT(std::string("No nickname given")));
-		this->setIsConnected(false);
+bool	Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
+	if (!checkIfNicknameIsNotEmpty())
 		return (false);
-	}
-    for (it = clients.begin(); it != clients.end(); it++) {
-        if (it->second.getNickname() == this->_nickname && it->second.getFd() != this->_fd) {
-            std::string message = "Nickname already in use";
-			this->addMessageToSend(ERR_NICKNAMEINUSE(this->_nickname));
-			this->addMessageToSend(RPL_QUIT(std::string("Nickname already in use")));
-            this->setIsConnected(false);
-            return (false);
-        }
-    }
+	if (!this->checkIfNicknameIsAlreadyUsed(clients))
+		return (false);
+	if (!this->checkIfNicknameContainsForbiddenCharacters())
+		return (false);
     return (true);
 }
 
@@ -136,6 +125,35 @@ bool Client::getIsConnected() const {
     return (_isConnected);
 }
 
+bool Client::checkIfNicknameIsNotEmpty() {
+	if (this->_nickname.empty()) {
+		std::string message = "No nickname given";
+		this->addMessageToSend(ERR_NONIKNAMEGIVEN());
+		return (false);
+	}
+	return (true);
+}
+
+bool Client::checkIfNicknameIsAlreadyUsed(std::map<int, Client> clients) {
+	std::map<int, Client>::iterator it;
+
+	for (it = clients.begin(); it != clients.end(); it++) {
+		if (it->second.getNickname() == this->_nickname && it->second.getFd() != this->_fd) {
+			std::string message = "Nickname already in use";
+			this->addMessageToSend(ERR_NICKNAMEINUSE(this->_nickname));
+			return (false);
+		}
+	}
+	return (true);
+}
+
+bool Client::checkIfNicknameContainsForbiddenCharacters() {
+	if (this->_nickname.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]\\`_^{|}-") != std::string::npos) {
+		this->addMessageToSend(ERR_ERRONEUSNICKNAME(this->_nickname));
+		return (false);
+	}
+	return (true);
+}
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)
 {
