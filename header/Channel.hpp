@@ -36,6 +36,8 @@ class Channel
 		std::string				getKey(void) const;
 		std::string				getMode(void) const;
 
+		void					setTopic(std::string topic);
+
 	private:
 
 		std::string				_name;

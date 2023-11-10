@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/09 09:27:24 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/10 08:17:19 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include "Server.hpp"
 # include "Client.hpp"
 # include "Channel.hpp"
+# include "Commands.hpp"
 
 # define FAILURE 		0
 # define SUCCESS 		1

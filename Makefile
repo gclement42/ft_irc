@@ -18,17 +18,22 @@ HEADER_FILES			= main.hpp \
 							Server.hpp \
 							Client.hpp \
 							Channel.hpp \
+							Commands.hpp \
+							errorMessages.hpp \
 	
 DIR						=	src/
 SRC						=	main.cpp \
 							Server.cpp \
 							Channel.cpp \
-							quitCommand.cpp \
 							parseClientData.cpp \
 							Client.cpp \
-							parseBuffer.cpp \
-							joinCommand.cpp \
 							readInBuffer.cpp \
+							\
+							commands/quit.cpp \
+							commands/topic.cpp \
+							commands/parseBuffer.cpp \
+							commands/join.cpp \
+							commands/Commands.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

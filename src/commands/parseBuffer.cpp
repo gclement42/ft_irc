@@ -16,28 +16,13 @@
 
 static std::vector<std::string> splitBuffer(std::string str, char c);
 
-void	parseBuffer(Client &client, std::string buffer, std::map<std::string, Channel> &channels)
-{	
-	std::vector<std::string>	arguments;
+void	Commands::parseBuffer(std::string buffer)
+{
+	this->_args = splitBuffer(buffer, ' ');
+	std::string cmdName = this->_args[0];
 
-	arguments = splitBuffer(buffer, ' ');
-	
-	if (arguments[0] == "JOIN")
-		commandJoin(client, arguments, channels);
-    if (arguments[0] == "QUIT")
-        quitCommand(client, arguments);
-	// else if (cmd == "KICK")
-	// 	// cmd_kick(buffer);
-	// 	std::cout << "KICK" << std::endl;
-	// else if (cmd == "INVITE")
-	// 	// cmd_invite(buffer);
-	// 	std::cout << "INVITE" << std::endl;
-	// else if (cmd == "TOPIC")
-	// 	// cmd_topic(buffer);
-	// 	std::cout << "TOPIC" << std::endl;
-	// else if (cmd == "MODE")
-	// 	// cmd_mode(buffer);
-	// 	std::cout << "MODE" << std::endl;
+	if (this->_cmd.find(cmdName) != this->_cmd.end())
+		(this->*_cmd[cmdName])();
 	else
 	{
 		printError("This command does not exist.");
