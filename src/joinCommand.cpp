@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   join.cpp                                           :+:      :+:    :+:   */
+/*   joinCommand.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/08 13:12:00 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/09 10:25:57 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static std::vector<std::string> 	parseChannelName(std::vector<std::string> arg);
 static std::vector<std::string> 	parseKey(std::vector<std::string> arg);
 // static int							checkChannelNameAlreadyExist(std::vector<Channel> channels, std::string channelName);
 
-void	commandJoin(Client &client, std::vector<std::string> arg, std::map<std::string, Channel> &channels)
+void	joinCommand(Client &client, std::vector<std::string> arg, std::map<std::string, Channel> &channels)
 {	
 	std::vector<std::string> 	argChannel = parseChannelName(arg);
 	std::vector<std::string> 	keys = parseKey(arg);
@@ -32,8 +32,11 @@ void	commandJoin(Client &client, std::vector<std::string> arg, std::map<std::str
 		Channel newChannel(argChannel[i], "topic", "key", "mode", USER_LIMITS);
 
 		channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
+		client.addChannel(argChannel[i]);
         client.addMessageToSend(createChannel);
 	}
+	
+	std::cout << client.getChannels().size() << std::endl;
 }
 
 static std::vector<std::string> parseChannelName(std::vector<std::string> arg)

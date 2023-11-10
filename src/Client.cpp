@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 15:35:08 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/09 10:14:46 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Client::Client(const Client &src):
 {
     _messagesToSend = src._messagesToSend;
     _isConnected = src._isConnected;
+	_channel = src._channel;
 }
 
 Client::~Client() {}
@@ -77,6 +78,11 @@ void Client::addMessageToSend(std::string message) {
 	_messagesToSend.push_back(message);
 }
 
+void Client::addChannel(std::string channelName)
+{
+	_channel.push_back(channelName);
+}
+
 int		Client::getFd() const
 {
 	return (_fd);
@@ -97,7 +103,7 @@ std::string	Client::getUsername() const
 	return (_username);
 }
 
-std::vector<Channel>	&Client::getChannels()
+std::vector<std::string>	&Client::getChannels()
 {
 	return (_channel);
 }
