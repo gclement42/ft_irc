@@ -11,6 +11,7 @@ class Commands {
         std::map<std::string, Channel>  				&_channels;
         Client                          				&_client;
         std::vector<std::string>        				_args;
+        std::string                     				_operPassword;
 
     public:
         Commands(std::map<int, Client> &clients, std::map<std::string, Channel> &channels,  Client &client);
@@ -28,6 +29,7 @@ class Commands {
         void	                    join();
 		void	                    topic();
         void                        privateMsg();
+        void                        oper();
 
         //Utils commands
         std::vector<std::string>    allClientsOnChannel(std::string channel);

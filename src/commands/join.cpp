@@ -21,7 +21,7 @@ void	Commands::join()
 
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
-		std::string 	createChannel = ":" + _client.getUsername() + " JOIN " + argChannel[i] + "\r\n";
+		std::string 	createChannel = ":" + _client.getNickname() + " JOIN " + argChannel[i] + "\r\n";
 
 		Channel newChannel(argChannel[i], "topic", "key", "mode", USER_LIMITS);
 
