@@ -9,5 +9,5 @@
 #define ERR_NONIKNAMEGIVEN() "No nickname given\r\n"
 #define ERR_ERRONEUSNICKNAME(nickname) nickname + " :Erroneus nickname\r\n"
 #define ERR_NEEDMOREPARAMS(command) command + " :Not enough parameters\r\n"
-
+#define ERR_NOSUCHCHANNEL(nickname, channelName) ":irc 403 " + nickname + " "  + channelName + " :No such channel\r\n"
 #endif
