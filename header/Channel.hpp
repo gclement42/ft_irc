@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:41:57 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/08 10:59:30 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/13 10:16:43 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,16 @@ class Channel
 
 		Channel					&operator=(const Channel &src);
 
-		int						getUserLimit(void) const;
 		std::string				getName(void) const;
 		std::string				getTopic(void) const;
 		std::string				getKey(void) const;
 		std::string				getMode(void) const;
+		int						getUserLimit(void) const;
+		int						getUserCount(void) const;
+		bool					getInviteMode(void) const;
 
 		void					setTopic(std::string topic);
+		void					incrementUserCount(void);
 
 	private:
 
@@ -45,6 +48,8 @@ class Channel
 		std::string				_key;
 		std::string				_mode;
 		int						_userLimit;
+		int						_userCount;
+		bool					_inviteMode;
 
 };
 

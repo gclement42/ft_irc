@@ -30,6 +30,7 @@ class Commands {
 		void	                    topic();
         void                        privateMsg();
         void                        oper();
+		void						nick();
 
         //Utils commands
         std::vector<std::string>    allClientsOnChannel(std::string channel);

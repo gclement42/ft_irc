@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:45:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/08 10:56:02 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/13 10:16:57 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ Channel::Channel(std::string name, std::string topic, std::string key, std::stri
 	_name(name), _topic(topic), _key(key), _mode(mode)
 {
 	this->_userLimit = userLimit;
+	this->_userCount = 0;
+	this->_inviteMode = false;
 	return ;
 }
 
@@ -40,13 +42,10 @@ Channel		&Channel::operator=(const Channel &src)
 	this->_key = src._key;
 	this->_mode = src._mode;
 	this->_userLimit = src._userLimit;
+	this->_userCount = src._userCount;
+	this->_inviteMode = src._inviteMode;
 	
 	return (*this);
-}
-
-int			Channel::getUserLimit(void) const
-{
-	return (this->_userLimit);
 }
 
 std::string	Channel::getName(void) const
@@ -69,9 +68,29 @@ std::string	Channel::getMode(void) const
 	return (this->_mode);
 }
 
+int			Channel::getUserLimit(void) const
+{
+	return (this->_userLimit);
+}
+
+int			Channel::getUserCount(void) const
+{
+	return (this->_userCount);
+}
+
+bool		Channel::getInviteMode(void) const
+{
+	return (this->_inviteMode);
+}
+
 void	Channel::setTopic(std::string topic)
 {
 	this->_topic = topic;
+}
+
+void	Channel::incrementUserCount(void)
+{
+	this->_userCount++;
 }
 
 std::ostream	&operator<<(std::ostream &o, const Channel &src)

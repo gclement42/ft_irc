@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 		std::cout << "Usage: ./ft_irc <port> <password>" << std::endl;
 		return (0);
 	}
-	std::string password = "123soleil";
+	std::string password = "salut";
 	int port = atoi(argv[1]);
 	if (argv[2])
 		password = argv[2];
