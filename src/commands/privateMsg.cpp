@@ -31,8 +31,6 @@ void	Commands::privateMsg()
 	sendMsgToAllClients(allClients, finalMsg);
 }
 
-
-
 std::vector<std::string> Commands::allClientsOnChannel(std::string channel)
 {
 	size_t 						i = 0;

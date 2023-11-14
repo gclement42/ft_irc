@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:11 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/10 08:17:19 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/13 09:50:40 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 # define FAILURE 		0
 # define SUCCESS 		1
 # define N_CMD 			7
-# define USER_LIMITS 	10
+# define USER_LIMITS 	5
 # define USERLEN 		12
 
 class Server;

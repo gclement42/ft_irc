@@ -15,11 +15,11 @@
 
 Client::Client(std::string nickname, std::string username, std::string realname, int fd, std::string password):
  _fd(fd), _password(password), _nickname(nickname),
-  _username(username), _realname(realname),_isConnected(true), _waitingForSend(false) {}
+  _username(username), _realname(realname),_isConnected(true), _waitingForSend(false), _isOperator(false) {}
 
 Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname),
- _username(src._username), _realname(src._realname)
+ _username(src._username), _realname(src._realname), _isOperator(src._isOperator)
 {
     _messagesToSend = src._messagesToSend;
     _isConnected = src._isConnected;
@@ -32,9 +32,11 @@ Client	&Client::operator=(const Client &src)
 {
 	if (&src == this)
 		return (*this);
+	this->_nickname = src._nickname;
 	this->_channel = src._channel;
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
+	this->_isOperator = src._isOperator;
 	return (*this);
 }
 
@@ -128,6 +130,11 @@ bool	Client::getWaitingForSend() const
 	return (_waitingForSend);
 }
 
+bool	Client::getIsOperator() const
+{
+	return (_isOperator);
+}
+
 void Client::setIsConnected(bool isConnected){
     this->_isConnected = isConnected;
 }
@@ -135,6 +142,11 @@ void Client::setIsConnected(bool isConnected){
 void	Client::setWaitingForSend(bool waitingForSend)
 {
 	_waitingForSend = waitingForSend;
+}
+
+void	Client::setIsOperator(bool isOperator)
+{
+	_isOperator = isOperator;
 }
 
 bool Client::getIsConnected() const {
@@ -178,6 +190,10 @@ bool Client::checkIfUsernameIsValid() {
 		return (false);
 	}
 	return (true);
+}
+
+void Client::setNickname(std::string nickname) {
+	this->_nickname = nickname;
 }
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)
