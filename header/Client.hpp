@@ -44,7 +44,6 @@ class Client {
         void                        setIsConnected(bool isConnected);
 		void						setNickname(std::string nickname);
 		void				    	setWaitingForSend(bool waitingForSend);
-        bool                        getIsConnected() const;
         std::vector<std::string>    getMessageToSend();
 
 	private :
