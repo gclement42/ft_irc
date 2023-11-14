@@ -32,6 +32,7 @@ Client	&Client::operator=(const Client &src)
 {
 	if (&src == this)
 		return (*this);
+	this->_nickname = src._nickname;
 	this->_channel = src._channel;
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
@@ -178,6 +179,10 @@ bool Client::checkIfUsernameIsValid() {
 		return (false);
 	}
 	return (true);
+}
+
+void Client::setNickname(std::string nickname) {
+	this->_nickname = nickname;
 }
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)

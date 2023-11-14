@@ -20,6 +20,4 @@
 # define ERR_INVITEONLYCHAN(channel) channel + " :Cannot join channel: channel is in invite mode (+i).\r\n"
 # define ERR_BADCHANNELKEY(channel) channel + " :Cannot join channel: bad channel key.\r\n"
 
-
-
 #endif
