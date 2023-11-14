@@ -83,7 +83,6 @@ static std::vector<std::string>		parseKey(std::vector<std::string> arg)
 		if (!(arg[i][0] == '#' || arg[i][0] == '&'))
 			keys.push_back(arg[i]);
 	}
-
 	return (keys);
 }
 
