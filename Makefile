@@ -38,6 +38,7 @@ SRC						=	main.cpp \
 							commands/privateMsg.cpp \
 							commands/Commands.cpp \
 							commands/nick.cpp \
+							commands/invite.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

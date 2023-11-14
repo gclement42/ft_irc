@@ -29,11 +29,14 @@ class Commands {
         void                        privateMsg();
         void                        oper();
 		void						nick();
+		void						invite();
 
         //Utils commands
         std::vector<std::string>    allClientsOnChannel(std::string channel);
         void                        sendMsgToAllClients(std::vector<std::string> allClients, std::string msg);
-
+		bool						checkIfChannelExist(std::string channelName);
+		bool 						checkIfThisUserIsOnChannel(std::string channelName);
+		bool checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient);
 };
 
 

@@ -69,3 +69,4 @@ void Commands::sendMsgToAllClients(std::vector<std::string> allClients, std::str
 		it++;
 	}
 }
+

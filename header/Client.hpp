@@ -55,7 +55,7 @@ class Client {
 	private :
 		const int					_fd;
 		const std::string			_password;
-		std::string			_nickname;
+		std::string					_nickname;
 		const std::string			_username;
 		const std::string			_realname;
 		std::vector<std::string>	_channel;

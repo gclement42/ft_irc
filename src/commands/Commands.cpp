@@ -9,6 +9,7 @@ Commands::Commands(std::map<int, Client> &clients, std::map<std::string, Channel
     this->_cmd["PRIVMSG"] = &Commands::privateMsg;
     this->_cmd["OPER"] = &Commands::oper;
 	this->_cmd["NICK"] = &Commands::nick;
+	this->_cmd["INVITE"] = &Commands::invite;
     _operPassword = "password";
 }
 
@@ -25,4 +26,38 @@ Commands &Commands::operator=(const Commands &src) {
         this->_client = src._client;
     }
     return (*this);
+}
+
+bool Commands::checkIfChannelExist(std::string channelName) {
+	if (_channels.find(channelName) == _channels.end())
+		return (false);
+	Channel channel = _channels.find(channelName)->second;
+	if (channel.getUserCount() < 0)
+		return (false);
+	return (true);
+}
+
+bool Commands::checkIfThisUserIsOnChannel(std::string channelName) {
+	std::vector<std::string> clientChannels = _client.getChannels();
+	for (size_t i = 0; i < clientChannels.size(); i++) {
+		if (clientChannels[i] == channelName)
+			return (true);
+	}
+	return (false);
+}
+
+bool Commands::checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient) {
+	//Fonction code par copilot a verifier
+	std::map<int, Client>::iterator it = _clients.begin();
+	while (it != _clients.end()) {
+		if (it->second.getNickname() == targetClient) {
+			std::vector<std::string> clientChannels = it->second.getChannels();
+			for (size_t i = 0; i < clientChannels.size(); i++) {
+				if (clientChannels[i] == channelName)
+					return (true);
+			}
+		}
+		it++;
+	}
+	return (false);
 }
