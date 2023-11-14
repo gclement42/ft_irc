@@ -8,7 +8,7 @@
 #include "main.hpp"
 
 #define RPL_WELCOME(nickname) "Welcome to the ft_irc " + nickname + "\r\n"
-#define RPL_YOUREOPER() ":irc 381 You are now an IRC operator\r\n"
+#define RPL_YOUREOPER() ":irc 381You are now an IRC operator\r\n"
 #define	RPL_QUIT(reason) "QUIT :" + reason + "\r\n"
 
 
