@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 15:35:08 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/10 14:28:00 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 #include "main.hpp"
 
 Client::Client(std::string nickname, std::string username, std::string realname, int fd, std::string password):
- _fd(fd), _password(password), _nickname(nickname), _username(username), _realname(realname),_isConnected(true) {}
+ _fd(fd), _password(password), _nickname(nickname),
+  _username(username), _realname(realname),_isConnected(true) {}
 
 Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname),
  _username(src._username), _realname(src._realname)
 {
-	this->_messagesToSend = src._messagesToSend;
-	this->_isConnected = src._isConnected;
+    _messagesToSend = src._messagesToSend;
+    _isConnected = src._isConnected;
+	_channel = src._channel;
 }
 
 Client::~Client() {}
@@ -30,6 +32,7 @@ Client	&Client::operator=(const Client &src)
 {
 	if (&src == this)
 		return (*this);
+	this->_nickname = src._nickname;
 	this->_channel = src._channel;
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
@@ -107,11 +110,6 @@ std::string	Client::getUsername() const
 	return (_username);
 }
 
-std::vector<Channel>	&Client::getChannels()
-{
-	return (_channel);
-}
-
 std::vector<std::string> Client::getMessageToSend() {
     return (_messagesToSend);
 }
@@ -161,6 +159,10 @@ bool Client::checkIfUsernameIsValid() {
 		return (false);
 	}
 	return (true);
+}
+
+void Client::setNickname(std::string nickname) {
+	this->_nickname = nickname;
 }
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)

@@ -31,7 +31,9 @@ class Client {
 		std::string				    getPassword() const;
 		std::string				    getNickname() const;
 		std::string				    getUsername() const;
+        bool                        getIsConnected() const;
 		std::vector<Channel>	    &getChannels();
+
 		bool 					    checkIfPasswordIsValid(Client client, std::string passwordServer);
         bool                        checkIfNicknameIsValid(std::map<int, Client> clients);
 		bool						checkIfUsernameIsValid();
@@ -39,13 +41,13 @@ class Client {
 		void					    sendAllMessageToClient();
 		void					    addMessageToSend(std::string message);
         void                        setIsConnected(bool isConnected);
-        bool                        getIsConnected() const;
+		void						setNickname(std::string nickname);
         std::vector<std::string>    getMessageToSend();
 
 	private :
 		const int					_fd;
 		const std::string			_password;
-		const std::string			_nickname;
+		std::string					_nickname;
 		const std::string			_username;
 		const std::string			_realname;
 		std::vector<Channel>		_channel;

@@ -35,6 +35,7 @@ SRC						=	main.cpp \
 							commands/parseBuffer.cpp \
 							commands/join.cpp \
 							commands/Commands.cpp \
+							commands/nick.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

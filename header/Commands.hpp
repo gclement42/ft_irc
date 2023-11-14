@@ -26,6 +26,7 @@ class Commands {
 		void	quit();
         void	join();
 		void	topic();
+		void	nick();
 //        void	Topic();
 
 };
