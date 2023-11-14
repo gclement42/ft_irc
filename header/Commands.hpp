@@ -20,8 +20,6 @@ class Commands {
         Commands &operator=(const Commands &src);
 
         void						parseBuffer(std::string buffer);
-		std::vector<std::string>	parseChannelName(std::vector<std::string> arg);
-		std::vector<std::string>	parseKey(std::vector<std::string> arg);
 
         //Commands
 		void	                    quit();

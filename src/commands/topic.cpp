@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   topic.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maujogue <maujogue@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 14:34:14 by maujogue          #+#    #+#             */
-/*   Updated: 2023/11/07 15:43:41 by maujogue         ###   ########.fr       */
+/*   Updated: 2023/11/13 10:47:53 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
+
+static std::vector<std::string>		parseChannelName(std::vector<std::string> arg);
+static std::vector<std::string>		parseKey(std::vector<std::string> arg);
 
 void	Commands::topic()
 {
@@ -32,4 +35,30 @@ void	Commands::topic()
 		channel.setTopic(key);
 		this->_client.addMessageToSend(topicMessage);
 	}
+}
+
+static std::vector<std::string>		parseChannelName(std::vector<std::string> arg)
+{
+	std::vector<std::string> 	channelName;
+
+	for (size_t i = 0; i < arg.size(); i++)
+	{
+		if (arg[i][0] == '#' || arg[i][0] == '&')
+			channelName.push_back(arg[i]);
+	}
+
+	return (channelName);
+}
+
+static std::vector<std::string>		parseKey(std::vector<std::string> arg)
+{
+	std::vector<std::string> 	keys;
+
+	for (size_t i = 0; i < arg.size(); i++)
+	{
+		if (!(arg[i][0] == '#' || arg[i][0] == '&'))
+			keys.push_back(arg[i]);
+	}
+
+	return (keys);
 }
