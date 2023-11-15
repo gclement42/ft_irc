@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/14 08:16:06 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:35:04 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,34 @@
 static std::vector<std::string>		parseChannelName(std::vector<std::string> arg);
 static std::vector<std::string>		parseKey(std::vector<std::string> arg);
 
-static int checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
-static int checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
-static int checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, int i);
+static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
+static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
+static int 			checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, int i);
+static std::string 	getListUsers(std::string channelName, std::map<int, Client> clients, Client &client);
 
 void	Commands::join()
 {	
 	std::vector<std::string> 	argChannel = parseChannelName(_args);
 	std::vector<std::string> 	keys = parseKey(_args);
+	std::string 				createChannel; 
+	std::string					messageDisplayUsers;
+	std::string					listUsers;
+	std::string					topic;
 	std::string 				tmpKey;
-	int 						status;
+	bool 						status;
 
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
-		std::string 	createChannel = ":" + _client.getNickname() + " JOIN " + argChannel[i] + "\r\n";
-		status = SUCCESS;
+		status = true;
 
 		if (checkChannelExist(argChannel[i], _channels) == FAILURE)
 		{
-			Channel newChannel(argChannel[i], "", "key", "", USER_LIMITS);
-
+			Channel newChannel(argChannel[i], "topic", "key", "", USER_LIMITS);
+			
 			newChannel.incrementUserCount();
 			_channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
+			topic = newChannel.getTopic();
+			_client.setIsOperator(true);
 		}
 		else
 		{
@@ -45,21 +51,36 @@ void	Commands::join()
 
 			it = _channels.find(argChannel[i]);
 			it->second.incrementUserCount();
+			topic = it->second.getTopic();
 		}
 
 		if (checkKey(argChannel[i], keys, _channels, i) == FAILURE)
 		{
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
-			status = FAILURE;
+			status = false;
 		}
+		
+		if (status == true && checkAll(argChannel[i], _client, _channels) == SUCCESS)
+		{	
+			createChannel = ":" + _client.getNickname() + " JOIN " + argChannel[i] + "\r\n";
+			listUsers = getListUsers(argChannel[i], _clients, _client);
+			messageDisplayUsers = RPL_NAMREPLY(_client.getNickname(), argChannel[i], listUsers);
+			
+			std::cout << "MessageDisplayUsers = '" << messageDisplayUsers << "'" << std::endl;
 
-		if (status == SUCCESS && checkAll(argChannel[i], _client, _channels) == SUCCESS)
-		{
 			_client.addChannel(argChannel[i]);
 			_client.addMessageToSend(createChannel);
+			_client.addMessageToSend(messageDisplayUsers);
+			addChannelInMap(_client.getNickname(), argChannel[i]);
+			sendMsgToAllClientsInChannel(allClientsOnChannel(argChannel[i]), createChannel);
+
+			if (topic.empty() == false)
+				_client.addMessageToSend(":irc 332 " + _client.getNickname() + " " + argChannel[i] + " " + topic + "\r\n");
 		}
 	}
 }
+
+// ===== STATIC FUNCTIONS ===== //
 
 static std::vector<std::string>		parseChannelName(std::vector<std::string> arg)
 {
@@ -118,7 +139,6 @@ static int checkAll(std::string channelName, Client &client, std::map<std::strin
 
 	if (it->second.getUserCount() >= USER_LIMITS)
 	{
-		std::cout << it->second.getUserCount() << std::endl;
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
 		return (FAILURE);
 	}
@@ -127,5 +147,35 @@ static int checkAll(std::string channelName, Client &client, std::map<std::strin
 		client.addMessageToSend(ERR_INVITEONLYCHAN(channelName));
 		return (FAILURE);
 	}
+		
 	return (SUCCESS);
+}
+
+static std::string 	getListUsers(std::string channelName, std::map<int, Client> clients, Client &client)
+{
+	std::string 	listUsers;
+	std::map<int, Client>::iterator it;
+	
+	for (it = clients.begin(); it != clients.end(); it++)
+	{
+		for (size_t i = 0; i < it->second.getChannels().size(); i++)
+		{
+			if (it->second.getChannels()[i] == channelName)
+			{
+				if (it->second.getIsOperator() == true)
+					listUsers += "@" + it->second.getNickname() + " ";
+				else
+					listUsers += it->second.getNickname() + " ";
+			}
+		}
+	}
+
+	if (client.getIsOperator() == true)
+		listUsers += "@" + client.getNickname();
+	else
+		listUsers += client.getNickname();
+	
+	listUsers = ":" + listUsers;
+	std::cout << "listUsers = '" << listUsers << "'" << std::endl;
+	return (listUsers);
 }
