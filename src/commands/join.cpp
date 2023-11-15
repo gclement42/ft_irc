@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 13:11:03 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 13:32:14 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	Commands::allSend(Client &client, std::string channel, std::string topic)
 {
 	std::string		createChannel = RPL_JOIN(client.getNickname(), channel);
 
-	client.addChannel(channel);
 	client.addMessageToSend(createChannel);
 	addChannelInMap(client.getNickname(), channel);
 	this->displayListClientOnChannel(channel);

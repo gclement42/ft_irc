@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 10:04:31 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/10 14:28:00 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 13:23:45 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,10 @@ bool	Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
 void	Client::sendAllMessageToClient() {
 	ssize_t ret;
 
-	std::cout << _nickname << " send messages" << std::endl;
+	// std::cout << _nickname << " send messages" << std::endl;
     for (std::vector<std::string>::iterator it = _messagesToSend.begin(); it != _messagesToSend.end(); it++)
     {
-		std::cout << "message to send : " << *it << std::endl;
+		// std::cout << "message to send : " << *it << std::endl;
         ret = send(_fd, (*it).c_str(), (*it).length(), 0);
         if (ret == -1)
         {

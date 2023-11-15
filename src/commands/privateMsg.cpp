@@ -6,13 +6,14 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 09:01:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 10:35:04 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 13:41:04 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
 #include "Commands.hpp"
 
+static void		sendPrivMsg(std::map<int, Client> &clients, std::vector<std::string> allClients, Client &client, std::string msg);
 
 void	Commands::privateMsg()
 {
@@ -27,9 +28,22 @@ void	Commands::privateMsg()
 	}
 	msg = msg.substr(2, msg.size());
 	
-	finalMsg = ":" + this->_client.getUsername() + " " + this->_args[0] + " " + channelName + " :" + msg + "\r\n";
-	std::cout << "finalMsg = '" << finalMsg << "'" << std::endl;
+	finalMsg = RPL_PRIVMSG(this->_client.getNickname(), channelName, msg);
 
-	sendMsgToAllClientsInChannel(allClients, finalMsg);
-	std::cout << "DEBUG\n";
+	sendPrivMsg(this->_clients, allClients, this->_client, finalMsg);
+}
+
+static void		sendPrivMsg(std::map<int, Client> &clients, std::vector<std::string> allClients, Client &client, std::string msg)
+{
+	for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); it++)
+	{
+		for (size_t i = 0; i < allClients.size(); i++)
+		{
+			if (it->second.getNickname() == allClients[i] && it->second.getNickname() != client.getNickname())
+			{
+				it->second.addMessageToSend(msg);
+				it->second.setWaitingForSend(true);
+			}
+		}
+	}
 }

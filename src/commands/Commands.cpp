@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 10:22:14 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 12:49:58 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 13:57:06 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,15 +112,13 @@ void Commands::sendMsgToAllClientsInChannel(std::vector<std::string> allClients,
 	{
 		for (size_t i = 0; i < allClients.size(); i++)
 		{
-			if (it->second.getNickname() == allClients[i] && it->second.getNickname() != this->_client.getNickname())
+			if (it->second.getNickname() == allClients[i])
 			{
 				it->second.addMessageToSend(msg);
 				it->second.setWaitingForSend(true);
 			}
 		}
 	}
-	this->_client.setWaitingForSend(true);
-	this->_client.addMessageToSend(msg);
 }
 
 void	Commands::addChannelInMap(std::string nickname, std::string channelName)
