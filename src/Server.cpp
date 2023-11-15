@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/10 14:37:03 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 13:16:20 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,14 +110,14 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		return ;
 	}
     buffer = readInBuffer(pollClient.fd);
-    Client client(_clients.find(pollClient.fd)->second);
+    Client &client = _clients.find(pollClient.fd)->second;
     if (buffer != "" && client.getIsConnected())
     {
         Commands        commands(_clients, _channels, client);
         buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
         std::cout << client.getNickname() << " : " << buffer << std::endl;
         commands.parseBuffer(buffer);
-		_clients.find(pollClient.fd)->second = client;
+		// _clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
     }
 }
