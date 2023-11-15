@@ -28,6 +28,7 @@ class Commands {
         void                        privateMsg();
         void                        oper();
 		void						nick();
+		void						kick();
 		void						invite();
 
         //Utils commands
