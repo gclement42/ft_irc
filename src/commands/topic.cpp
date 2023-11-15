@@ -13,7 +13,7 @@
 #include "main.hpp"
 
 static std::string	concatenate(std::vector<std::string> stringTab);
-std::string			getTimeString();
+static std::string	getTimeString();
 
 void	Commands::topic() {
 
@@ -64,4 +64,3 @@ std::string		getTimeString()
 	ss << currentTime;
 	return (ss.str());
 }
-
