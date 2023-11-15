@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 12:52:10 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 13:06:29 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static std::vector<std::string>		parseKey(std::vector<std::string> arg);
 static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
 static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
 static int 			checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, int i);
-static std::string 	getListUsers(std::string channelName, std::map<int, Client> clients, Client &client);
+//static std::string 	getListUsers(std::string channelName, std::map<int, Client> clients, Client &client);
 
 void	Commands::join()
 {	
@@ -52,6 +52,20 @@ void	Commands::join()
 			allSend(_client, argChannel[i], topic, _clients);
 		else
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
+			status = false;
+		}
+		
+		if (status == true && checkAll(argChannel[i], _client, _channels) == SUCCESS)
+		{	
+			createChannel = ":" + _client.getNickname() + " JOIN " + argChannel[i] + "\r\n";
+			
+			std::cout << "MessageDisplayUsers = '" << messageDisplayUsers << "'" << std::endl;
+
+			_client.addChannel(argChannel[i]);
+			_client.addMessageToSend(createChannel);
+			_client.addMessageToSend(messageDisplayUsers);
+			addChannelInMap(_client.getNickname(), argChannel[i]);
+			this->displayListClientOnChannel(argChannel[i]);
 	}
 }
 
