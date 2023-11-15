@@ -10,6 +10,8 @@
 #define RPL_WELCOME(nickname) "Welcome to the ft_irc " + nickname + "\r\n"
 #define RPL_YOUREOPER() ":irc 381You are now an IRC operator\r\n"
 #define	RPL_QUIT(reason) "QUIT :" + reason + "\r\n"
+#define RPL_NAMREPLY(nickname, channel, listUsers) ":irc 353 " + nickname + " = " + channel + " " + listUsers + "\r\n"
+
 #define RPL_TOPIC(nickname, channelName, topicName) ":irc 332 " + nickname + " " + channelName + " " + topicName + "\r\n"
 #define RPL_TOPICWHOTIME(nickname, channelName, topicName, timeString) ":irc 333" +  client.getNickname() + " " + channel->first + " " + client.getNickname() + " " + timeString + "\r\n"
 #define RPL_NOTOPIC(nickname, channelName) ":irc 331 " + nickname + " "  + channelName + " :No topic is set\r\n"
