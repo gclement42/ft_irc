@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/31 11:10:34 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/10 14:28:23 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 08:43:24 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class Client {
 	private :
 		const int					_fd;
 		const std::string			_password;
-		std::string			_nickname;
+		std::string					_nickname;
 		const std::string			_username;
 		const std::string			_realname;
 		std::vector<std::string>	_channel;

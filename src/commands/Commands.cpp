@@ -26,3 +26,51 @@ Commands &Commands::operator=(const Commands &src) {
     }
     return (*this);
 }
+
+std::vector<std::string> Commands::allClientsOnChannel(std::string channel)
+{
+	size_t 						i = 0;
+	std::vector<std::string> 	allClients;
+	
+	std::map<int, Client>::iterator it = this->_clients.begin();
+	while (it != this->_clients.end())
+	{
+		std::vector<std::string> tmpV = it->second.getChannels();
+		while (i < tmpV.size())
+		{
+			if (tmpV[i] == channel)
+				allClients.push_back(it->second.getNickname());
+			i++;
+		}
+		i = 0;
+		it++;
+	}
+	return (allClients);
+}
+
+void Commands::sendMsgToAllClients(std::vector<std::string> allClients, std::string msg)
+{
+	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
+	{
+		for (size_t i = 0; i < allClients.size(); i++)
+		{
+			if (it->second.getNickname() == allClients[i] && it->second.getNickname() != this->_client.getNickname())
+			{
+				it->second.addMessageToSend(msg);
+				it->second.setWaitingForSend(true);
+			}
+		}
+	}
+}
+
+void	Commands::addChannelInMap(std::string nickname, std::string channelName)
+{
+	std::map<int, Client>::iterator it = this->_clients.begin();
+	
+	while (it != this->_clients.end())
+	{
+		if (it->second.getNickname() == nickname)
+			it->second.addChannel(channelName);
+		it++;
+	}
+}

@@ -33,7 +33,7 @@ class Commands {
         void						parseBuffer(std::string buffer);
         std::vector<std::string>    allClientsOnChannel(std::string channel);
         void                        sendMsgToAllClients(std::vector<std::string> allClients, std::string msg);
-
+        void                        addChannelInMap(std::string nickname, std::string channelName);
 };
 
 
