@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 10:22:14 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 10:35:04 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 12:49:58 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ void Commands::sendMsgToAllClientsInChannel(std::vector<std::string> allClients,
 			}
 		}
 	}
+	this->_client.setWaitingForSend(true);
+	this->_client.addMessageToSend(msg);
 }
 
 void	Commands::addChannelInMap(std::string nickname, std::string channelName)
@@ -131,4 +133,22 @@ void	Commands::addChannelInMap(std::string nickname, std::string channelName)
 			it->second.addChannel(channelName);
 		it++;
 	}
+}
+
+void Commands::displayListClientOnChannel(std::string channelName)
+{
+	std::vector<std::string>	ClientsInChannel;
+	std::string					listNicknames;
+
+	ClientsInChannel = this->allClientsOnChannel(channelName);
+	for (size_t i = 0; i < ClientsInChannel.size(); i++)
+	{
+		Client client = this->getClientFromNickname(ClientsInChannel[i]);
+		if (client.getIsOperator())
+			listNicknames += "@" + ClientsInChannel[i] + " ";
+		else
+			listNicknames += ClientsInChannel[i] + " ";
+	}
+	std::cout << RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames) << std::endl;
+	this->sendMsgToAllClientsInChannel(ClientsInChannel, RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames));
 }
