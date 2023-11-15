@@ -11,6 +11,7 @@
 #define RPL_YOUREOPER() ":irc 381You are now an IRC operator\r\n"
 #define	RPL_QUIT(reason) "QUIT :" + reason + "\r\n"
 #define RPL_NAMREPLY(nickname, channel, listUsers) ":irc 353 " + nickname + " = " + channel + " " + listUsers + "\r\n"
+#define RPL_ENDOFNAMES(nickname, channel) ":irc 366 " + nickname + " " + channel + " :End of /NAMES list\r\n"
 
 #define RPL_TOPIC(nickname, channelName, topicName) ":irc 332 " + nickname + " " + channelName + " " + topicName + "\r\n"
 #define RPL_TOPICWHOTIME(client, channelName, nickname, timeString) ":irc 333 " + client + " " + channelName + " " + nickname + " " + timeString + "\r\n"

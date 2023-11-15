@@ -173,4 +173,5 @@ void Commands::displayListClientOnChannel(std::string channelName)
 	}
 	std::cout << RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames) << std::endl;
 	this->sendMsgToAllClientsInChannel(ClientsInChannel, RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames));
+	this->sendMsgToAllClientsInChannel(ClientsInChannel, RPL_ENDOFNAMES(this->_client.getNickname(), channelName));
 }
