@@ -41,24 +41,44 @@ static std::vector<std::string>		parseKey(std::vector<std::string> arg)
     return (keys);
 }
 
-static void		setTopic(Client &client, std::map<std::string, Channel>::iterator &channel, std::vector<std::string> parseTopicTab)
+std::vector<Client>	getChannelClients(std::string channelName, std::map<int, Client> clientTab)
 {
+	std::vector<Client> clients;
+
+	for (std::map<int, Client>::iterator it = clientTab.begin(); it != clientTab.end(); it++)
+	{
+		if (std::find(it->second.getChannels().begin(), it->second.getChannels().end(), channelName) != it->second.getChannels().end())
+		{
+			clients.push_back(it->second);
+			std::cout << it->second << std::endl;
+		}
+	}
+	return clients;
+}
+
+static void		setTopic(std::map<std::string, Channel>::iterator &channel, std::vector<std::string> parseTopicTab, std::vector<Client> clientsList) {
 	std::string topicName;
 
-	for(long unsigned int i = 0; i < parseTopicTab.size(); i++)
+	for (long unsigned int i = 0; i < parseTopicTab.size(); i++)
 		topicName += parseTopicTab[i] + " ";
 	//check mode
 	channel->second.setTopic(topicName);
-	std::string topicMessage = RPL_TOPIC(client.getNickname(), channel->first, topicName);
-	client.addMessageToSend(topicMessage);
+//	std::cout << "-->[" ;
+	for (size_t i = 0; i < clientsList.size(); i++)
+	{
+		std::string topicMessage = RPL_TOPIC(clientsList[i].getNickname(), channel->first, topicName);
+//		std::cout << clientsList[i] << ",";
+		clientsList[i].addMessageToSend(topicMessage);
+		clientsList[i].setWaitingForSend(true);
+		std::time_t currentTime = std::time(0);
+		std::stringstream ss;
+		ss << currentTime;
+		std::string timeString = ss.str();
 
-	std::time_t currentTime = std::time(0);
-	std::stringstream ss;
-	ss << currentTime;
-	std::string timeString = ss.str();
-
-	std::string topicWhoTimeMessage = RPL_TOPICWHOTIME(client.getNickname(), channel->first,client.getNickname(), timeString);
-	client.addMessageToSend(topicWhoTimeMessage);
+		std::string topicWhoTimeMessage = RPL_TOPICWHOTIME(clientsList[i].getNickname(), channel->first, channel->second.getTopic(), timeString);
+		clientsList[i].addMessageToSend(topicWhoTimeMessage);
+	}
+//	std::cout << "]" << std::endl ;
 }
 
 void	Commands::topic()
@@ -82,6 +102,9 @@ void	Commands::topic()
 			this->_client.addMessageToSend(RPL_TOPIC(this->_client.getNickname(), channel->first, channel->second.getTopic()));
 	}
     else
-		setTopic(this->_client, channel, parseTopicTab);
+	{
+		std::vector<Client> clientsList = getChannelClients(channel->first, this->_clients);
+		setTopic(channel, parseTopicTab, clientsList);
+	}
 }
 //  461     ERR_NEEDMOREPARAMS

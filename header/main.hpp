@@ -29,6 +29,7 @@
 # include <cstring>
 # include <csignal>
 # include <cstdlib>
+# include <algorithm>
 # include <map>
 # include "errorMessages.hpp"
 # include "replyMessages.hpp"
