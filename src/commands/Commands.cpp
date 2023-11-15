@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 10:22:14 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 10:24:42 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:35:04 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ std::vector<std::string> Commands::allClientsOnChannel(std::string channel)
 	return (allClients);
 }
 
-void Commands::sendMsgToAllClients(std::vector<std::string> allClients, std::string msg)
+void Commands::sendMsgToAllClientsInChannel(std::vector<std::string> allClients, std::string msg)
 {
 	for (std::map<int, Client>::iterator it = this->_clients.begin(); it != this->_clients.end(); it++)
 	{

@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 09:01:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 10:27:41 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:35:04 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,6 @@ void	Commands::privateMsg()
 	finalMsg = ":" + this->_client.getUsername() + " " + this->_args[0] + " " + channelName + " :" + msg + "\r\n";
 	std::cout << "finalMsg = '" << finalMsg << "'" << std::endl;
 
-	sendMsgToAllClients(allClients, finalMsg);
+	sendMsgToAllClientsInChannel(allClients, finalMsg);
 	std::cout << "DEBUG\n";
 }

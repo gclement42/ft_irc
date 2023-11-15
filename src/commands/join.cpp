@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 09:58:22 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:35:04 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	Commands::join()
 			_client.addMessageToSend(createChannel);
 			_client.addMessageToSend(messageDisplayUsers);
 			addChannelInMap(_client.getNickname(), argChannel[i]);
-			sendMsgToAllClients(allClientsOnChannel(argChannel[i]), createChannel);
+			sendMsgToAllClientsInChannel(allClientsOnChannel(argChannel[i]), createChannel);
 
 			if (topic.empty() == false)
 				_client.addMessageToSend(":irc 332 " + _client.getNickname() + " " + argChannel[i] + " " + topic + "\r\n");

@@ -33,7 +33,7 @@ class Commands {
         //Utils commands
         void						parseBuffer(std::string buffer);
         std::vector<std::string>    allClientsOnChannel(std::string channel);
-        void                        sendMsgToAllClients(std::vector<std::string> allClients, std::string msg);
+        void                        sendMsgToAllClientsInChannel(std::vector<std::string> allClients, std::string msg);
 		bool						checkIfChannelExist(std::string channelName);
 		bool 						checkIfThisUserIsOnChannel(std::string channelName);
 		bool 						checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient);
