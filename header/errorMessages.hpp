@@ -5,7 +5,7 @@
 
 // Generic errors
 # define ERROR(reason) "ERROR :" + reason + "\r\n"
-# define ERR_NEEDMOREPARAMS(command) command + " :Not enough parameters\r\n"
+# define ERR_NEEDMOREPARAMS(client, command) ": 461 " + client + " " + command + " :Not enough parameters\r\n"
 
 // Passwords
 # define ERR_PASSWDMISMATCH(username) username + " :Password incorrect\r\n"

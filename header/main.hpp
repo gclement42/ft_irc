@@ -22,6 +22,8 @@
 # include <poll.h>
 # include <unistd.h>
 # include <string.h>
+# include <ctime>
+# include <sstream>
 # include <sstream>
 # include <vector>
 # include <fcntl.h>
@@ -29,6 +31,7 @@
 # include <cstring>
 # include <csignal>
 # include <cstdlib>
+# include <algorithm>
 # include <map>
 # include "errorMessages.hpp"
 # include "replyMessages.hpp"

@@ -4,7 +4,7 @@ void Commands::oper()
 {
 	if (this->_args.size() != 3)
 	{
-		this->_client.addMessageToSend(ERR_NEEDMOREPARAMS(this->_client.getNickname()));
+		this->_client.addMessageToSend(ERR_NEEDMOREPARAMS(this->_client.getNickname(), std::string("OPER")));
 		return ;
 	}
 	if (this->_args[2] != _operPassword)

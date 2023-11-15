@@ -2,7 +2,7 @@
 
 void Commands::invite() {
 	if (_args.size() != 3) {
-		_client.addMessageToSend(ERR_NEEDMOREPARAMS(_args[0]));
+		_client.addMessageToSend(ERR_NEEDMOREPARAMS(this->_client.getNickname(), _args[0]));
 		return ;
 	}
 	std::string channelName = _args[2];
