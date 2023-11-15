@@ -39,6 +39,7 @@ class Commands {
 		bool 						checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient);
 		Client						&getClientFromNickname(std::string nickname);
         void                        addChannelInMap(std::string nickname, std::string channelName);
+        void	                    allSend(Client &client, std::string channel, std::string topic, std::map<int, Client> clients);
 };
 
 

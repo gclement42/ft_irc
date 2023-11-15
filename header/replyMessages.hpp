@@ -18,4 +18,5 @@
 #define RPL_INVITING(nickname, channelName, target) ":irc 341 " + nickname + " " + channelName + " " + target + "\r\n"
 #define RPL_INVITE(nickname, target, channelName) ":" + nickname + " INVITE " + target + " " + channelName + "\r\n"
 
+#define RPL_JOIN(nickname, channelName) ":" + nickname + " JOIN " + channelName + "\r\n"
 #endif
