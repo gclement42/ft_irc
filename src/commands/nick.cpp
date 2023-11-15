@@ -11,5 +11,4 @@ void Commands::nick()
 	{
 		displayListClientOnChannel(clientChannels[i]);
 	}
-	
 }
