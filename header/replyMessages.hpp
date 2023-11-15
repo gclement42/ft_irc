@@ -20,5 +20,7 @@
 #define RPL_INVITE(nickname, target, channelName) ":" + nickname + " INVITE " + target + " " + channelName + "\r\n"
 
 #define RPL_JOIN(nickname, channelName) ":" + nickname + " JOIN " + channelName + "\r\n"
-#define RPL_PRIVMSG(nickname, channelName, msg) ":" + nickname + " PRIVMSG " + channelName + " :" + msg + "\r\n"
+#define RPL_PRIVMSGCHANNEL(nickname, channelName, msg) ":" + nickname + " PRIVMSG " + channelName + " :" + msg + "\r\n"
+#define RPL_PRIVMSGUSER(user, msg) ":PRIVMSG " + user + " :" + msg + "\r\n"
+
 #endif
