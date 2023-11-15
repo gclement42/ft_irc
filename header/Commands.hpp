@@ -31,6 +31,8 @@ class Commands {
 		void						invite();
 
         //Utils commands
+		std::vector<std::string>	parseChannelName(std::vector<std::string> arg);
+		std::vector<std::string>	parseKey(std::vector<std::string> arg);
         void						parseBuffer(std::string buffer);
         std::vector<std::string>    allClientsOnChannel(std::string channel);
         void                        sendMsgToAllClientsInChannel(std::vector<std::string> allClients, std::string msg);

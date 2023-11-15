@@ -14,24 +14,21 @@
 #include "Commands.hpp"
 #include "Channel.hpp"
 
-static std::vector<std::string>		parseChannelName(std::vector<std::string> arg);
-static std::vector<std::string>		parseKey(std::vector<std::string> arg);
-
 static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
 static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
 static int 			checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, int i);
 
 void	Commands::join()
 {	
-	std::vector<std::string> 	argChannel = parseChannelName(_args);
-	std::vector<std::string> 	keys = parseKey(_args);
+	std::vector<std::string> 	argChannel = this->parseChannelName(_args);
+	std::vector<std::string> 	keys = this->parseKey(_args);
 	std::string					topic;
 
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
 		if (checkChannelExist(argChannel[i], _channels) == FAILURE)
 		{
-			Channel newChannel(argChannel[i], "topic", "key", "", USER_LIMITS);
+			Channel newChannel(argChannel[i], "", "", "", USER_LIMITS);
 			
 			newChannel.incrementUserCount();
 			_channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
@@ -68,31 +65,6 @@ void	Commands::allSend(Client &client, std::string channel, std::string topic)
 }
 
 // ===== STATIC FUNCTIONS ===== //
-
-static std::vector<std::string>		parseChannelName(std::vector<std::string> arg)
-{
-	std::vector<std::string> 	channelName;
-
-	for (size_t i = 0; i < arg.size(); i++)
-	{
-		if (arg[i][0] == '#' || arg[i][0] == '&')
-			channelName.push_back(arg[i]);
-	}
-
-	return (channelName);
-}
-
-static std::vector<std::string>		parseKey(std::vector<std::string> arg)
-{
-	std::vector<std::string> 	keys;
-
-	for (size_t i = 1; i < arg.size(); i++)
-	{
-		if (!(arg[i][0] == '#' || arg[i][0] == '&'))
-			keys.push_back(arg[i]);
-	}
-	return (keys);
-}
 
 static int checkChannelExist(std::string channelName, std::map<std::string, Channel> channels)
 {

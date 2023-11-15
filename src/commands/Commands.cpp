@@ -40,6 +40,30 @@ Commands &Commands::operator=(const Commands &src) {
     return (*this);
 }
 
+std::vector<std::string>		Commands::parseChannelName(std::vector<std::string> arg)
+{
+	std::vector<std::string> 	channelName;
+
+	for (size_t i = 0; i < arg.size(); i++)
+	{
+		if (arg[i][0] == '#' || arg[i][0] == '&')
+			channelName.push_back(arg[i]);
+	}
+
+	return (channelName);
+}
+
+std::vector<std::string>		Commands::parseKey(std::vector<std::string> arg)
+{
+	std::vector<std::string> 	keys;
+	for (size_t i = 1; i < arg.size(); i++)
+	{
+		if (!(arg[i][0] == '#' || arg[i][0] == '&'))
+			keys.push_back(arg[i]);
+	}
+	return (keys);
+}
+
 bool Commands::checkIfChannelExist(std::string channelName) {
 	if (_channels.find(channelName) == _channels.end())
 		return (false);

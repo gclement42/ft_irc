@@ -190,7 +190,7 @@ bool Client::checkIfNicknameContainsForbiddenCharacters() {
 bool Client::checkIfUsernameIsValid() {
 	if (this->_username.empty()) {
 		std::string message = "No username given";
-		this->addMessageToSend(ERR_NEEDMOREPARAMS(std::string("USER")));
+		this->addMessageToSend(ERR_NEEDMOREPARAMS(this->_nickname, std::string("USER")));
 		return (false);
 	}
 	return (true);
