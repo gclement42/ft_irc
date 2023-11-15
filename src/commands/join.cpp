@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 08:37:30 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 08:43:02 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	Commands::join()
 			it->second.incrementUserCount();
 			topic = it->second.getTopic();
 		}
-		
+
 		if (checkKey(argChannel[i], keys, _channels, i) == FAILURE)
 		{
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
@@ -109,7 +109,6 @@ static std::vector<std::string>		parseKey(std::vector<std::string> arg)
 		if (!(arg[i][0] == '#' || arg[i][0] == '&'))
 			keys.push_back(arg[i]);
 	}
-
 	return (keys);
 }
 
@@ -117,7 +116,7 @@ static int checkChannelExist(std::string channelName, std::map<std::string, Chan
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
-	
+
 	if (it != channels.end())
 		return (SUCCESS);
 	return (FAILURE);
@@ -127,7 +126,7 @@ static int checkKey(std::string channelName, std::vector<std::string> keys, std:
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
-	
+
 	if (it->second.getKey().empty() == true)
 		return (SUCCESS);
 	if (keys.size() != 0 && keys[i].empty() == false)

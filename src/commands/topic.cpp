@@ -41,7 +41,7 @@ static std::vector<std::string>		parseKey(std::vector<std::string> arg)
     return (keys);
 }
 
-static void		RPL_TOPIC(Client &client, std::map<std::string, Channel>::iterator channel, std::vector<std::string> parseTopicTab)
+static void		setTopic(Client &client, std::map<std::string, Channel>::iterator &channel, std::vector<std::string> parseTopicTab)
 {
 	std::string topicName;
 
@@ -49,7 +49,7 @@ static void		RPL_TOPIC(Client &client, std::map<std::string, Channel>::iterator 
 		topicName += parseTopicTab[i] + " ";
 	//check mode
 	channel->second.setTopic(topicName);
-	std::string topicMessage = ":irc 332 " + client.getNickname() + " " + channel->first + " " + topicName + "\r\n";
+	std::string topicMessage = RPL_TOPIC(client.getNickname(), channel->first, topicName);
 	client.addMessageToSend(topicMessage);
 
 	std::time_t currentTime = std::time(0);
@@ -57,7 +57,7 @@ static void		RPL_TOPIC(Client &client, std::map<std::string, Channel>::iterator 
 	ss << currentTime;
 	std::string timeString = ss.str();
 
-	std::string topicWhoTimeMessage = ":irc 333" +  client.getNickname() + " " + channel->first + " " + client.getNickname() + " " + timeString + "\r\n";
+	std::string topicWhoTimeMessage = RPL_TOPICWHOTIME(client.getNickname(), channel->first,client.getNickname(), timeString);
 	client.addMessageToSend(topicWhoTimeMessage);
 }
 
@@ -73,21 +73,15 @@ void	Commands::topic()
     parseTopicTab = parseKey(this->_args);
     channel = this->_channels.find(tempChannelName[0]);
     if (channel == this->_channels.end())
-    {
-		std::cout << "OK!" << std::endl;
-        std::string 	emptyTopicMessage = ":irc 403 " + this->_client.getNickname() + " "  + tempChannelName[0] + " :No such channel\r\n";
-        this->_client.addMessageToSend(emptyTopicMessage);
-    }
+		this->_client.addMessageToSend(ERR_NOSUCHCHANNEL(this->_client.getNickname(), tempChannelName[0]));
     else if (parseTopicTab.empty())
 	{
-		std::string 	emptyTopicMessage;
 		if (channel->second.getTopic().empty())
-        	emptyTopicMessage = ":irc 331 " + this->_client.getNickname() + " "  + channel->first + " :No topic is set\r\n";
+			this->_client.addMessageToSend(RPL_NOTOPIC(this->_client.getNickname(), channel->first));
 		else
-			emptyTopicMessage = ":irc 332 " + this->_client.getNickname() + " "  + channel->first + " " + channel->second.getTopic() + "\r\n";
-		this->_client.addMessageToSend(emptyTopicMessage);
+			this->_client.addMessageToSend(RPL_TOPIC(this->_client.getNickname(), channel->first, channel->second.getTopic()));
 	}
     else
-		RPL_TOPIC(this->_client, channel, parseTopicTab);
+		setTopic(this->_client, channel, parseTopicTab);
 }
 //  461     ERR_NEEDMOREPARAMS

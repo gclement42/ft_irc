@@ -30,12 +30,14 @@ SRC						=	main.cpp \
 							Client.cpp \
 							readInBuffer.cpp \
 							\
+							commands/oper.cpp \
 							commands/quit.cpp \
 							commands/topic.cpp \
 							commands/parseBuffer.cpp \
 							commands/join.cpp \
 							commands/privateMsg.cpp \
 							commands/Commands.cpp \
+							commands/nick.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

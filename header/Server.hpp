@@ -30,14 +30,17 @@ class Server {
 		void					stop() const;
 		void					insertFd(pollfd client);
 		void					eraseFd(pollfd client);
+
 		size_t					getNbFd() const;
 		int						getSocketServer() const;
-		void					acceptClientConnexion();
-		void					checkFdsEvent();
 		pollfd					*getAllFds();
+
+		void					acceptClientConnexion();
 		void					displayClients();
 		void 					disconnectClient(int fd);
         void                    createClient(int fd);
+
+		void					checkFdsEvent();
 		bool                   	checkIfClientIsWaitingForSend(int fd);
 	private:
 		std::map<int, Client>	        _clients;

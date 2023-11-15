@@ -18,7 +18,7 @@ static std::vector<std::string> splitBuffer(std::string str);
 
 void	Commands::parseBuffer(std::string buffer)
 {
-	std::cout << "\033[1;35mbuffer: " << buffer << "\033[0m" << std::endl;
+//	std::cout << "\033[1;35mbuffer: " << buffer << "\033[0m" << std::endl;
 	
 	this->_args = splitBuffer(buffer);
 	std::string cmdName = this->_args[0];
@@ -37,6 +37,20 @@ void printError(std::string error)
 	std::cout << "\033[44m";
 	std::cout << error;
 	std::cout << "\033[0m" << std::endl;
+}
+
+static std::string cleanCommandNameFormat(std::string cmdName)
+{
+	size_t i = 0;
+
+	if (cmdName[0] == '/')
+		cmdName = cmdName.substr(1, cmdName.size());
+	while (i < cmdName.size())
+	{
+		cmdName[i] = std::toupper(cmdName[i]);
+		i++;
+	}
+	return (cmdName);
 }
 
 static std::vector<std::string> splitBuffer(std::string str)
@@ -58,6 +72,6 @@ static std::vector<std::string> splitBuffer(std::string str)
 	}
 
 	arguments.push_back(tmp);
-
+	arguments[0] = cleanCommandNameFormat(arguments[0]);
 	return (arguments);
 }
