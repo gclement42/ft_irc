@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 10:22:14 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 10:22:26 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:24:42 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,53 +84,6 @@ Client &Commands::getClientFromNickname(std::string nickname) {
 	}
 	return (this->_client);
 }
-
-
-bool Commands::checkIfChannelExist(std::string channelName) {
-	if (_channels.find(channelName) == _channels.end())
-		return (false);
-	Channel channel = _channels.find(channelName)->second;
-	if (channel.getUserCount() < 0)
-		return (false);
-	return (true);
-}
-
-bool Commands::checkIfThisUserIsOnChannel(std::string channelName) {
-	std::vector<std::string> clientChannels = _client.getChannels();
-	for (size_t i = 0; i < clientChannels.size(); i++) {
-		if (clientChannels[i] == channelName)
-			return (true);
-	}
-	return (false);
-}
-
-bool Commands::checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient) {
-	std::map<int, Client>::iterator it = _clients.begin();
-
-	while (it != _clients.end()) {
-		if (it->second.getNickname() == targetClient) {
-			std::vector<std::string> clientChannels = it->second.getChannels();
-			for (size_t i = 0; i < clientChannels.size(); i++) {
-				if (clientChannels[i] == channelName)
-					return (true);
-			}
-		}
-		it++;
-	}
-	return (false);
-}
-
-Client &Commands::getClientFromNickname(std::string nickname) {
-	std::map<int, Client>::iterator it = this->_clients.begin();
-	while (it != this->_clients.end())
-	{
-		if (it->second.getNickname() == nickname)
-			return (it->second);
-		it++;
-	}
-	return (this->_client);
-}
-
 
 std::vector<std::string> Commands::allClientsOnChannel(std::string channel)
 {
