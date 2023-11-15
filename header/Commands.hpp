@@ -40,8 +40,8 @@ class Commands {
 		Client						&getClientFromNickname(std::string nickname);
         void                        addChannelInMap(std::string nickname, std::string channelName);
 
-	void displayListClientOnChannel(std::string channelName);
-        void	                    allSend(Client &client, std::string channel, std::string topic, std::map<int, Client> clients);
+        void	                    allSend(Client &client, std::string channel, std::string topic);
+	    void                        displayListClientOnChannel(std::string channelName);
 };
 
 

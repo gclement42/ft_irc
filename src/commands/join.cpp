@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 13:06:29 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/15 13:11:03 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ static std::vector<std::string>		parseKey(std::vector<std::string> arg);
 static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
 static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
 static int 			checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, int i);
-//static std::string 	getListUsers(std::string channelName, std::map<int, Client> clients, Client &client);
 
 void	Commands::join()
 {	
@@ -49,36 +48,20 @@ void	Commands::join()
 		}
 		
 		if (checkKey(argChannel[i], keys, _channels, i) == SUCCESS && checkAll(argChannel[i], _client, _channels) == SUCCESS)
-			allSend(_client, argChannel[i], topic, _clients);
+			allSend(_client, argChannel[i], topic);
 		else
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
-			status = false;
-		}
-		
-		if (status == true && checkAll(argChannel[i], _client, _channels) == SUCCESS)
-		{	
-			createChannel = ":" + _client.getNickname() + " JOIN " + argChannel[i] + "\r\n";
-			
-			std::cout << "MessageDisplayUsers = '" << messageDisplayUsers << "'" << std::endl;
-
-			_client.addChannel(argChannel[i]);
-			_client.addMessageToSend(createChannel);
-			_client.addMessageToSend(messageDisplayUsers);
-			addChannelInMap(_client.getNickname(), argChannel[i]);
-			this->displayListClientOnChannel(argChannel[i]);
 	}
 }
 
-void	Commands::allSend(Client &client, std::string channel, std::string topic, std::map<int, Client> clients)
+void	Commands::allSend(Client &client, std::string channel, std::string topic)
 {
 	std::string		createChannel = RPL_JOIN(client.getNickname(), channel);
-	std::string		messageDisplayUsers = RPL_NAMREPLY(client.getNickname(), channel, getListUsers(channel, clients, client));
 
 	client.addChannel(channel);
 	client.addMessageToSend(createChannel);
-	client.addMessageToSend(messageDisplayUsers);
 	addChannelInMap(client.getNickname(), channel);
-	sendMsgToAllClientsInChannel(allClientsOnChannel(channel), messageDisplayUsers);
+	this->displayListClientOnChannel(channel);
 
 	if (topic.empty() == false)
 		client.addMessageToSend(":irc 332 " + client.getNickname() + " " + channel + " " + topic + "\r\n");
@@ -153,31 +136,4 @@ static int checkAll(std::string channelName, Client &client, std::map<std::strin
 	}
 		
 	return (SUCCESS);
-}
-
-static std::string 	getListUsers(std::string channelName, std::map<int, Client> clients, Client &client)
-{
-	std::string 	listUsers;
-	std::map<int, Client>::iterator it;
-	
-	for (it = clients.begin(); it != clients.end(); it++)
-	{
-		for (size_t i = 0; i < it->second.getChannels().size(); i++)
-		{
-			if (it->second.getChannels()[i] == channelName)
-			{
-				if (it->second.getIsOperator() == true)
-					listUsers += "@" + it->second.getNickname() + " ";
-				else
-					listUsers += it->second.getNickname() + " ";
-			}
-		}
-	}
-
-	if (client.getIsOperator() == true)
-		listUsers += "@" + client.getNickname();
-	else
-		listUsers += client.getNickname();
-	listUsers = ":" + listUsers;
-	return (listUsers);
 }
