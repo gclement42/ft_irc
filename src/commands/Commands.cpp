@@ -47,8 +47,8 @@ bool Commands::checkIfThisUserIsOnChannel(std::string channelName) {
 }
 
 bool Commands::checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient) {
-	//Fonction code par copilot a verifier
 	std::map<int, Client>::iterator it = _clients.begin();
+
 	while (it != _clients.end()) {
 		if (it->second.getNickname() == targetClient) {
 			std::vector<std::string> clientChannels = it->second.getChannels();
@@ -61,3 +61,15 @@ bool Commands::checkIfTargetClientIsOnChannel(std::string channelName, std::stri
 	}
 	return (false);
 }
+
+Client &Commands::getClientFromNickname(std::string nickname) {
+	std::map<int, Client>::iterator it = this->_clients.begin();
+	while (it != this->_clients.end())
+	{
+		if (it->second.getNickname() == nickname)
+			return (it->second);
+		it++;
+	}
+	return (this->_client);
+}
+

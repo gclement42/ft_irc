@@ -36,7 +36,8 @@ class Commands {
         void                        sendMsgToAllClients(std::vector<std::string> allClients, std::string msg);
 		bool						checkIfChannelExist(std::string channelName);
 		bool 						checkIfThisUserIsOnChannel(std::string channelName);
-		bool checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient);
+		bool 						checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient);
+		Client						&getClientFromNickname(std::string nickname);
 };
 
 

@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "main.hpp"
+#include "Commands.hpp"
+
 
 void	Commands::privateMsg()
 {

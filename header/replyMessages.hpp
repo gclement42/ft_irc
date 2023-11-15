@@ -13,4 +13,7 @@
 #define RPL_TOPIC(nickname, channelName, topicName) ":irc 332 " + nickname + " " + channelName + " " + topicName + "\r\n"
 #define RPL_TOPICWHOTIME(nickname, channelName, topicName, timeString) ":irc 333" +  client.getNickname() + " " + channel->first + " " + client.getNickname() + " " + timeString + "\r\n"
 #define RPL_NOTOPIC(nickname, channelName) ":irc 331 " + nickname + " "  + channelName + " :No topic is set\r\n"
+#define RPL_INVITING(nickname, channelName, target) ":irc 341 " + nickname + " " + channelName + " " + target + "\r\n"
+#define RPL_INVITE(nickname, target, channelName) ":" + nickname + " INVITE " + target + " " + channelName + "\r\n"
+
 #endif

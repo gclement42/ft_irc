@@ -21,4 +21,5 @@
 # define ERR_BADCHANNELKEY(channel) channel + " :Cannot join channel: bad channel key.\r\n"
 # define ERR_NOSUCHCHANNEL(nickname, channelName) ":irc 403 " + nickname + " "  + channelName + " :No such channel\r\n"
 # define ERR_NOTONCHANNEL(nickname, channelName) ":irc 442 " + nickname + " "  + channelName + " :You're not on that channel\r\n"
+# define ERR_USERONCHANNEL(nickname, channelName) ":irc 443 " + nickname + " "  + channelName + " :is already on channel\r\n"
 #endif

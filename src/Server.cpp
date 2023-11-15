@@ -115,8 +115,8 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
     {
         Commands        commands(_clients, _channels, client);
         buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-        commands.parseBuffer(buffer);
         std::cout << client.getNickname() << " : " << buffer << std::endl;
+        commands.parseBuffer(buffer);
 		_clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
     }
@@ -127,6 +127,7 @@ void Server::sendMessageToClient(pollfd &pollClient) {
         return ;
     Client client(_clients.find(pollClient.fd)->second);
     client.sendAllMessageToClient();
+	client.setWaitingForSend(false);
 	if (!client.getIsConnected())
 		disconnectClient(pollClient.fd);
 	else

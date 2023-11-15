@@ -24,6 +24,7 @@ Client::Client(const Client &src):
     _messagesToSend = src._messagesToSend;
     _isConnected = src._isConnected;
 	_channel = src._channel;
+	_waitingForSend = src._waitingForSend;
 }
 
 Client::~Client() {}
@@ -37,6 +38,7 @@ Client	&Client::operator=(const Client &src)
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
 	this->_isOperator = src._isOperator;
+	this->_waitingForSend = src._waitingForSend;
 	return (*this);
 }
 
@@ -73,6 +75,7 @@ bool	Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
 void	Client::sendAllMessageToClient() {
 	ssize_t ret;
 
+	std::cout << _nickname << " send messages" << std::endl;
     for (std::vector<std::string>::iterator it = _messagesToSend.begin(); it != _messagesToSend.end(); it++)
     {
         ret = send(_fd, (*it).c_str(), (*it).length(), 0);
