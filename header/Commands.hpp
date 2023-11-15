@@ -19,7 +19,6 @@ class Commands {
         ~Commands();
         Commands &operator=(const Commands &src);
 
-        void						parseBuffer(std::string buffer);
 
         //Commands
 		void	                    quit();
@@ -28,6 +27,7 @@ class Commands {
         void                        privateMsg();
 
         //Utils commands
+        void						parseBuffer(std::string buffer);
         std::vector<std::string>    allClientsOnChannel(std::string channel);
         void                        sendMsgToAllClients(std::vector<std::string> allClients, std::string msg);
 

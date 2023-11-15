@@ -9,6 +9,6 @@
 
 #define RPL_WELCOME(nickname) "Welcome to the ft_irc " + nickname + "\r\n"
 #define	RPL_QUIT(reason) "QUIT :" + reason + "\r\n"
-
+#define RPL_NAMREPLY(nickname, channel, listUsers) ":irc 353 " + nickname + " = " + channel + " :" + listUsers + "\r\n"
 
 #endif
