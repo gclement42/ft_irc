@@ -13,15 +13,10 @@
 # include "main.hpp"
 # include "Client.hpp"
 
-static std::string searchRealname(std::string str)
-{
-	std::string realname;
-
-	if (str.find(":") == std::string::npos)
-		return ("");
-	realname = str.substr(str.find(":"));
-	return (realname);
-}
+static std::string	searchRealname(std::string str);
+static void			pass(std::string str, std::string &password);
+static void			user(std::string str, std::string &username, std::string &realname);
+static void			nick(std::string str, std::string &nickname);
 
 Client parseClientData(std::string buffer, int fd)
 {
@@ -37,18 +32,45 @@ Client parseClientData(std::string buffer, int fd)
 	{
 		token = token.substr(0, token.find("\r"));
 		if (token.find("PASS") != std::string::npos)
-			password = token.substr(token.find("PASS") + 5);
+			pass(token, password);
 		if (token.find("NICK") != std::string::npos)
-			nickname = token.substr(token.find("NICK") + 5);
+			nick(token, nickname);
 		if (token.find("USER") != std::string::npos)
-		{
-			int endUsername = token.find("0");
-			username = token.substr(token.find("USER") + 5, endUsername - 1 - token.find("USER") - 5);
-			if (username.length() > USERLEN)
-				username = username.substr(0, USERLEN);
-			realname = searchRealname(token);
-		}
+			user(token, username, realname);
 	}
 	Client client(nickname, username, realname, fd, password);
 	return (client);
 }
+
+static void pass(std::string str, std::string &password)
+{
+	if (str.length() > 5)
+		password = str.substr(str.find("PASS") + 5);
+}
+
+static void nick(std::string str, std::string &nickname)
+{
+	if (str.length() > 5)
+		nickname = str.substr(str.find("NICK") + 5);
+}
+
+static void user(std::string str, std::string &username, std::string &realname)
+{
+	int endUsername = str.find("0");
+	if (str.length() > 5)
+		username = str.substr(str.find("USER") + 5, endUsername - 1 - str.find("USER") - 5);
+	if (username.length() > USERLEN)
+		username = username.substr(0, USERLEN);
+	realname = searchRealname(str);
+}
+
+static std::string searchRealname(std::string str)
+{
+	std::string realname;
+
+	if (str.find(":") == std::string::npos)
+		return ("");
+	realname = str.substr(str.find(":"));
+	return (realname);
+}
+
