@@ -16,9 +16,11 @@ static void parseArgs(std::vector<std::string> args,std::vector<std::string> &ch
 
 void Commands::part()
 {
-	std::vector <std::string>	channelNames;
+	std::vector<std::string>	channelNames;
 	std::string 				reason;
+	std::vector<std::string>::iterator it;
 
+	std::vector<std::string>	&clientChannels = _client.getChannels();
 	if (_args.size() < 2) {
 		_client.addMessageToSend(ERR_NEEDMOREPARAMS(_client.getNickname(), _args[0]));
 		return ;
@@ -33,9 +35,9 @@ void Commands::part()
 			_client.addMessageToSend(ERR_NOTONCHANNEL(_client.getNickname(), channelNames[i]));
 			return ;
 		}
-		std::cout << "delete :" << *_client.getChannels().erase(_client.getChannels().begin() + i) << std::endl;
 		_client.addMessageToSend(RPL_PART(_client.getNickname(), channelNames[i], reason));
-		_client.getChannels().erase(_client.getChannels().begin() + i);
+		it = std::find(clientChannels.begin(), clientChannels.end(), channelNames[i]);
+		clientChannels.erase(it);
 		displayListClientOnChannel(channelNames[i]);
 	}
 	return ;
