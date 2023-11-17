@@ -42,6 +42,30 @@ Commands &Commands::operator=(const Commands &src) {
     return (*this);
 }
 
+std::vector<std::string>	Commands::splitByComa(std::string str)
+{
+	std::string 				word;
+	std::stringstream 			ss(str);
+	std::vector<std::string> 	result;
+
+	if (str.find(",") != std::string::npos)
+	{
+		while (std::getline(ss, word, ','))
+		{
+			if (word[0] == ':')
+				word.erase(0, 1);
+			result.push_back(word);
+		}
+	}
+	else
+	{
+		if (str[0] == ':')
+			str.erase(0, 1);
+		result.push_back(str);
+	}
+	return (result);
+}
+
 std::vector<std::string>		Commands::parseChannelName(std::vector<std::string> arg)
 {
 	std::vector<std::string> 	channelName;
