@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 13:32:14 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/17 08:44:20 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "Commands.hpp"
 #include "Channel.hpp"
 
+static int 			checkArgs(std::vector<std::string> args, Client &client);
 static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
 static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
 static int 			checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, int i);
@@ -24,6 +25,8 @@ void	Commands::join()
 	std::vector<std::string> 	keys = this->parseKey(_args);
 	std::string					topic;
 
+	checkArgs(_args, _client);
+	
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
 		if (checkChannelExist(argChannel[i], _channels) == FAILURE)
@@ -64,6 +67,21 @@ void	Commands::allSend(Client &client, std::string channel, std::string topic)
 }
 
 // ===== STATIC FUNCTIONS ===== //
+
+static int checkArgs(std::vector<std::string> args, Client &client)
+{
+	if (!(args[1][0] == '#' || args[1][0] == '&'))
+	{
+		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[1]));
+		return (FAILURE);
+	}
+	if ((!(args[2][0] == '#' || args[2][0] == '&')) && (args.size() > 2))
+	{
+		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[2]));
+		return (FAILURE);
+	}
+	return (SUCCESS);
+}
 
 static int checkChannelExist(std::string channelName, std::map<std::string, Channel> channels)
 {
