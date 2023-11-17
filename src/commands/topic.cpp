@@ -29,6 +29,8 @@ void	Commands::topic() {
 
 	if (channel == this->_channels.end())
 		this->_client.addMessageToSend(ERR_NOSUCHCHANNEL(this->_client.getNickname(), channelName[0]));
+	else if (this->checkIfThisUserIsOnChannel(channel->first) == false)
+		this->_client.addMessageToSend(ERR_NOTONCHANNEL(this->_client.getNickname(), channel->first));
     else if (topicNameTab.empty())
 	{
 		if (channel->second.getTopic().empty())
