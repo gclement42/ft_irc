@@ -40,6 +40,7 @@ SRC						=	main.cpp \
 							commands/nick.cpp \
 							commands/kick.cpp \
 							commands/invite.cpp \
+							commands/part.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

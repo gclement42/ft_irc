@@ -182,7 +182,7 @@ void Server::disconnectClient(int fd) {
 	it = _clients.find(fd);
 	if (it != _clients.end())
 	{
-		std::cout << it->second.getUsername() << " disconnected" << std::endl;
+		std::cout << it->second.getNickname() << " disconnected" << std::endl;
 		_clients.erase(it);
 		eraseFd(_allFds[fd]);
 		close(fd);

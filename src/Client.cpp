@@ -171,7 +171,6 @@ bool Client::checkIfNicknameIsAlreadyUsed(std::map<int, Client> clients) {
 
 	for (it = clients.begin(); it != clients.end(); it++) {
 		if (it->second.getNickname() == this->_nickname && it->second.getFd() != this->_fd) {
-			std::string message = "Nickname already in use";
 			this->addMessageToSend(ERR_NICKNAMEINUSE(this->_nickname));
 			return (false);
 		}
@@ -189,7 +188,6 @@ bool Client::checkIfNicknameContainsForbiddenCharacters() {
 
 bool Client::checkIfUsernameIsValid() {
 	if (this->_username.empty()) {
-		std::string message = "No username given";
 		this->addMessageToSend(ERR_NEEDMOREPARAMS(this->_nickname, std::string("USER")));
 		return (false);
 	}

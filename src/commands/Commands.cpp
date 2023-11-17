@@ -22,6 +22,7 @@ Commands::Commands(std::map<int, Client> &clients, std::map<std::string, Channel
     this->_cmd["OPER"] = &Commands::oper;
 	this->_cmd["NICK"] = &Commands::nick;
 	this->_cmd["INVITE"] = &Commands::invite;
+	this->_cmd["PART"] = &Commands::part;
 	this->_cmd["KICK"] = &Commands::kick;
     _operPassword = "password";
 }
