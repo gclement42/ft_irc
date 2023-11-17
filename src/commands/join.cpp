@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/17 08:44:20 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/17 08:49:52 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	Commands::join()
 	std::string					topic;
 
 	checkArgs(_args, _client);
-	
+
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
 		if (checkChannelExist(argChannel[i], _channels) == FAILURE)
@@ -75,7 +75,7 @@ static int checkArgs(std::vector<std::string> args, Client &client)
 		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[1]));
 		return (FAILURE);
 	}
-	if ((!(args[2][0] == '#' || args[2][0] == '&')) && (args.size() > 2))
+	if ((args.size() > 2) && (!(args[2][0] == '#' || args[2][0] == '&')))
 	{
 		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[2]));
 		return (FAILURE);
