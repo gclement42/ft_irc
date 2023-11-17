@@ -54,7 +54,9 @@ static std::string	concatenate(std::vector<std::string> stringTab)
 {
 	std::string concatString;
 	for (std::vector<std::string>::iterator it = stringTab.begin(); it != stringTab.end(); ++it) {
-		concatString += *it + " ";
+		concatString += *it;
+		if (it != stringTab.end())
+			concatString += " ";
 	}
 	return concatString;
 }

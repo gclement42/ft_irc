@@ -38,6 +38,7 @@ SRC						=	main.cpp \
 							commands/privateMsg.cpp \
 							commands/Commands.cpp \
 							commands/nick.cpp \
+							commands/kick.cpp \
 							commands/invite.cpp \
 							commands/part.cpp \
 

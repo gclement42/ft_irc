@@ -23,6 +23,7 @@ Commands::Commands(std::map<int, Client> &clients, std::map<std::string, Channel
 	this->_cmd["NICK"] = &Commands::nick;
 	this->_cmd["INVITE"] = &Commands::invite;
 	this->_cmd["PART"] = &Commands::part;
+	this->_cmd["KICK"] = &Commands::kick;
     _operPassword = "password";
 }
 
@@ -76,10 +77,7 @@ bool Commands::checkIfChannelExist(std::string channelName) {
 
 bool Commands::checkIfThisUserIsOnChannel(std::string channelName) {
 	std::vector<std::string> clientChannels = _client.getChannels();
-
-	std::cout << "channelName : " << channelName << std::endl;
 	for (size_t i = 0; i < clientChannels.size(); i++) {
-		std::cout << "clientChannels[i] : " << clientChannels[i] << std::endl;
 		if (clientChannels[i] == channelName)
 			return (true);
 	}
@@ -175,6 +173,7 @@ void Commands::displayListClientOnChannel(std::string channelName)
 		else
 			listNicknames += ClientsInChannel[i] + " ";
 	}
+	std::cout << RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames) << std::endl;
 	this->sendMsgToAllClientsInChannel(ClientsInChannel, RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames));
 	this->sendMsgToAllClientsInChannel(ClientsInChannel, RPL_ENDOFNAMES(this->_client.getNickname(), channelName));
 }

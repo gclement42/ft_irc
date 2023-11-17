@@ -56,22 +56,15 @@ static std::string cleanCommandNameFormat(std::string cmdName)
 static std::vector<std::string> splitBuffer(std::string str)
 {
 	std::vector<std::string>	arguments;
+	std::stringstream 			streamBuffer(str);
 	std::string					tmp;
 	size_t						i = 0;
 
-	while(i < str.size())
+	while (getline(streamBuffer, tmp, ' '))
 	{
-		if (str[i] == ' ' || str[i] == ',')
-		{
-			arguments.push_back(tmp);
-			tmp.clear();
-		}
-		else
-			tmp += str[i];
+		arguments.push_back(tmp);
 		i++;
 	}
-
-	arguments.push_back(tmp);
 	arguments[0] = cleanCommandNameFormat(arguments[0]);
 	return (arguments);
 }
