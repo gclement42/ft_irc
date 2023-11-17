@@ -17,7 +17,7 @@
 std::vector<std::string>	parseComaSeparatedArgs(std::vector<std::string> arg)
 {
 	std::vector<std::string> 	result;
-	std::string::iterator it;
+	std::string::iterator		it;
 	std::string token;
 	size_t i = 1;
 

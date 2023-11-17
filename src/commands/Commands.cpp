@@ -24,6 +24,7 @@ Commands::Commands(std::map<int, Client> &clients, std::map<std::string, Channel
 	this->_cmd["INVITE"] = &Commands::invite;
 	this->_cmd["PART"] = &Commands::part;
 	this->_cmd["KICK"] = &Commands::kick;
+	this->_cmd["MODE"] = &Commands::mode;
     _operPassword = "password";
 }
 
@@ -102,6 +103,7 @@ bool Commands::checkIfTargetClientIsOnChannel(std::string channelName, std::stri
 
 Client &Commands::getClientFromNickname(std::string nickname) {
 	std::map<int, Client>::iterator it = this->_clients.begin();
+
 	while (it != this->_clients.end())
 	{
 		if (it->second.getNickname() == nickname)

@@ -31,6 +31,7 @@ class Commands {
 		void						kick();
 		void						invite();
 		void						part();
+		void						mode();
 
         //Utils commands
 		std::vector<std::string>	parseChannelName(std::vector<std::string> arg);
