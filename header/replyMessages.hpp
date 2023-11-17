@@ -22,6 +22,7 @@
 #define RPL_JOIN(nickname, channelName) ":" + nickname + " JOIN " + channelName + "\r\n"
 #define RPL_PART(nickname, channelName, reason) ":" + nickname + " PART " + channelName + " " + reason + "\r\n"
 #define RPL_PRIVMSGCHANNEL(nickname, channelName, msg) ":" + nickname + " PRIVMSG " + channelName + " :" + msg + "\r\n"
-#define RPL_PRIVMSGUSER(user, msg) ":PRIVMSG " + user + " :" + msg + "\r\n"
+#define RPL_PRIVMSGUSER(nickname, user, msg) ":" + nickname + " PRIVMSG " + user + " :" + msg + "\r\n"
+#define RPL_NOSUCHNICK(nickname, target) ":irc 401 " + nickname + " " + target + " :No such nick/channel\r\n"
 
 #endif
