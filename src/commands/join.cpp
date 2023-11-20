@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/17 15:42:32 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 10:03:08 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void	Commands::join()
 	std::vector<std::string> 	keys = this->parseKey(_args);
 	std::string					topic;
 
-	checkArgs(_args, _client);
+	if (checkArgs(_args, _client) == FAILURE)
+		return ;
 
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
@@ -37,8 +38,8 @@ void	Commands::join()
 			Channel newChannel(argChannel[i], "", "", "", USER_LIMITS);
 			
 			newChannel.incrementUserCount();
+			newChannel.addOperator(_client.getNickname());
 			_channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
-			_client.setIsOperator(true);
 			topic = newChannel.getTopic();
 		}
 		else
@@ -144,7 +145,7 @@ static int checkAll(std::string channelName, Client &client, std::map<std::strin
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
 
-	if (it->second.getUserCount() >= USER_LIMITS)
+	if (it->second.getUserCount() >= it->second.getUserLimit())
 	{
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
 		return (FAILURE);
