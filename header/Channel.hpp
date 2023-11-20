@@ -37,9 +37,15 @@ class Channel
 		int						getUserLimit(void) const;
 		int						getUserCount(void) const;
 		bool					getInviteMode(void) const;
-
+		void					addMode(char mode, ...);
+		void					removeMode(char mode);
 		void					setTopic(std::string topic);
+		void					setKey(char *key);
+		void					setUserLimit(char *userLimit);
 		void					incrementUserCount(void);
+		bool					getKeyMode(void) const;
+		bool					getLimitMode(void) const;
+		bool					getTopicMode(void) const;
 
 	private:
 
@@ -50,6 +56,9 @@ class Channel
 		int						_userLimit;
 		int						_userCount;
 		bool					_inviteMode;
+		bool					_topicMode;
+		bool					_keyMode;
+		bool					_limitMode;
 
 };
 

@@ -47,6 +47,7 @@ class Commands {
 
         void	                    allSend(Client &client, std::string channel, std::string topic);
 	    void                        displayListClientOnChannel(std::string channelName);
+		void						displayModeChannel();
 };
 
 

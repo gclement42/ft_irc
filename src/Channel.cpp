@@ -12,6 +12,7 @@
 
 #include "Channel.hpp"
 #include "main.hpp"
+#include <cstdarg>
 
 Channel::Channel(std::string name, std::string topic, std::string key, std::string mode, int userLimit):
 	_name(name), _topic(topic), _key(key), _mode(mode)
@@ -19,6 +20,9 @@ Channel::Channel(std::string name, std::string topic, std::string key, std::stri
 	this->_userLimit = userLimit;
 	this->_userCount = 0;
 	this->_inviteMode = false;
+	this->_keyMode = false;
+	this->_limitMode = false;
+	this->_topicMode = false;
 	return ;
 }
 
@@ -44,6 +48,9 @@ Channel		&Channel::operator=(const Channel &src)
 	this->_userLimit = src._userLimit;
 	this->_userCount = src._userCount;
 	this->_inviteMode = src._inviteMode;
+	this->_keyMode = src._keyMode;
+	this->_limitMode = src._limitMode;
+	this->_topicMode = src._topicMode;
 	
 	return (*this);
 }
@@ -91,6 +98,54 @@ void	Channel::setTopic(std::string topic)
 void	Channel::incrementUserCount(void)
 {
 	this->_userCount++;
+}
+
+void Channel::addMode(char mode, ...)
+{
+	std::cout << "addmode : " << mode << std::endl;
+	va_list args;
+	va_start(args, mode);
+
+	if (mode == 'k')
+		this->setKey(va_arg(args, char *));
+	else if (mode == 'l')
+		this->setUserLimit(va_arg(args, char *));
+	std::cout << "addmode : " << mode << std::endl;
+	this->_mode += mode;
+	va_end(args);
+}
+
+void Channel::removeMode(char mode)
+{
+	this->_mode.erase(this->_mode.find(mode), 1);
+	if (mode == 'k')
+		this->_keyMode = false;
+	else if (mode == 'l')
+		this->_limitMode = false;
+}
+
+void Channel::setKey(char *key)
+{
+	std::string keyString(key);
+	this->_key = keyString;
+}
+
+void Channel::setUserLimit(char *userLimit)
+{
+	int userLimitInt = atoi(userLimit);
+	this->_userLimit = userLimitInt;
+}
+
+bool Channel::getKeyMode(void) const {
+	return (this->_keyMode);
+}
+
+bool Channel::getLimitMode(void) const {
+	return (this->_limitMode);
+}
+
+bool Channel::getTopicMode(void) const {
+	return (this->_topicMode);
 }
 
 std::ostream	&operator<<(std::ostream &o, const Channel &src)
