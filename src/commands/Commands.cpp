@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 10:22:14 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 13:57:06 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/17 15:24:52 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ std::vector<std::string>	Commands::splitByComa(std::string str)
 	}
 	return (result);
 }
+
 
 std::vector<std::string>		Commands::parseChannelName(std::vector<std::string> arg)
 {

@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/17 08:49:52 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/17 15:42:32 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,17 @@
 #include "Commands.hpp"
 #include "Channel.hpp"
 
+static std::vector<std::string> 	getAllChannels(std::vector<std::string> args);
+
 static int 			checkArgs(std::vector<std::string> args, Client &client);
 static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
 static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
 static int 			checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, int i);
 
+
 void	Commands::join()
 {	
-	std::vector<std::string> 	argChannel = this->parseChannelName(_args);
+	std::vector<std::string> 	argChannel = getAllChannels(_args);
 	std::vector<std::string> 	keys = this->parseKey(_args);
 	std::string					topic;
 
@@ -66,7 +69,35 @@ void	Commands::allSend(Client &client, std::string channel, std::string topic)
 		client.addMessageToSend(":irc 332 " + client.getNickname() + " " + channel + " " + topic + "\r\n");
 }
 
+
+
+
 // ===== STATIC FUNCTIONS ===== //
+
+static std::vector<std::string> getAllChannels(std::vector<std::string> args)
+{
+	std::vector<std::string> 	targets;
+	std::string 				tmp;
+	
+	for (size_t i = 1; i < args.size(); i++)
+	{
+		if (args[i][0] == ':')
+			break;
+		else
+		{
+			size_t pos = args[i].find(",");
+			if (pos != std::string::npos)
+			{
+				targets.push_back(args[i].substr(0, pos));
+				targets.push_back(args[i].substr(pos + 1, args[i].size()));
+			}
+			else
+				targets.push_back(args[i]);
+		}
+	}
+	
+	return (targets);
+}
 
 static int checkArgs(std::vector<std::string> args, Client &client)
 {
