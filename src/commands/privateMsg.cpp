@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 09:01:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/17 15:33:21 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 08:44:17 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 static void		sendPrivMsgChannel(std::map<int, Client> &clients, std::vector<std::string> allClients, std::string client , std::vector<std::string> args);
 static void		sendPrivMsgUser(std::map<int, Client> &clients, Client &client, std::vector<std::string> args);
 
+static void 					checkDoubleDot(std::vector<std::string> &arg);
 static std::vector<std::string> getAllTargets(std::vector<std::string> args);
 static std::string 				getMessage(std::vector<std::string> args);
 static int 						clientExist(std::map<int, Client> &clients, std::string client);
@@ -101,6 +102,17 @@ static void		sendPrivMsgUser(std::map<int, Client> &clients, Client &client, std
 			client.addMessageToSend(ERR_NOSUCHNICK(client.getNickname(), target[i]));
 			client.setWaitingForSend(true);
 		}
+	}
+}
+
+static void 	checkDoubleDot(std::vector<std::string> &arg)
+{
+	if (arg[2].find(":", 0) == 0)
+		return ;
+	else
+	{
+		arg[2] = ":" + arg[2];
+		std::cout << arg[2] << std::endl;
 	}
 }
 
