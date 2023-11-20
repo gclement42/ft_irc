@@ -62,7 +62,7 @@ static void		sendPrivMsgChannel(std::map<int, Client> &clients, std::vector<std:
 	std::vector<std::string> 	target;
 	
 	target = getAllTargets(args);
-	
+
 	for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
 		for (size_t i = 0; i < allClients.size(); i++)
