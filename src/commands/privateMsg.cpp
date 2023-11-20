@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 09:01:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/20 08:44:17 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 08:58:12 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	Commands::privateMsg()
 	std::vector<std::string> 	allClientsFirstChannel;
 	std::vector<std::string> 	allClientsSecondChannel;
 
+	checkDoubleDot(this->_args);
 	if (this->_args[1].find("#", 0) == 0 || this->_args[1].find("&", 0) == 0)
 	{
 		targets = getAllTargets(this->_args);
