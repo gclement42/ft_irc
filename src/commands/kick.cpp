@@ -37,17 +37,14 @@ std::vector<Client>	getclientsToKick(Commands *cmds, std::vector<std::string> &u
 
 void	kickClients(std::string channelToBeKickedOut, std::vector<Client> &clientsToKick)
 {
-	std::vector<std::string>::iterator it;
-
 	for (size_t i = 0; i < clientsToKick.size(); i++)
 	{
-		std::vector<std::string> &clientChannels = clientsToKick[i].getChannels();
-		it = std::find(clientChannels.begin(), clientChannels.end(), channelToBeKickedOut);
-		clientChannels.erase(it);
-		std::cout << "TEST : " ;
-		for (size_t i = 0; i < clientChannels.size(); i++)
-			std::cout << clientChannels[i] << std::endl;
-		std::cout << "TEST : " ;
+		std::vector<std::string>::iterator it = std::find(clientsToKick[i].getChannels().begin(), clientsToKick[i].getChannels().end(), channelToBeKickedOut);
+		clientsToKick[i].getChannels().erase(it);
+//		std::cout << "TEST : " ;
+//		for (size_t i = 0; i < clientChannels.size(); i++)
+//			std::cout << clientChannels[i] << std::endl;
+//		std::cout << "TEST : " ;
 //		std::cout << "TEST : " ;
 //		for (size_t i = 0; i < clientsToKick[i].getChannels().size(); i++)
 //			std::cout << clientsToKick[i].getChannels()[i] << std::endl;
@@ -79,8 +76,24 @@ void	Commands::kick()
 		_client.addMessageToSend(ERR_NOTONCHANNEL(usersTab[0], channel->first));
 		return ;
 	}
-	std::vector<Client> clientsToKick = getclientsToKick(this, usersTab);
-	kickClients(channel->first, clientsToKick);
+//	std::vector<Client> clientsToKick = getclientsToKick(this, usersTab);
+	for (size_t i = 0; i < usersTab.size(); i++)
+	{
+		Client &client = this->getClientFromNickname(usersTab[i]);
+		std::cout << "client = " << client.getNickname() << std::endl;
+		std::vector<std::string>::iterator it = std::find(client.getChannels().begin(), client.getChannels().end(), channel->first);
+		client.getChannels().erase(it);
+		std::string message = ":" + _client.getNickname() + " KICK " + channel->first + " " + client.getNickname() + " " + _client.getNickname() + "\r\n";
+		client.addMessageToSend(message);
+		client.setWaitingForSend(true);
+		std::cout << " it = " << it->c_str() <<  std::endl;
+		std::cout << "size = " << client.getChannels().size() << std::endl;
+		for (size_t i = 0; i < client.getChannels().size(); i++)
+			std::cout << "i = "<< client.getChannels()[i] << std::endl;
+	}
+
+//	kickClients(channel->first, clientsToKick);
 	displayListClientOnChannel(channel->first);
-	std::cout << "-->" << getClientFromNickname(usersTab[0]).getChannels()[0] << std::endl;
+	std::cout << "-->" << getClientFromNickname(usersTab[0]).getChannels().size() << std::endl;
+
 }
