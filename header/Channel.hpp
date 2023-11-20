@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:41:57 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/13 10:16:43 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 09:30:38 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,29 @@ class Channel
 
 		Channel					&operator=(const Channel &src);
 
-		std::string				getName(void) const;
-		std::string				getTopic(void) const;
-		std::string				getKey(void) const;
-		std::string				getMode(void) const;
-		int						getUserLimit(void) const;
-		int						getUserCount(void) const;
-		bool					getInviteMode(void) const;
+		std::string					getName(void) const;
+		std::string					getTopic(void) const;
+		std::string					getKey(void) const;
+		std::string					getMode(void) const;
+		int							getUserLimit(void) const;
+		int							getUserCount(void) const;
+		bool						getInviteMode(void) const;
+		std::vector<std::string>	getOperators(void) const;
 
-		void					setTopic(std::string topic);
-		void					incrementUserCount(void);
+		void						setTopic(std::string topic);
+		void						incrementUserCount(void);
+		void 						addOperator(std::string nickname);
 
 	private:
 
-		std::string				_name;
-		std::string				_topic;
-		std::string				_key;
-		std::string				_mode;
-		int						_userLimit;
-		int						_userCount;
-		bool					_inviteMode;
+		std::string						_name;
+		std::string						_topic;
+		std::string						_key;
+		std::string						_mode;
+		std::vector<std::string>		_operators;
+		int								_userLimit;
+		int								_userCount;
+		bool							_inviteMode;
 
 };
 
