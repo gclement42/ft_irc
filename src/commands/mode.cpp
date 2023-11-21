@@ -21,6 +21,7 @@
 static	void	parseModeArgs(std::vector<std::string> args, std::vector<std::string> &modeArgs);
 static	bool	checkModeArgs(std::vector<std::string> args);
 static	void	setSymbol(char &symbol, char newSymbol);
+//static	void	operatorModeRemove(std::string &channel, );
 
 void Commands::mode()
 {
@@ -52,9 +53,11 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 	char		symbol;
 	size_t 		x;
 	std::string arg;
+	std::string channelMode;
 
 	x = 0;
 	symbol = 0;
+	channelMode = channel.getMode();
 	for (size_t i = 0; i < modestring.length(); i++)
 	{
 		if (modestring[i] == '+' || modestring[i] == '-')
@@ -66,25 +69,26 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 				this->_client.addMessageToSend(ERR_BADFORMATMODE());
 				return ;
 			}
-			if (symbol == '+')
+			if (modestring[i] == 'o')
+				this->operatorMode(arg, channel, symbol);
+			else if (symbol == '+')
 			{
-				if (modestring[i] != 'o' && modestring[i] != 'k' && modestring[i] != 'l')
+				if (modestring[i] != 'k' && modestring[i] != 'l')
 					channel.addMode(modestring[i]);
 				else
 				{
 					if (x >= modeArgs.size())
 						continue ;
 					arg = modeArgs[x];
-					if (modestring[i] == 'o')
-						this->operatorMode(arg, channel);
-					else
-						channel.addMode(modestring[i], arg.c_str());
-					_client.addMessageToSend(RPL_MODESET(std::string(&modestring[i]), channel.getName()));
+					channel.addMode(modestring[i], arg.c_str());
 					x++;
 				}
+			_client.addMessageToSend(RPL_MODESET(std::string(&modestring[i]), channel.getName()));
 			}
 			else
 			{
+				if (channelMode.find(modestring[i]) == std::string::npos)
+					continue ;
 				channel.removeMode(modestring[i]);
 				_client.addMessageToSend(RPL_MODEREMOVE(std::string(&modestring[i]), channel.getName()));
 			}
@@ -92,9 +96,11 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 	}
 }
 
-void Commands::operatorMode(std::string arg, Channel &channel)
+void Commands::operatorMode(std::string arg, Channel &channel, char symbol)
 {
+	std::vector<std::string> operators = channel.getOperators();
 	Client &target = this->getClientFromNickname(arg);
+
 	if (target.getNickname() == this->_client.getNickname()) {
 		this->_client.addMessageToSend(ERR_ERRONEUSNICKNAME(target.getNickname()));
 		return ;
@@ -104,7 +110,26 @@ void Commands::operatorMode(std::string arg, Channel &channel)
 		this->_client.addMessageToSend(ERR_NOTONCHANNEL(target.getNickname(), channel.getName()));
 		return ;
 	}
-	channel.addMode('o', target.getNickname().c_str());
+	if (symbol == '+') {
+		operators.push_back(target.getNickname());
+		this->sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()), RPL_NOWISOPER(target.getNickname()));
+		target.addMessageToSend(RPL_YOUREOPER());
+		target.setWaitingForSend(true);
+	}
+	else
+	{
+		std::vector<std::string>::iterator it = std::find(operators.begin(), operators.end(), target.getNickname());
+		if (it == operators.end())
+		{
+			this->_client.addMessageToSend(ERR_ISNOTOPER(target.getNickname()));
+			return ;
+		}
+		else
+		{
+			operators.erase(it);
+			sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()), RPL_NOWISNOTOPER(target.getNickname()));
+		}
+	}
 
 }
 

@@ -52,7 +52,7 @@ class Commands {
 		void						displayModeChannel();
 
 		void 						addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
-		void 						operatorMode(std::string arg, Channel &channel);
+		void 						operatorMode(std::string arg, Channel &channel, char symbol);
 };
 
 

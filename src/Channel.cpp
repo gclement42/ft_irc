@@ -23,19 +23,14 @@ Channel::Channel(std::string name, std::string topic, std::string key, std::stri
 	this->_keyMode = false;
 	this->_limitMode = false;
 	this->_topicMode = false;
-	return ;
 }
 
 Channel::Channel(const Channel &src)
 {
 	*this = src;
-	return ;
 }
 
-Channel::~Channel(void)
-{
-	return ;
-}
+Channel::~Channel(void) { }
 
 Channel		&Channel::operator=(const Channel &src)
 {
@@ -76,17 +71,17 @@ std::string	Channel::getMode(void) const
 	return (this->_mode);
 }
 
-int			Channel::getUserLimit(void) const
+int	Channel::getUserLimit(void) const
 {
 	return (this->_userLimit);
 }
 
-int			Channel::getUserCount(void) const
+int	Channel::getUserCount(void) const
 {
 	return (this->_userCount);
 }
 
-bool		Channel::getInviteMode(void) const
+bool	Channel::getInviteMode(void) const
 {
 	return (this->_inviteMode);
 }
@@ -128,6 +123,8 @@ void Channel::addMode(char mode, ...)
 
 void Channel::removeMode(char mode)
 {
+	if (this->_mode.find(mode) == std::string::npos)
+		return ;
 	this->_mode.erase(this->_mode.find(mode), 1);
 	if (mode == 'k')
 	{
