@@ -12,7 +12,7 @@
 
 # include "main.hpp"
 
-std::string readInBuffer(int fd) {
+std::string Server::readInBuffer(int fd) {
 	char		buffer[1024];
 	std::string	concatenateBuffer;
 	ssize_t 	bytes;

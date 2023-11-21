@@ -53,14 +53,6 @@ bool	Client::checkIfPasswordIsValid(Client client, std::string passwordServer) {
 	}
 }
 
-bool	Client::checkIfClientIsStillConnected() const {
-	std::string buffer = readInBuffer(this->getFd());
-	
-	if (buffer != "PONG localhost\r\n")
-		return (false);
-	return (true);
-}
-
 
 bool	Client::checkIfNicknameIsValid(std::map<int, Client> clients) {
 	if (!checkIfNicknameIsNotEmpty())

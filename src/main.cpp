@@ -13,6 +13,14 @@
 #include "main.hpp"
 #include "Server.hpp"
 
+bool quit = false;
+
+void	sigint_handler(int sig)
+{
+	(void) sig;
+	quit = true;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc < 2)
@@ -28,6 +36,13 @@ int main(int argc, char **argv)
 	server.start();
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
+		signal(SIGINT, sigint_handler);
+		if (quit == true)
+		{
+			server.stop();
+			return (0);
+		}
 		server.acceptClientConnexion();
 		server.checkFdsEvent();
 	}

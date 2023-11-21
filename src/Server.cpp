@@ -16,7 +16,7 @@
 
 Server::Server(int port, const std::string& password): _port(port), _password(password) {
 	_socketServer = socket(AF_INET, SOCK_STREAM, 0);
-	int iSetOption = 1; 
+	int iSetOption = 1;
 	setsockopt(_socketServer, SOL_SOCKET, SO_REUSEADDR, (char*)&iSetOption,
         sizeof(iSetOption));
 	_allFds =  NULL;
@@ -109,7 +109,7 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		pollClient.revents |= POLLOUT;
 		return ;
 	}
-    buffer = readInBuffer(pollClient.fd);
+    buffer = this->readInBuffer(pollClient.fd);
     Client &client = _clients.find(pollClient.fd)->second;
     if (buffer != "" && client.getIsConnected())
     {
@@ -157,10 +157,10 @@ void Server::checkFdsEvent() {
 }
 
 void Server::createClient(int fd) {
-    std::string buffer = readInBuffer(fd);
+    std::string buffer = this->readInBuffer(fd);
 
     while (buffer.find("USER") == std::string::npos)
-        buffer += readInBuffer(fd);
+        buffer += this->readInBuffer(fd);
     Client client(parseClientData(buffer, fd));
 	if (client.checkIfNicknameIsValid(_clients)
 		&& client.checkIfPasswordIsValid(client, _password)
