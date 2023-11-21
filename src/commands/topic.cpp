@@ -12,7 +12,6 @@
 
 #include "main.hpp"
 
-static std::string	concatenate(std::vector<std::string> stringTab);
 static std::string	getTimeString();
 
 void	Commands::topic() {
@@ -41,24 +40,13 @@ void	Commands::topic() {
     else
 	{
 		std::vector<std::string> clientsList = allClientsOnChannel(channel->first);
-		std::string topicName = concatenate(topicNameTab);
+		std::string topicName = this->concatenate(topicNameTab);
 
 		channel->second.setTopic(topicName);
 
 		sendMsgToAllClientsInChannel(clientsList, RPL_TOPIC(this->_client.getNickname(), channel->first, topicName));
 		sendMsgToAllClientsInChannel(clientsList, RPL_TOPICWHOTIME(this->_client.getNickname(), channel->first, this->_client.getNickname(), getTimeString()));
 	}
-}
-
-static std::string	concatenate(std::vector<std::string> stringTab)
-{
-	std::string concatString;
-	for (std::vector<std::string>::iterator it = stringTab.begin(); it != stringTab.end(); ++it) {
-		concatString += *it;
-		if (it != stringTab.end())
-			concatString += " ";
-	}
-	return concatString;
 }
 
 std::string		getTimeString()
