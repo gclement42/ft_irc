@@ -22,6 +22,7 @@
 # define ERR_NOSUCHCHANNEL(nickname, channelName) ":irc 403 " + nickname + " "  + channelName + " :No such channel\r\n"
 # define ERR_NOTONCHANNEL(nickname, channelName) ":irc 442 " + nickname + " "  + channelName + " :" + nickname + " is not on that channel\r\n"
 # define ERR_USERONCHANNEL(nickname, channelName) ":irc 443 " + nickname + " "  + channelName + " :is already on channel\r\n"
+# define ERR_USERNOTINCHANNEL(srcNickname, targetNickname, channelName) ":irc 441 "+ srcNickname + " " + targetNickname + " " + channelName + " :They aren't on that channel\r\n"
 # define ERR_NOSUCHNICK(nickname, target) ":irc 401 " + nickname + " " + target + " :No such nick/channel\r\n"
 
 
