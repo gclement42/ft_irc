@@ -19,9 +19,8 @@
  3 et + = args
  */
 static	void	parseModeArgs(std::vector<std::string> args, std::vector<std::string> &modeArgs);
-static	bool checkModeArgs(std::vector<std::string> args);
-static	void addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
-static	void setSymbol(char &symbol, char newSymbol);
+static	bool	checkModeArgs(std::vector<std::string> args);
+static	void	setSymbol(char &symbol, char newSymbol);
 
 void Commands::mode()
 {
@@ -44,7 +43,69 @@ void Commands::mode()
 	Channel &channel = this->_channels.find(this->_args[1])->second;
 	parseModeArgs(_args, modeArgs);
 	modestring = _args[2];
-	addOrRemoveMode(modestring, modeArgs, channel);
+	this->addOrRemoveMode(modestring, modeArgs, channel);
+}
+
+
+void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel)
+{
+	char		symbol;
+	size_t 		x;
+	std::string arg;
+
+	x = 0;
+	symbol = 0;
+	for (size_t i = 0; i < modestring.length(); i++)
+	{
+		if (modestring[i] == '+' || modestring[i] == '-')
+			setSymbol(symbol, modestring[i]);
+		else
+		{
+			if (symbol == 0)
+			{
+				this->_client.addMessageToSend(ERR_BADFORMATMODE());
+				return ;
+			}
+			if (symbol == '+')
+			{
+				if (modestring[i] != 'o' && modestring[i] != 'k' && modestring[i] != 'l')
+					channel.addMode(modestring[i]);
+				else
+				{
+					if (x >= modeArgs.size())
+						continue ;
+					arg = modeArgs[x];
+					if (modestring[i] == 'o')
+						this->operatorMode(arg, channel);
+					else
+						channel.addMode(modestring[i], arg.c_str());
+					_client.addMessageToSend(RPL_MODESET(std::string(&modestring[i]), channel.getName()));
+					x++;
+				}
+			}
+			else
+			{
+				channel.removeMode(modestring[i]);
+				_client.addMessageToSend(RPL_MODEREMOVE(std::string(&modestring[i]), channel.getName()));
+			}
+		}
+	}
+}
+
+void Commands::operatorMode(std::string arg, Channel &channel)
+{
+	Client &target = this->getClientFromNickname(arg);
+	if (target.getNickname() == this->_client.getNickname()) {
+		this->_client.addMessageToSend(ERR_ERRONEUSNICKNAME(target.getNickname()));
+		return ;
+	}
+	if (!checkIfTargetClientIsOnChannel(channel.getName(), target.getNickname()))
+	{
+		this->_client.addMessageToSend(ERR_NOTONCHANNEL(target.getNickname(), channel.getName()));
+		return ;
+	}
+	channel.addMode('o', target.getNickname().c_str());
+
 }
 
 void Commands::displayModeChannel()
@@ -55,38 +116,6 @@ void Commands::displayModeChannel()
 	Channel channel = this->_channels.find(this->_args[1])->second;
 	std::string msg = ":irc 324 " + _client.getNickname() + " " + _args[1] + " ";
 }
-
-static void addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel)
-{
-	char		symbol;
-	size_t 		x;
-	std::string arg;
-
-	x = 0;
-	symbol = '+';
-	for (size_t i = 0; i < modestring.length(); i++)
-	{
-		if (modestring[i] == '+' || modestring[i] == '-')
-			setSymbol(symbol, modestring[i]);
-		else
-		{
-			if (modestring[i] == 'k' || modestring[i] == 'l' || modestring[i] == 'o')
-			{
-				if (x >= modeArgs.size())
-					continue ;
-				arg = modeArgs[x];
-				if (symbol == '+')
-					channel.addMode(modestring[i], arg.c_str());
-				x++;
-			}
-			else if (symbol == '+')
-				channel.addMode(modestring[i]);
-			else
-				channel.removeMode(modestring[i]);
-		}
-	}
-}
-
 static bool checkModeArgs(std::vector<std::string> args)
 {
 	if (args.size() < 3)

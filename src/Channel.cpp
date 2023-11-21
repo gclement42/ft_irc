@@ -119,9 +119,15 @@ void Channel::removeMode(char mode)
 {
 	this->_mode.erase(this->_mode.find(mode), 1);
 	if (mode == 'k')
+	{
+		this->_key = "";
 		this->_keyMode = false;
+	}
 	else if (mode == 'l')
+	{
+		this->_userLimit = -1;
 		this->_limitMode = false;
+	}
 }
 
 void Channel::setKey(char *key)

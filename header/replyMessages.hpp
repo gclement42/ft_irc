@@ -25,4 +25,7 @@
 #define RPL_PRIVMSGUSER(nickname, user, msg) ":" + nickname + " PRIVMSG " + user + " :" + msg + "\r\n"
 #define RPL_NOSUCHNICK(nickname, target) ":irc 401 " + nickname + " " + target + " :No such nick/channel\r\n"
 
+#define RPL_MODESET(mode, channelName) "MODE " + mode + " is set on channel : " + channelName + "\r\n"
+#define RPL_MODEREMOVE(mode, channelName) "MODE " + mode + " is removed on channel : " + channelName + "\r\n"
+
 #endif

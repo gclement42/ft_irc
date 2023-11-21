@@ -48,6 +48,9 @@ class Commands {
         void	                    allSend(Client &client, std::string channel, std::string topic);
 	    void                        displayListClientOnChannel(std::string channelName);
 		void						displayModeChannel();
+
+		void 						addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
+		void 						operatorMode(std::string arg, Channel &channel);
 };
 
 
