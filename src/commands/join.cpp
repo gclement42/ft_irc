@@ -29,12 +29,12 @@ void	Commands::join()
 	std::string					keys = getKeyString(_args);
 	std::string					topic;
 
-	if (checkArgs(_args, _client) == false)
+	if (!checkArgs(_args, _client))
 		return ;
 
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
-		if (checkChannelExist(argChannel[i], _channels) == false)
+		if (!checkChannelExist(argChannel[i], _channels))
 		{
 			Channel newChannel(argChannel[i], "", "", "", USER_LIMITS);
 			
@@ -51,24 +51,23 @@ void	Commands::join()
 			it->second.incrementUserCount();
 			topic = it->second.getTopic();
 		}
-
-		if (checkKey(argChannel[i], keys, _channels, i) == true && checkAll(argChannel[i], _client, _channels) == true)
-			allSend(_client, argChannel[i], topic);
-		else
+		if (!checkKey(argChannel[i], keys, _channels, i))
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
+		else if (checkAll(argChannel[i], _client, _channels))
+			addClientInChannel(argChannel[i], topic);
 	}
 }
 
-void	Commands::allSend(Client &client, std::string channel, std::string topic)
+void	Commands::addClientInChannel(std::string channel, std::string topic)
 {
-	std::string		createChannel = RPL_JOIN(client.getNickname(), channel);
+	std::string		createChannel = RPL_JOIN(_client.getNickname(), channel);
 
-	client.addMessageToSend(createChannel);
-	addChannelInMap(client.getNickname(), channel);
+	_client.addMessageToSend(createChannel);
+	addChannelInMap(_client.getNickname(), channel);
 	this->displayListClientOnChannel(channel);
 
-	if (topic.empty() == false)
-		client.addMessageToSend(RPL_TOPIC(client.getNickname(), channel, topic));
+	if (!topic.empty())
+		_client.addMessageToSend(RPL_TOPIC(_client.getNickname(), channel, topic));
 }
 
 
@@ -161,17 +160,18 @@ static bool checkAll(std::string channelName, Client &client, std::map<std::stri
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
+	Channel channel = it->second;
 
-	if (it->second.getUserCount() >= it->second.getUserLimit())
+	std::cout << "getlimitmode :" << channel.getLimitMode() << std::endl;
+	if (channel.getLimitMode() && channel.getUserCount() >= channel.getUserLimit())
 	{
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
 		return (false);
 	}
-	if (it->second.getInviteMode() == true)
+	if (channel.getInviteMode() == true)
 	{
 		client.addMessageToSend(ERR_INVITEONLYCHAN(channelName));
 		return (false);
 	}
-		
 	return (true);
 }

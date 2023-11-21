@@ -142,12 +142,14 @@ void Channel::setKey(char *key)
 {
 	std::string keyString(key);
 	this->_key = keyString;
+	this->_keyMode = true;
 }
 
 void Channel::setUserLimit(char *userLimit)
 {
 	int userLimitInt = atoi(userLimit);
 	this->_userLimit = userLimitInt;
+	this->_limitMode = true;
 }
 
 bool Channel::getKeyMode(void) const {

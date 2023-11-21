@@ -100,6 +100,7 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 			{
 				if (channelMode.find(modestring[i]) == std::string::npos)
 					continue ;
+				channel.removeMode(modestring[i]);
 				this->sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()),
 												   RPL_MODEREMOVE(mode, channel.getName()));
 			}

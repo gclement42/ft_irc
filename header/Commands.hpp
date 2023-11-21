@@ -47,7 +47,7 @@ class Commands {
         void                        addChannelInMap(std::string nickname, std::string channelName);
         int                         isOperatorInChannel(std::string nickname, std::string channel);
 
-        void	                    allSend(Client &client, std::string channel, std::string topic);
+        void	                    addClientInChannel(std::string channel, std::string topic);
 	    void                        displayListClientOnChannel(std::string channelName);
 		void						displayModeChannel();
 
