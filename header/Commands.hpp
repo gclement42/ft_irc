@@ -33,6 +33,7 @@ class Commands {
 		void						part();
 
         //Utils commands
+		std::string					concatenate(std::vector<std::string> stringTab);
 		std::vector<std::string>	splitByComa(std::string str);
 		std::vector<std::string>	parseChannelName(std::vector<std::string> arg);
 		std::vector<std::string>	parseKey(std::vector<std::string> arg);

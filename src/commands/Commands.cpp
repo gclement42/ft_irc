@@ -44,6 +44,17 @@ Commands &Commands::operator=(const Commands &src) {
     return (*this);
 }
 
+std::string	Commands::concatenate(std::vector<std::string> stringTab)
+{
+	std::string concatString;
+	for (std::vector<std::string>::iterator it = stringTab.begin(); it != stringTab.end(); ++it) {
+		concatString += *it;
+		if (it != stringTab.end())
+			concatString += " ";
+	}
+	return concatString;
+}
+
 std::vector<std::string>	Commands::splitByComa(std::string str)
 {
 	std::string 				word;
