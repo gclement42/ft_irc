@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:41:57 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/13 10:16:43 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 09:30:38 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,19 @@ class Channel
 		bool					getKeyMode(void) const;
 		bool					getLimitMode(void) const;
 		bool					getTopicMode(void) const;
+		std::vector<std::string>	getOperators(void) const;
+		void 						addOperator(std::string nickname);
 
 	private:
 
-		std::string				_name;
-		std::string				_topic;
-		std::string				_key;
-		std::string				_mode;
-		int						_userLimit;
-		int						_userCount;
-		bool					_inviteMode;
+		std::string						_name;
+		std::string						_topic;
+		std::string						_key;
+		std::string						_mode;
+		std::vector<std::string>		_operators;
+		int								_userLimit;
+		int								_userCount;
+		bool							_inviteMode;
 		bool					_topicMode;
 		bool					_keyMode;
 		bool					_limitMode;

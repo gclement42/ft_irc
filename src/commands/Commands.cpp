@@ -6,11 +6,13 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 10:22:14 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/15 13:57:06 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 09:42:58 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+
+// static int isOperatorInChannel(std::string nickname, std::vector<std::string> operators);
 
 Commands::Commands(std::map<int, Client> &clients, std::map<std::string, Channel> &channels, Client &client):
     _clients(clients), _channels(channels), _client(client) {
@@ -42,6 +44,31 @@ Commands &Commands::operator=(const Commands &src) {
     }
     return (*this);
 }
+
+std::vector<std::string>	Commands::splitByComa(std::string str)
+{
+	std::string 				word;
+	std::stringstream 			ss(str);
+	std::vector<std::string> 	result;
+
+	if (str.find(",") != std::string::npos)
+	{
+		while (std::getline(ss, word, ','))
+		{
+			if (word[0] == ':')
+				word.erase(0, 1);
+			result.push_back(word);
+		}
+	}
+	else
+	{
+		if (str[0] == ':')
+			str.erase(0, 1);
+		result.push_back(str);
+	}
+	return (result);
+}
+
 
 std::vector<std::string>		Commands::parseChannelName(std::vector<std::string> arg)
 {
@@ -170,7 +197,8 @@ void Commands::displayListClientOnChannel(std::string channelName)
 	for (size_t i = 0; i < ClientsInChannel.size(); i++)
 	{
 		Client client = this->getClientFromNickname(ClientsInChannel[i]);
-		if (client.getIsOperator())
+		
+		if (isOperatorInChannel(client.getNickname(), channelName) == SUCCESS)
 			listNicknames += "@" + ClientsInChannel[i] + " ";
 		else
 			listNicknames += ClientsInChannel[i] + " ";
@@ -178,4 +206,24 @@ void Commands::displayListClientOnChannel(std::string channelName)
 	std::cout << RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames) << std::endl;
 	this->sendMsgToAllClientsInChannel(ClientsInChannel, RPL_NAMREPLY(this->_client.getNickname(), channelName, listNicknames));
 	this->sendMsgToAllClientsInChannel(ClientsInChannel, RPL_ENDOFNAMES(this->_client.getNickname(), channelName));
+}
+
+int Commands::isOperatorInChannel(std::string nickname, std::string channel)
+{
+	std::map<std::string, Channel>::iterator it = this->_channels.begin();
+
+	while (it != this->_channels.end())
+	{
+		if (it->first == channel)
+		{
+			std::vector<std::string> operators = it->second.getOperators();
+			for (size_t i = 0; i < operators.size(); i++)
+			{
+				if (operators[i] == nickname)
+					return (SUCCESS);
+			}
+		}
+		it++;
+	}
+	return (FAILURE);
 }

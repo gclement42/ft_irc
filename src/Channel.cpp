@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 09:45:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/13 10:16:57 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 09:30:52 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ Channel		&Channel::operator=(const Channel &src)
 	this->_keyMode = src._keyMode;
 	this->_limitMode = src._limitMode;
 	this->_topicMode = src._topicMode;
-	
+	this->_operators = src._operators;
+
 	return (*this);
 }
 
@@ -90,6 +91,11 @@ bool		Channel::getInviteMode(void) const
 	return (this->_inviteMode);
 }
 
+std::vector<std::string>	Channel::getOperators(void) const
+{
+	return (this->_operators);
+}
+
 void	Channel::setTopic(std::string topic)
 {
 	this->_topic = topic;
@@ -98,6 +104,11 @@ void	Channel::setTopic(std::string topic)
 void	Channel::incrementUserCount(void)
 {
 	this->_userCount++;
+}
+
+void	Channel::addOperator(std::string nickname)
+{
+	this->_operators.push_back(nickname);
 }
 
 void Channel::addMode(char mode, ...)

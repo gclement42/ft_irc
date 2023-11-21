@@ -34,6 +34,7 @@ class Commands {
 		void						mode();
 
         //Utils commands
+		std::vector<std::string>	splitByComa(std::string str);
 		std::vector<std::string>	parseChannelName(std::vector<std::string> arg);
 		std::vector<std::string>	parseKey(std::vector<std::string> arg);
         void						parseBuffer(std::string buffer);
@@ -44,6 +45,7 @@ class Commands {
 		bool 						checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient);
 		Client						&getClientFromNickname(std::string nickname);
         void                        addChannelInMap(std::string nickname, std::string channelName);
+        int                         isOperatorInChannel(std::string nickname, std::string channel);
 
         void	                    allSend(Client &client, std::string channel, std::string topic);
 	    void                        displayListClientOnChannel(std::string channelName);

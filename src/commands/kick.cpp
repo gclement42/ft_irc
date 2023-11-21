@@ -14,32 +14,27 @@
 #include <sstream>
 #include <string>
 
-std::vector<std::string>	parseComaSeparatedArgs(std::vector<std::string> arg)
+std::vector<std::string>	parseComaSeparatedArgs(Commands *cmds, std::vector<std::string> arg)
 {
-	std::vector<std::string> 	result;
-	std::string::iterator		it;
-	std::string token;
 	size_t i = 1;
 
 	while (arg[i].find("#") != std::string::npos)
 		i++;
-	if (arg[i].find(",") != std::string::npos)
-	{
-		std::stringstream ss(arg[i]);
-		while (std::getline(ss, token, ','))
-		{
-			if (token[0] == ':')
-				token.erase(0, 1);
-			result.push_back(token.erase(0,1));
-		}
-	}
-	else
-	{
-		if (arg[i][0] == ':')
-			arg[i].erase(0, 1);
-		result.push_back(arg[i]);
-	}
-	return (result);
+	return (cmds->splitByComa(arg[i]));
+}
+
+std::vector<Client>	getClientsToBeKicked(Commands *cmds, std::vector<std::string> usersTab)
+{
+	std::vector<Client> clientsToBeKicked;
+
+	for (size_t i = 0; i < usersTab.size(); i++)
+		clientsToBeKicked.push_back(cmds->getClientFromNickname(usersTab[i]));
+	return (clientsToBeKicked);
+}
+
+void	kickClients(std::vector<Client> clientsToBeKicked)
+{
+	(void)clientsToBeKicked;
 }
 
 void	Commands::kick()
@@ -52,9 +47,10 @@ void	Commands::kick()
 	else if (channelNameTab.empty())
 		this->_client.addMessageToSend(ERR_NEEDMOREPARAMS(this->_client.getNickname(), "KICK"));
 
-	std::vector<std::string> usersTab = parseComaSeparatedArgs(this->_args);
+	std::vector<std::string> usersTab = parseComaSeparatedArgs(this, this->_args);
 	for (size_t i = 0; i < usersTab.size(); i++)
 		std::cout << usersTab[i] << std::endl;
 	std::map<std::string, Channel>::iterator channel = this->_channels.find(channelNameTab[0]);
 	std::cout << channel->first << std::endl;
+	kickClients(getClientsToBeKicked(this, usersTab));
 }

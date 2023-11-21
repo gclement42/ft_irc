@@ -6,28 +6,48 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/10 09:01:54 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/17 11:16:36 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/20 08:58:12 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
 #include "Commands.hpp"
 
-static void		sendPrivMsgChannel(std::map<int, Client> &clients, std::vector<std::string> allClients, std::string client, std::string channel,std::vector<std::string> args);
+static void		sendPrivMsgChannel(std::map<int, Client> &clients, std::vector<std::string> allClients, std::string client , std::vector<std::string> args);
 static void		sendPrivMsgUser(std::map<int, Client> &clients, Client &client, std::vector<std::string> args);
 
+static void 					checkDoubleDot(std::vector<std::string> &arg);
 static std::vector<std::string> getAllTargets(std::vector<std::string> args);
 static std::string 				getMessage(std::vector<std::string> args);
 static int 						clientExist(std::map<int, Client> &clients, std::string client);
+static int						channelExist(std::map<std::string, Channel> &channels, std::string channel);
 
 
 void	Commands::privateMsg()
-{
-	std::string 				channelName = this->_args[1];
-	std::vector<std::string> 	allClients = allClientsOnChannel(channelName);
-		
-	if (channelName.find("#", 0) == 0 || channelName.find("&", 0) == 0)
-		sendPrivMsgChannel(this->_clients, allClients, this->_client.getNickname(), channelName, this->_args);
+{	
+	std::vector<std::string> 	targets;
+	std::vector<std::string> 	allClientsFirstChannel;
+	std::vector<std::string> 	allClientsSecondChannel;
+
+	checkDoubleDot(this->_args);
+	if (this->_args[1].find("#", 0) == 0 || this->_args[1].find("&", 0) == 0)
+	{
+		targets = getAllTargets(this->_args);
+		allClientsFirstChannel = allClientsOnChannel(targets[0]);
+		if (channelExist(this->_channels, targets[0]) == SUCCESS)
+			sendPrivMsgChannel(this->_clients, allClientsFirstChannel, this->_client.getNickname(), this->_args);
+		else	
+			_client.addMessageToSend((ERR_NOSUCHNICK(_client.getNickname(), targets[0])));
+
+		if (targets.size() > 1)
+		{
+			allClientsSecondChannel = allClientsOnChannel(targets[1]);
+			if (channelExist(this->_channels, targets[0]) == SUCCESS)
+				sendPrivMsgChannel(this->_clients, allClientsSecondChannel, this->_client.getNickname(), this->_args);
+			else	
+				_client.addMessageToSend((ERR_NOSUCHNICK(_client.getNickname(), targets[1])));
+		}
+	}
 	else
 		sendPrivMsgUser(this->_clients, this->_client, this->_args);
 }
@@ -37,11 +57,11 @@ void	Commands::privateMsg()
 // ===== STATIC FUNCTIONS =====
 
 static void		sendPrivMsgChannel(std::map<int, Client> &clients, std::vector<std::string> allClients, \
-					std::string client, std::string channel, std::vector<std::string> args)
+					std::string client, std::vector<std::string> args)
 {
-	std::string					rpl_msg;
+	std::vector<std::string> 	target;
 	
-	rpl_msg = RPL_PRIVMSGCHANNEL(client, channel, getMessage(args));
+	target = getAllTargets(args);
 	
 	for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
@@ -49,8 +69,11 @@ static void		sendPrivMsgChannel(std::map<int, Client> &clients, std::vector<std:
 		{
 			if (it->second.getNickname() == allClients[i] && it->second.getNickname() != client)
 			{
-				it->second.addMessageToSend(rpl_msg);
-				it->second.setWaitingForSend(true);
+				for (size_t i = 0; i < target.size(); i++)
+				{
+					it->second.addMessageToSend(RPL_PRIVMSGCHANNEL(client, target[i], getMessage(args)));
+					it->second.setWaitingForSend(true);	
+				}
 			}
 		}
 	}
@@ -77,22 +100,43 @@ static void		sendPrivMsgUser(std::map<int, Client> &clients, Client &client, std
 		}
 		else
 		{
-			client.addMessageToSend(RPL_NOSUCHNICK(client.getNickname(), target[i]));
+			client.addMessageToSend(ERR_NOSUCHNICK(client.getNickname(), target[i]));
 			client.setWaitingForSend(true);
 		}
 	}
 }
 
+static void 	checkDoubleDot(std::vector<std::string> &arg)
+{
+	if (arg[2].find(":", 0) == 0)
+		return ;
+	else
+	{
+		arg[2] = ":" + arg[2];
+		std::cout << arg[2] << std::endl;
+	}
+}
+
 static std::vector<std::string> getAllTargets(std::vector<std::string> args)
 {
-	std::vector<std::string> targets;
+	std::vector<std::string> 	targets;
+	std::string 				tmp;
 	
 	for (size_t i = 1; i < args.size(); i++)
 	{
 		if (args[i][0] == ':')
 			break;
 		else
-			targets.push_back(args[i]);
+		{
+			size_t pos = args[i].find(",");
+			if (pos != std::string::npos)
+			{
+				targets.push_back(args[i].substr(0, pos));
+				targets.push_back(args[i].substr(pos + 1, args[i].size()));
+			}
+			else
+				targets.push_back(args[i]);
+		}
 	}
 	
 	return (targets);
@@ -122,6 +166,16 @@ static int clientExist(std::map<int, Client> &clients, std::string client)
 	for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); it++)
 	{
 		if (it->second.getNickname() == client)
+			return (SUCCESS);
+	}
+	return (FAILURE);
+}
+
+static int channelExist(std::map<std::string, Channel> &channels, std::string channel)
+{
+	for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); it++)
+	{
+		if (it->second.getName() == channel)
 			return (SUCCESS);
 	}
 	return (FAILURE);
