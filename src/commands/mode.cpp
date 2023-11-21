@@ -21,7 +21,7 @@
 static	void	parseModeArgs(std::vector<std::string> args, std::vector<std::string> &modeArgs);
 static	bool	checkModeArgs(std::vector<std::string> args);
 static	void	setSymbol(char &symbol, char newSymbol);
-//static	void	operatorModeRemove(std::string &channel, );
+
 
 void Commands::mode()
 {
@@ -42,6 +42,11 @@ void Commands::mode()
 		return ;
 	}
 	Channel &channel = this->_channels.find(this->_args[1])->second;
+	if (!channel.checkIfClientIsOperator(_client.getNickname()))
+	{
+		_client.addMessageToSend(ERR_CHANOPRIVSNEEDED(_client.getNickname(), channel.getName()));
+		return ;
+	}
 	parseModeArgs(_args, modeArgs);
 	modestring = _args[2];
 	this->addOrRemoveMode(modestring, modeArgs, channel);
@@ -70,7 +75,10 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 				return ;
 			}
 			if (modestring[i] == 'o')
-				this->operatorMode(arg, channel, symbol);
+			{
+				this->operatorMode(modeArgs[x], channel, symbol);
+				x++;
+			}
 			else if (symbol == '+')
 			{
 				if (modestring[i] != 'k' && modestring[i] != 'l')
@@ -94,43 +102,6 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 			}
 		}
 	}
-}
-
-void Commands::operatorMode(std::string arg, Channel &channel, char symbol)
-{
-	std::vector<std::string> operators = channel.getOperators();
-	Client &target = this->getClientFromNickname(arg);
-
-	if (target.getNickname() == this->_client.getNickname()) {
-		this->_client.addMessageToSend(ERR_ERRONEUSNICKNAME(target.getNickname()));
-		return ;
-	}
-	if (!checkIfTargetClientIsOnChannel(channel.getName(), target.getNickname()))
-	{
-		this->_client.addMessageToSend(ERR_NOTONCHANNEL(target.getNickname(), channel.getName()));
-		return ;
-	}
-	if (symbol == '+') {
-		operators.push_back(target.getNickname());
-		this->sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()), RPL_NOWISOPER(target.getNickname()));
-		target.addMessageToSend(RPL_YOUREOPER());
-		target.setWaitingForSend(true);
-	}
-	else
-	{
-		std::vector<std::string>::iterator it = std::find(operators.begin(), operators.end(), target.getNickname());
-		if (it == operators.end())
-		{
-			this->_client.addMessageToSend(ERR_ISNOTOPER(target.getNickname()));
-			return ;
-		}
-		else
-		{
-			operators.erase(it);
-			sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()), RPL_NOWISNOTOPER(target.getNickname()));
-		}
-	}
-
 }
 
 void Commands::displayModeChannel()

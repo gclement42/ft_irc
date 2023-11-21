@@ -23,6 +23,7 @@
 # define ERR_NOTONCHANNEL(nickname, channelName) ":irc 442 " + nickname + " "  + channelName + " :You're not on that channel\r\n"
 # define ERR_USERONCHANNEL(nickname, channelName) ":irc 443 " + nickname + " "  + channelName + " :is already on channel\r\n"
 # define ERR_NOSUCHNICK(nickname, target) ":irc 401 " + nickname + " " + target + " :No such nick/channel\r\n"
+# define ERR_CHANOPRIVSNEEDED(nickname, channelName) ":irc 482 " + nickname + " " + channelName + " :You're not channel operator\r\n"
 
 # define ERR_BADFORMATMODE() "MODE :Bad format mode\r\n"
 # define ERR_ISNOTOPER(nickname) nickname + " : Is not an IRC operator\r\n"

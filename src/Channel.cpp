@@ -86,7 +86,7 @@ bool	Channel::getInviteMode(void) const
 	return (this->_inviteMode);
 }
 
-std::vector<std::string>	Channel::getOperators(void) const
+std::vector<std::string>	&Channel::getOperators(void)
 {
 	return (this->_operators);
 }
@@ -160,6 +160,15 @@ bool Channel::getLimitMode(void) const {
 
 bool Channel::getTopicMode(void) const {
 	return (this->_topicMode);
+}
+
+bool Channel::checkIfClientIsOperator(std::string nickname) {
+	for (size_t i = 0; i < this->_operators.size(); i++)
+	{
+		if (this->_operators[i] == nickname)
+			return (true);
+	}
+	return (false);
 }
 
 std::ostream	&operator<<(std::ostream &o, const Channel &src)

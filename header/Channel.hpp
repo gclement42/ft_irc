@@ -46,8 +46,9 @@ class Channel
 		bool					getKeyMode(void) const;
 		bool					getLimitMode(void) const;
 		bool					getTopicMode(void) const;
-		std::vector<std::string>	getOperators(void) const;
+		std::vector<std::string>	&getOperators(void);
 		void 						addOperator(std::string nickname);
+		bool						checkIfClientIsOperator(std::string nickname);
 
 	private:
 

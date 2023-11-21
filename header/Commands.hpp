@@ -53,6 +53,8 @@ class Commands {
 
 		void 						addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
 		void 						operatorMode(std::string arg, Channel &channel, char symbol);
+
+	void operatorRemove(Channel &channel, std::vector<std::string> &operators, Client &target);
 };
 
 
