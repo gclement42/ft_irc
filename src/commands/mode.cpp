@@ -20,8 +20,7 @@
  */
 static	void	parseModeArgs(std::vector<std::string> args, std::vector<std::string> &modeArgs);
 static	bool	checkModeArgs(std::vector<std::string> args);
-static	void	setSymbol(char &symbol, char newSymbol);
-
+static	bool	checkIfModeExist(char mode);
 
 void Commands::mode()
 {
@@ -65,8 +64,11 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 	channelMode = channel.getMode();
 	for (size_t i = 0; i < modestring.length(); i++)
 	{
+		std::string mode = std::string(&modestring[i]).substr(0, 1);
 		if (modestring[i] == '+' || modestring[i] == '-')
-			setSymbol(symbol, modestring[i]);
+			symbol = modestring[i];
+		else if (!checkIfModeExist(modestring[i]))
+			continue ;
 		else
 		{
 			if (symbol == 0)
@@ -91,14 +93,15 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 					channel.addMode(modestring[i], arg.c_str());
 					x++;
 				}
-			_client.addMessageToSend(RPL_MODESET(std::string(&modestring[i]), channel.getName()));
+				this->sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()),
+												   RPL_MODESET(mode, channel.getName()));
 			}
 			else
 			{
 				if (channelMode.find(modestring[i]) == std::string::npos)
 					continue ;
-				channel.removeMode(modestring[i]);
-				_client.addMessageToSend(RPL_MODEREMOVE(std::string(&modestring[i]), channel.getName()));
+				this->sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()),
+												   RPL_MODEREMOVE(mode, channel.getName()));
 			}
 		}
 	}
@@ -127,7 +130,9 @@ static void	parseModeArgs(std::vector<std::string> args, std::vector<std::string
 		modeArgs.push_back(args[i]);
 }
 
-static void setSymbol(char &symbol, char newSymbol)
+static bool checkIfModeExist(char mode)
 {
-	symbol = newSymbol;
+	if (mode == 'o' || mode == 'k' || mode == 'l' || mode == 't' || mode == 'i')
+		return (true);
+	return (false);
 }

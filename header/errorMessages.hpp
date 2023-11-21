@@ -27,4 +27,5 @@
 
 # define ERR_BADFORMATMODE() "MODE :Bad format mode\r\n"
 # define ERR_ISNOTOPER(nickname) nickname + " : Is not an IRC operator\r\n"
+
 #endif

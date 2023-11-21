@@ -17,10 +17,10 @@
 static std::vector<std::string> 	getAllChannels(std::string args);
 static std::string 					getKeyString(std::vector<std::string> args);
 
-static int 			checkArgs(std::vector<std::string> args, Client &client);
-static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
-static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
-static int 			checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i);
+static bool	checkArgs(std::vector<std::string> args, Client &client);
+static bool	checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
+static bool	checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
+static bool	checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i);
 
 
 void	Commands::join()
@@ -29,12 +29,12 @@ void	Commands::join()
 	std::string					keys = getKeyString(_args);
 	std::string					topic;
 
-	if (checkArgs(_args, _client) == FAILURE)
+	if (checkArgs(_args, _client) == false)
 		return ;
 
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
-		if (checkChannelExist(argChannel[i], _channels) == FAILURE)
+		if (checkChannelExist(argChannel[i], _channels) == false)
 		{
 			Channel newChannel(argChannel[i], "", "", "", USER_LIMITS);
 			
@@ -52,7 +52,7 @@ void	Commands::join()
 			topic = it->second.getTopic();
 		}
 
-		if (checkKey(argChannel[i], keys, _channels, i) == SUCCESS && checkAll(argChannel[i], _client, _channels) == SUCCESS)
+		if (checkKey(argChannel[i], keys, _channels, i) == true && checkAll(argChannel[i], _client, _channels) == true)
 			allSend(_client, argChannel[i], topic);
 		else
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
@@ -68,7 +68,7 @@ void	Commands::allSend(Client &client, std::string channel, std::string topic)
 	this->displayListClientOnChannel(channel);
 
 	if (topic.empty() == false)
-		client.addMessageToSend(":irc 332 " + client.getNickname() + " " + channel + " " + topic + "\r\n");
+		client.addMessageToSend(RPL_TOPIC(client.getNickname(), channel, topic));
 }
 
 
@@ -104,36 +104,36 @@ static std::string getKeyString(std::vector<std::string> args)
 	return (key);
 }
 
-static int checkArgs(std::vector<std::string> args, Client &client)
+static bool checkArgs(std::vector<std::string> args, Client &client)
 {
 	if (!(args[1][0] == '#' || args[1][0] == '&'))
 	{
 		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[1]));
-		return (FAILURE);
+		return (false);
 	}
-	return (SUCCESS);
+	return (true);
 }
 
-static int checkChannelExist(std::string channelName, std::map<std::string, Channel> channels)
+static bool checkChannelExist(std::string channelName, std::map<std::string, Channel> channels)
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
 
 	if (it != channels.end())
-		return (SUCCESS);
-	return (FAILURE);
+		return (true);
+	return (false);
 }
 
-static int checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i)
+static bool checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i)
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
 	size_t 				pos;
 
 	if (it->second.getKey().empty() == true)
-		return (SUCCESS);
+		return (true);
 	if (keys.empty() == true)
-		return (FAILURE);
+		return (false);
 	
 	pos = keys.find(",");
 	if (pos != std::string::npos)
@@ -141,23 +141,23 @@ static int checkKey(std::string channelName, std::string keys, std::map<std::str
 		if (i == 0)
 		{
 			if (keys.substr(0, pos) == it->second.getKey())
-				return (SUCCESS);	
+				return (true);	
 		}
 		else if (i == 1)
 		{
 			if (keys.substr(pos + 1, keys.size()) == it->second.getKey())
-				return (SUCCESS);
+				return (true);
 		}
 	}
 	else
 	{
 		if (keys == it->second.getKey() && i == 0)
-			return (SUCCESS);
+			return (true);
 	}
-	return (FAILURE);
+	return (false);
 }
 
-static int checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels)
+static bool checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels)
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
@@ -165,13 +165,13 @@ static int checkAll(std::string channelName, Client &client, std::map<std::strin
 	if (it->second.getUserCount() >= it->second.getUserLimit())
 	{
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
-		return (FAILURE);
+		return (false);
 	}
 	if (it->second.getInviteMode() == true)
 	{
 		client.addMessageToSend(ERR_INVITEONLYCHAN(channelName));
-		return (FAILURE);
+		return (false);
 	}
 		
-	return (SUCCESS);
+	return (true);
 }
