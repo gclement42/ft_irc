@@ -118,7 +118,8 @@ void Channel::addMode(char mode, ...)
 		this->setUserLimit(va_arg(args, char *));
 	if (mode == 'i')
 		this->_inviteMode = true;
-	std::cout << "addmode : " << mode << std::endl;
+	if (mode == 't')
+		this->_topicMode = true;
 	this->_mode += mode;
 	va_end(args);
 }
@@ -133,11 +134,16 @@ void Channel::removeMode(char mode)
 		this->_key = "";
 		this->_keyMode = false;
 	}
-	else if (mode == 'l')
+	if (mode == 'l')
 	{
 		this->_userLimit = -1;
 		this->_limitMode = false;
 	}
+	if (mode == 'i')
+		this->_inviteMode = false;
+	if (mode == 't')
+		this->_topicMode = false;
+
 }
 
 void Channel::setKey(char *key)
@@ -169,6 +175,7 @@ bool Channel::getTopicMode(void) const {
 bool Channel::checkIfClientIsOperator(std::string nickname) {
 	for (size_t i = 0; i < this->_operators.size(); i++)
 	{
+		std::cout << "operators : " << this->_operators[i] << std::endl;
 		if (this->_operators[i] == nickname)
 			return (true);
 	}

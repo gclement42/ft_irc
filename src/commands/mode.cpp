@@ -31,6 +31,7 @@ void Commands::mode()
 
 	if (!checkModeArgs(_args))
 	{
+		std::cout << "arg.size = " << _args.size() << std::endl;
 		if (_args.size() == 2)
 			this->displayModeChannel();
 		else
@@ -121,6 +122,7 @@ static void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std:
 	cmd.sendMsgToAllClientsInChannel(cmd.allClientsOnChannel(channel.getName()),
 									   RPL_MODESET(mode, channel.getName()));
 }
+
 void Commands::displayModeChannel()
 {
 	if (this->_channels.find(this->_args[1]) == this->_channels.end())
@@ -128,7 +130,9 @@ void Commands::displayModeChannel()
 
 	Channel channel = this->_channels.find(this->_args[1])->second;
 	std::string msg = ":irc 324 " + _client.getNickname() + " " + _args[1] + " ";
+	this->_client.addMessageToSend(msg + channel.getMode() + "\r\n");
 }
+
 static bool checkModeArgs(std::vector<std::string> args)
 {
 	if (args.size() < 3)
