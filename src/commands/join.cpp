@@ -25,13 +25,14 @@ static int 			checkKey(std::string channelName, std::string keys, std::map<std::
 
 void	Commands::join()
 {	
-	std::vector<std::string> 	argChannel = getAllChannels(_args[1]);
-	std::string					keys = getKeyString(_args);
+	std::vector<std::string> 	argChannel;
+	std::string					keys;
 	std::string					topic;
 
 	if (checkArgs(_args, _client) == FAILURE)
 		return ;
-
+	argChannel = getAllChannels(_args[1]);
+	keys = getKeyString(_args);
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
 		if (checkChannelExist(argChannel[i], _channels) == FAILURE)
@@ -106,6 +107,8 @@ static std::string getKeyString(std::vector<std::string> args)
 
 static int checkArgs(std::vector<std::string> args, Client &client)
 {
+	if (args.size() < 2)
+		return (FAILURE);
 	if (!(args[1][0] == '#' || args[1][0] == '&'))
 	{
 		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[1]));

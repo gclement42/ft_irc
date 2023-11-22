@@ -14,9 +14,8 @@
 
 std::string Server::readInBuffer(int fd) {
 	char		buffer[1024];
-	std::string	concatenateBuffer;
+	std::string	bufferString;
 	ssize_t 	bytes;
-	int			lastNewline;
 
 	bytes = recv(fd, buffer, 1024, 0);
 	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
@@ -24,18 +23,23 @@ std::string Server::readInBuffer(int fd) {
 		std::cout << "EAGAIN" << std::endl;
 		return ("");
 	}
-	concatenateBuffer = buffer;
-	lastNewline = concatenateBuffer.find_last_of("\r\n");
-	concatenateBuffer = concatenateBuffer.substr(0, lastNewline + 1);
+	bufferString = buffer;
+	bufferString = bufferString.substr(0, bytes);
+	this->_buffer += bufferString;
+	if (this->_buffer.find('\n', 0) != std::string::npos)
+	{
+		bufferString = this->_buffer;
+		this->_buffer.clear();
+	}
 	if (bytes == -1) {
 		if ((errno == EAGAIN || errno == EWOULDBLOCK))
 		{
 			std::cout << "EAGAIN after while" << std::endl;
-			return (concatenateBuffer);
+			return (bufferString);
 		}
 		//std::cerr << "errno : " << errno << std::endl;
 		// throw exception (????)
 		return ("");
 	}
-	return (concatenateBuffer);
+	return (bufferString);
 }
