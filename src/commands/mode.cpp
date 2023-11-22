@@ -21,6 +21,8 @@
 static	void	parseModeArgs(std::vector<std::string> args, std::vector<std::string> &modeArgs);
 static	bool	checkModeArgs(std::vector<std::string> args);
 static	bool	checkIfModeExist(char mode);
+static	void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std::vector<std::string> arg, size_t &x);
+static	void	parseRemoveMode(Commands &cmd, Channel &channel, std::string mode);
 
 void Commands::mode()
 {
@@ -48,20 +50,19 @@ void Commands::mode()
 	}
 	parseModeArgs(_args, modeArgs);
 	modestring = _args[2];
-	this->addOrRemoveMode(modestring, modeArgs, channel);
+	this->reachModestring(modestring, modeArgs, channel);
 }
 
 
-void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel)
+void Commands::reachModestring(std::string modestring, std::vector<std::string> modeArgs, Channel &channel)
 {
 	char		symbol;
 	size_t 		x;
 	std::string arg;
-	std::string channelMode;
+
 
 	x = 0;
 	symbol = 0;
-	channelMode = channel.getMode();
 	for (size_t i = 0; i < modestring.length(); i++)
 	{
 		std::string mode = std::string(&modestring[i]).substr(0, 1);
@@ -82,32 +83,44 @@ void Commands::addOrRemoveMode(std::string modestring, std::vector<std::string> 
 				x++;
 			}
 			else if (symbol == '+')
-			{
-				if (modestring[i] != 'k' && modestring[i] != 'l')
-					channel.addMode(modestring[i]);
-				else
-				{
-					if (x >= modeArgs.size())
-						continue ;
-					arg = modeArgs[x];
-					channel.addMode(modestring[i], arg.c_str());
-					x++;
-				}
-				this->sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()),
-												   RPL_MODESET(mode, channel.getName()));
-			}
+				parseAddMode(*this, channel, mode, modeArgs, x);
 			else
-			{
-				if (channelMode.find(modestring[i]) == std::string::npos)
-					continue ;
-				channel.removeMode(modestring[i]);
-				this->sendMsgToAllClientsInChannel(this->allClientsOnChannel(channel.getName()),
-												   RPL_MODEREMOVE(mode, channel.getName()));
-			}
+				parseRemoveMode(*this, channel, mode);
 		}
 	}
 }
 
+static void parseRemoveMode(Commands &cmd, Channel &channel, std::string mode)
+{
+	std::string channelMode;
+
+	channelMode = channel.getMode();
+	if (channelMode.find(mode) == std::string::npos)
+		return ;
+	channel.removeMode(mode[0]);
+	cmd.sendMsgToAllClientsInChannel(cmd.allClientsOnChannel(channel.getName()),
+									   RPL_MODEREMOVE(mode, channel.getName()));
+}
+
+static void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std::vector<std::string> args, size_t &x)
+{
+	std::string arg;
+	char		modeChar;
+
+	modeChar = mode[0];
+	if (modeChar != 'k' && modeChar != 'l')
+		channel.addMode(mode[0]);
+	else
+	{
+		if (x >= args.size())
+			return ;
+		arg = args[x];
+		channel.addMode(mode[0], arg.c_str());
+		x++;
+	}
+	cmd.sendMsgToAllClientsInChannel(cmd.allClientsOnChannel(channel.getName()),
+									   RPL_MODESET(mode, channel.getName()));
+}
 void Commands::displayModeChannel()
 {
 	if (this->_channels.find(this->_args[1]) == this->_channels.end())

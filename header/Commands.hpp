@@ -51,7 +51,7 @@ class Commands {
 	    void                        displayListClientOnChannel(std::string channelName);
 		void						displayModeChannel();
 
-		void 						addOrRemoveMode(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
+		void 						reachModestring(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
 		void 						operatorMode(std::string arg, Channel &channel, char symbol);
 
 	void operatorRemove(Channel &channel, std::vector<std::string> &operators, Client &target);
