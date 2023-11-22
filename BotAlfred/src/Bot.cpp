@@ -6,23 +6,22 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 13:03:42 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/21 14:13:35 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/22 09:42:31 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 
-static void createBotChannel(int socket);
+static void 	createBotChannel(int socket);
 
-Bot::Bot(int port, std::string serverPassword, std::string ip)
+Bot::Bot(int port, std::string serverPassword)
 {
 	this->_port = port;
 	
 	this->_serverPassword = serverPassword;
-	this->_ip = ip;
 	this->_botPassword = "PASS axou\r\n";
 	this->_nickName = "NICK alfredo\r\n";
-	this->_userName = "USER Alfred\r\n";
+	this->_userName = "USER alfredo\r\n";
 
 	this->_responses = createResponsesMap();
 }
@@ -55,7 +54,7 @@ int Bot::startBot(void)
 	send(_socket, this->_nickName.c_str(), this->_nickName.size(), 0);
 	send(_socket, this->_userName.c_str(), this->_userName.size(), 0);
 	
-	std::cout << "Bot Alfred is now connected on the server." << std::endl;
+	std::cout << "Bot Alfredo is now connected on the server." << std::endl;
 	return (SUCCESS);
 }
 
@@ -72,8 +71,9 @@ void Bot::runBot(void)
 	
 	while (1)
 	{
+		if (send(this->_socket, "PING\r\n", 6, 0) == -1)
+			break ;
 		buffer = readInBuffer(this->_socket);
-		std::cout << "\n\nBUFFER = " << buffer << "\n" << std::endl;
 		botResponse(buffer, this->_socket);
 	}
 	
@@ -132,15 +132,12 @@ void Bot::newUserInChannel(int socket)
 void Bot::privateMsgResponse(std::string buffer, int socket)
 {
 	std::string 	privateMsgResponse;
-	std::string 	userName;
 	std::string 	userMsg;
 
-	userName = buffer.substr(1, buffer.find(" ") - 1);
 	userMsg = buffer.substr(buffer.find_last_of(":") + 1);
 
-	std::map<std::string, std::string> responses = this->_responses;
-	std::map<std::string, std::string>::iterator it = responses.begin();
-	while (it != responses.end())
+	std::map<std::string, std::string>::iterator it = this->_responses.begin();
+	while (it != this->_responses.end())
 	{
 		if (userMsg.find(it->first) != std::string::npos)
 		{
@@ -164,10 +161,13 @@ std::map<std::string, std::string> Bot::createResponsesMap(void)
 	responses["tranquille"] = format + "Excellente nouvelle !\r\n";
 	responses["quelle heure"] = format + "Je n'en ai aucune idée !\r\n";
 	responses["alfredo"] = format + "Oui ?\r\n";
-	responses["gros con"] = format + "Pas de ca ici ! C'est un serveur friendly.\r\n";
 	responses["merci"] = format + "Avec plaisir !\r\n";
 	responses["IRC"] = format + "J'adore IRC ! Ce sigle signifie Internet Relay Chat.\r\n";
 	responses["commandes"] = format + "Vous pouvez utiliser /join #channel pour rejoindre un channel ou /msg `utilisateur` `message` pour envoyer un message privé.\r\n";
+	
+	responses["con"] = format + "Pas de ca ici ! C'est un serveur friendly.\r\n";
+	responses["connard"] = format + "Pas de ca ici ! C'est un serveur friendly.\r\n";
+	responses["putain"] = format + "Pas de ca ici ! C'est un serveur friendly.\r\n";
 	
 	return (responses);
 }

@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 13:05:18 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/21 14:01:05 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/22 09:36:32 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # include <cstdlib>
 # include <algorithm>
 # include <map>
+# include <signal.h>
 
 # define SUCCESS 0
 # define FAILURE 1
@@ -39,7 +40,7 @@ class Bot
 {
 	public:
 
-		Bot(int port, std::string password, std::string ip);
+		Bot(int port, std::string password);
 		~Bot(void);
 		
 		int 					startBot(void);
@@ -58,7 +59,6 @@ class Bot
 		int 					_port;
 		
 		std::string 			_serverPassword;
-		std::string 			_ip;
 		std::string 			_botPassword;
 		std::string 			_nickName;
 		std::string 			_userName;

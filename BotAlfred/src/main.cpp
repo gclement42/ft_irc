@@ -6,11 +6,13 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 13:03:16 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/21 09:06:38 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/22 09:36:47 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+
+static int checkPort(int port);
 
 int main(int argc, char **argv)
 {
@@ -23,10 +25,22 @@ int main(int argc, char **argv)
 	port = atoi(argv[1]);
 	password = argv[2];
 
-	Bot bot(port, password, "ptdr");
+	if (checkPort(port) == FAILURE)
+		return (printError("Invalid port"), FAILURE);
+
+	Bot bot(port, password);
+	
 	bot.startBot();
 	bot.runBot();
 	bot.closeBot();
+	
+	return (SUCCESS);
+}
+
+static int checkPort(int port)
+{
+	if (port <= 0 || port > 65535)
+		return (FAILURE);
 	return (SUCCESS);
 }
 
