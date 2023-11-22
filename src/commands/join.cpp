@@ -71,9 +71,6 @@ void	Commands::addClientInChannel(std::string channel, std::string topic)
 		_client.addMessageToSend(RPL_TOPIC(_client.getNickname(), channel, topic));
 }
 
-
-
-
 // ===== STATIC FUNCTIONS ===== //
 
 static std::vector<std::string> getAllChannels(std::string arg)
@@ -166,7 +163,7 @@ static bool checkAll(std::string channelName, Client &client, std::map<std::stri
 	Channel channel = it->second;
 
 	std::cout << "getlimitmode :" << channel.getLimitMode() << std::endl;
-	if (channel.getLimitMode() && channel.getUserCount() >= channel.getUserLimit())
+	if (channel.getLimitMode() && channel.getUserCount() > channel.getUserLimit())
 	{
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
 		return (false);

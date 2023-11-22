@@ -120,6 +120,8 @@ void Channel::addMode(char mode, ...)
 		this->_inviteMode = true;
 	if (mode == 't')
 		this->_topicMode = true;
+	if (this->_mode.find(mode) != std::string::npos)
+		return ;
 	this->_mode += mode;
 	va_end(args);
 }
