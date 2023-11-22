@@ -22,6 +22,8 @@ void Commands::invite() {
 	Client &target = this->getClientFromNickname(targetNickname);
 	target.addMessageToSend(RPL_INVITE(_client.getNickname(), targetNickname, channelName));
 	target.setWaitingForSend(true);
+	Channel &channel = this->_channels.find(channelName)->second;
+	channel.addInvite(targetNickname);
 	_client.addMessageToSend(RPL_INVITING(_client.getNickname(), targetNickname, channelName));
 }
 

@@ -24,4 +24,9 @@
 #define RPL_PRIVMSGCHANNEL(nickname, channelName, msg) ":" + nickname + " PRIVMSG " + channelName + " :" + msg + "\r\n"
 #define RPL_PRIVMSGUSER(nickname, user, msg) ":" + nickname + " PRIVMSG " + user + " :" + msg + "\r\n"
 
+#define RPL_MODESET(mode, channelName) "MODE " + mode + " is set on channel : " + channelName + "\r\n"
+#define RPL_MODEREMOVE(mode, channelName) "MODE " + mode + " is removed on channel : " + channelName + "\r\n"
+#define RPL_NOWISOPER(nickname) nickname + ": Is now an IRC operator\r\n"
+#define RPL_NOWISNOTOPER(nickname) nickname + ": Is no longer an IRC operator\r\n"
+
 #endif

@@ -39,6 +39,11 @@ void	Commands::topic() {
 	}
     else
 	{
+		if (!channel->second.checkIfClientIsOperator(this->_client.getNickname()) && channel->second.getTopicMode())
+		{
+			this->_client.addMessageToSend(ERR_CHANOPRIVSNEEDED(this->_client.getNickname(), channel->first));
+			return ;
+		}
 		std::vector<std::string> clientsList = allClientsOnChannel(channel->first);
 		std::string topicName = this->concatenate(topicNameTab);
 

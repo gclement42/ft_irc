@@ -17,10 +17,10 @@
 static std::vector<std::string> 	getAllChannels(std::string args);
 static std::string 					getKeyString(std::vector<std::string> args);
 
-static int 			checkArgs(std::vector<std::string> args, Client &client);
-static int 			checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
-static int 			checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
-static int 			checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i);
+static bool	checkArgs(std::vector<std::string> args, Client &client);
+static bool	checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
+static bool	checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
+static bool	checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i);
 
 
 void	Commands::join()
@@ -29,13 +29,13 @@ void	Commands::join()
 	std::string					keys;
 	std::string					topic;
 
-	if (checkArgs(_args, _client) == FAILURE)
+	if (!checkArgs(_args, _client))
 		return ;
 	argChannel = getAllChannels(_args[1]);
 	keys = getKeyString(_args);
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
-		if (checkChannelExist(argChannel[i], _channels) == FAILURE)
+		if (!checkChannelExist(argChannel[i], _channels))
 		{
 			Channel newChannel(argChannel[i], "", "", "", USER_LIMITS);
 			
@@ -52,24 +52,23 @@ void	Commands::join()
 			it->second.incrementUserCount();
 			topic = it->second.getTopic();
 		}
-
-		if (checkKey(argChannel[i], keys, _channels, i) == SUCCESS && checkAll(argChannel[i], _client, _channels) == SUCCESS)
-			allSend(_client, argChannel[i], topic);
-		else
+		if (!checkKey(argChannel[i], keys, _channels, i))
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
+		else if (checkAll(argChannel[i], _client, _channels))
+			addClientInChannel(argChannel[i], topic);
 	}
 }
 
-void	Commands::allSend(Client &client, std::string channel, std::string topic)
+void	Commands::addClientInChannel(std::string channel, std::string topic)
 {
-	std::string		createChannel = RPL_JOIN(client.getNickname(), channel);
+	std::string		createChannel = RPL_JOIN(_client.getNickname(), channel);
 
-	client.addMessageToSend(createChannel);
-	addChannelInMap(client.getNickname(), channel);
+	_client.addMessageToSend(createChannel);
+	addChannelInMap(_client.getNickname(), channel);
 	this->displayListClientOnChannel(channel);
 
-	if (topic.empty() == false)
-		client.addMessageToSend(":irc 332 " + client.getNickname() + " " + channel + " " + topic + "\r\n");
+	if (!topic.empty())
+		_client.addMessageToSend(RPL_TOPIC(_client.getNickname(), channel, topic));
 }
 
 
@@ -98,45 +97,45 @@ static std::string getKeyString(std::vector<std::string> args)
 {
 	std::string key;
 
-	if (args.size() == 3 && args[2].empty() != true)
+	if (args.size() == 3 && !args[2].empty())
 		key = args[2];
 	else
 		key = "";
 	return (key);
 }
 
-static int checkArgs(std::vector<std::string> args, Client &client)
+static bool checkArgs(std::vector<std::string> args, Client &client)
 {
 	if (args.size() < 2)
 		return (FAILURE);
 	if (!(args[1][0] == '#' || args[1][0] == '&'))
 	{
 		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[1]));
-		return (FAILURE);
+		return (false);
 	}
-	return (SUCCESS);
+	return (true);
 }
 
-static int checkChannelExist(std::string channelName, std::map<std::string, Channel> channels)
+static bool checkChannelExist(std::string channelName, std::map<std::string, Channel> channels)
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
 
 	if (it != channels.end())
-		return (SUCCESS);
-	return (FAILURE);
+		return (true);
+	return (false);
 }
 
-static int checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i)
+static bool checkKey(std::string channelName, std::string keys, std::map<std::string, Channel> channels, int i)
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
 	size_t 				pos;
 
-	if (it->second.getKey().empty() == true)
-		return (SUCCESS);
-	if (keys.empty() == true)
-		return (FAILURE);
+	if (it->second.getKey().empty())
+		return (true);
+	if (keys.empty())
+		return (false);
 	
 	pos = keys.find(",");
 	if (pos != std::string::npos)
@@ -144,37 +143,38 @@ static int checkKey(std::string channelName, std::string keys, std::map<std::str
 		if (i == 0)
 		{
 			if (keys.substr(0, pos) == it->second.getKey())
-				return (SUCCESS);	
+				return (true);	
 		}
 		else if (i == 1)
 		{
 			if (keys.substr(pos + 1, keys.size()) == it->second.getKey())
-				return (SUCCESS);
+				return (true);
 		}
 	}
 	else
 	{
 		if (keys == it->second.getKey() && i == 0)
-			return (SUCCESS);
+			return (true);
 	}
-	return (FAILURE);
+	return (false);
 }
 
-static int checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels)
+static bool checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels)
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
+	Channel channel = it->second;
 
-	if (it->second.getUserCount() >= it->second.getUserLimit())
+	std::cout << "getlimitmode :" << channel.getLimitMode() << std::endl;
+	if (channel.getLimitMode() && channel.getUserCount() >= channel.getUserLimit())
 	{
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
-		return (FAILURE);
+		return (false);
 	}
-	if (it->second.getInviteMode() == true)
+	if (channel.getInviteMode() && !channel.checkIfClientIsInvited(client.getNickname()))
 	{
 		client.addMessageToSend(ERR_INVITEONLYCHAN(channelName));
-		return (FAILURE);
+		return (false);
 	}
-		
-	return (SUCCESS);
+	return (true);
 }
