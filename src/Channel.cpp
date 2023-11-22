@@ -47,7 +47,7 @@ Channel		&Channel::operator=(const Channel &src)
 	this->_limitMode = src._limitMode;
 	this->_topicMode = src._topicMode;
 	this->_operators = src._operators;
-
+	this->_invites = src._invites;
 	return (*this);
 }
 
@@ -114,8 +114,10 @@ void Channel::addMode(char mode, ...)
 
 	if (mode == 'k')
 		this->setKey(va_arg(args, char *));
-	else if (mode == 'l')
+	if (mode == 'l')
 		this->setUserLimit(va_arg(args, char *));
+	if (mode == 'i')
+		this->_inviteMode = true;
 	std::cout << "addmode : " << mode << std::endl;
 	this->_mode += mode;
 	va_end(args);
@@ -168,6 +170,22 @@ bool Channel::checkIfClientIsOperator(std::string nickname) {
 	for (size_t i = 0; i < this->_operators.size(); i++)
 	{
 		if (this->_operators[i] == nickname)
+			return (true);
+	}
+	return (false);
+}
+
+void Channel::addInvite(std::string nickname) {
+	if (find(_invites.begin(), _invites.end(), nickname) != this->_invites.end())
+		return ;
+	this->_invites.push_back(nickname);
+}
+
+bool Channel::checkIfClientIsInvited(std::string nickname) {
+	for (size_t i = 0; i < this->_invites.size(); i++)
+	{
+		std::cout << "invites : " << this->_invites[i] << std::endl;
+		if (this->_invites[i] == nickname)
 			return (true);
 	}
 	return (false);

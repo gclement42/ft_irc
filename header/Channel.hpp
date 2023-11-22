@@ -49,6 +49,8 @@ class Channel
 		std::vector<std::string>	&getOperators(void);
 		void 						addOperator(std::string nickname);
 		bool						checkIfClientIsOperator(std::string nickname);
+		void						addInvite(std::string nickname);
+		bool						checkIfClientIsInvited(std::string nickname);
 
 	private:
 
@@ -57,6 +59,7 @@ class Channel
 		std::string						_key;
 		std::string						_mode;
 		std::vector<std::string>		_operators;
+		std::vector<std::string>		_invites;
 		int								_userLimit;
 		int								_userCount;
 		bool							_inviteMode;

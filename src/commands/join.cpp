@@ -96,7 +96,7 @@ static std::string getKeyString(std::vector<std::string> args)
 {
 	std::string key;
 
-	if (args.size() == 3 && args[2].empty() != true)
+	if (args.size() == 3 && !args[2].empty())
 		key = args[2];
 	else
 		key = "";
@@ -129,9 +129,9 @@ static bool checkKey(std::string channelName, std::string keys, std::map<std::st
 	it = channels.find(channelName);
 	size_t 				pos;
 
-	if (it->second.getKey().empty() == true)
+	if (it->second.getKey().empty())
 		return (true);
-	if (keys.empty() == true)
+	if (keys.empty())
 		return (false);
 	
 	pos = keys.find(",");
@@ -168,7 +168,7 @@ static bool checkAll(std::string channelName, Client &client, std::map<std::stri
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
 		return (false);
 	}
-	if (channel.getInviteMode() == true)
+	if (channel.getInviteMode() && !channel.checkIfClientIsInvited(client.getNickname()))
 	{
 		client.addMessageToSend(ERR_INVITEONLYCHAN(channelName));
 		return (false);
