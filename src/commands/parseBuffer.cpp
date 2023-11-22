@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 08:58:22 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/14 09:59:59 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/21 10:14:03 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@
 static std::vector<std::string> splitBuffer(std::string str);
 
 void	Commands::parseBuffer(std::string buffer)
-{
-//	std::cout << "\033[1;35mbuffer: " << buffer << "\033[0m" << std::endl;
-	
+{	
 	this->_args = splitBuffer(buffer);
 	std::string cmdName = this->_args[0];
 
