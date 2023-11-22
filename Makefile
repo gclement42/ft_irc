@@ -41,6 +41,8 @@ SRC						=	main.cpp \
 							commands/kick.cpp \
 							commands/invite.cpp \
 							commands/part.cpp \
+							commands/mode.cpp \
+							commands/operatorMode.cpp \
 
 OBJECTS					= $(SRC:%.cpp=$(BUILD_DIR)%.o)
 

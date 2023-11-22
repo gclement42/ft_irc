@@ -30,18 +30,27 @@ class Channel
 
 		Channel					&operator=(const Channel &src);
 
-		std::string					getName(void) const;
-		std::string					getTopic(void) const;
-		std::string					getKey(void) const;
-		std::string					getMode(void) const;
-		int							getUserLimit(void) const;
-		int							getUserCount(void) const;
-		bool						getInviteMode(void) const;
-		std::vector<std::string>	getOperators(void) const;
-
-		void						setTopic(std::string topic);
-		void						incrementUserCount(void);
+		std::string				getName(void) const;
+		std::string				getTopic(void) const;
+		std::string				getKey(void) const;
+		std::string				getMode(void) const;
+		int						getUserLimit(void) const;
+		int						getUserCount(void) const;
+		bool					getInviteMode(void) const;
+		void					addMode(char mode, ...);
+		void					removeMode(char mode);
+		void					setTopic(std::string topic);
+		void					setKey(char *key);
+		void					setUserLimit(char *userLimit);
+		void					incrementUserCount(void);
+		bool					getKeyMode(void) const;
+		bool					getLimitMode(void) const;
+		bool					getTopicMode(void) const;
+		std::vector<std::string>	&getOperators(void);
 		void 						addOperator(std::string nickname);
+		bool						checkIfClientIsOperator(std::string nickname);
+		void						addInvite(std::string nickname);
+		bool						checkIfClientIsInvited(std::string nickname);
 
 	private:
 
@@ -50,9 +59,13 @@ class Channel
 		std::string						_key;
 		std::string						_mode;
 		std::vector<std::string>		_operators;
+		std::vector<std::string>		_invites;
 		int								_userLimit;
 		int								_userCount;
 		bool							_inviteMode;
+		bool					_topicMode;
+		bool					_keyMode;
+		bool					_limitMode;
 
 };
 

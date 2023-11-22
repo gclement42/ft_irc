@@ -31,6 +31,7 @@ class Commands {
 		void						kick();
 		void						invite();
 		void						part();
+		void						mode();
 
         //Utils commands
 		std::string					concatenate(std::vector<std::string> stringTab);
@@ -47,8 +48,14 @@ class Commands {
         void                        addChannelInMap(std::string nickname, std::string channelName);
         int                         isOperatorInChannel(std::string nickname, std::string channel);
 
-        void	                    allSend(Client &client, std::string channel, std::string topic);
+        void	                    addClientInChannel(std::string channel, std::string topic);
 	    void                        displayListClientOnChannel(std::string channelName);
+		void						displayModeChannel();
+
+		void 						reachModestring(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
+		void 						operatorMode(std::string arg, Channel &channel, char symbol);
+
+	void operatorRemove(Channel &channel, std::vector<std::string> &operators, Client &target);
 };
 
 
