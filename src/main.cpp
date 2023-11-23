@@ -6,12 +6,14 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 14:46:15 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/06 13:16:52 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/23 09:04:23 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.hpp"
 #include "Server.hpp"
+
+static bool checkPort(char *port);
 
 bool quit = false;
 
@@ -29,7 +31,14 @@ int main(int argc, char **argv)
 		return (0);
 	}
 	std::string password = "salut";
+	
+	if (checkPort(argv[1]) == false)
+	{
+		std::cout << "Invalid port" << std::endl;
+		return (0);
+	}
 	int port = atoi(argv[1]);
+	
 	if (argv[2])
 		password = argv[2];
 	Server server(port, password);
@@ -48,4 +57,19 @@ int main(int argc, char **argv)
 	}
 	server.stop();
 	return (0);
+}
+
+static bool checkPort(char *port)
+{
+	for (int i = 0; port[i]; i++)
+	{
+		if (isdigit(port[i]) == false)
+			return (false);
+	}
+
+	int portInt = atoi(port);
+	
+	if (portInt < 1 || portInt > 65535)
+		return (false);
+	return (true);
 }
