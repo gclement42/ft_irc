@@ -106,11 +106,11 @@ void	Channel::addOperator(std::string nickname)
 	this->_operators.push_back(nickname);
 }
 
-void Channel::addMode(char mode, ...)
+void Channel::addMode(char mode, int n, ...)
 {
 	std::cout << "addmode : " << mode << std::endl;
 	va_list args;
-	va_start(args, mode);
+	va_start(args, n);
 
 	if (mode == 'k')
 		this->setKey(va_arg(args, char *));

@@ -119,13 +119,13 @@ static void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std:
 
 	modeChar = mode[0];
 	if (modeChar != 'k' && modeChar != 'l')
-		channel.addMode(mode[0]);
+		channel.addMode(mode[0], 1);
 	else
 	{
 		if (x >= args.size())
 			return ;
 		arg = args[x];
-		channel.addMode(mode[0], arg.c_str());
+		channel.addMode(mode[0], 1, arg.c_str());
 		x++;
 	}
 	cmd.sendMsgToAllClientsInChannel(cmd.allClientsOnChannel(channel.getName()),
