@@ -68,6 +68,8 @@ void Server::start() const {
 void Server::stop() const {
 	std::cout << "Server stopped" << std::endl;
 	close(_socketServer);
+	for (size_t i = 0; i < _nbFds; i++)
+		close(_allFds[i].fd);
 }
 
 void Server::acceptClientConnexion() {
