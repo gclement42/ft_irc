@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 13:03:42 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/22 09:42:31 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/23 08:44:26 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,14 +113,6 @@ void Bot::botResponse(std::string buffer, int socket)
 		privateMsgResponse(buffer, socket);
 }
 
-static void createBotChannel(int socket)
-{
-	std::string 	createChannelMsg;
-
-	createChannelMsg = "JOIN #BOT\r\n";
-	send(socket, createChannelMsg.c_str(), createChannelMsg.size(), 0);
-}
-
 void Bot::newUserInChannel(int socket)
 {
 	std::string 	newUserInChannel;
@@ -170,4 +162,14 @@ std::map<std::string, std::string> Bot::createResponsesMap(void)
 	responses["putain"] = format + "Pas de ca ici ! C'est un serveur friendly.\r\n";
 	
 	return (responses);
+}
+
+// ===== STATIC FUNCTIONS =====
+
+static void createBotChannel(int socket)
+{
+	std::string 	createChannelMsg;
+
+	createChannelMsg = "JOIN #BOT\r\n";
+	send(socket, createChannelMsg.c_str(), createChannelMsg.size(), 0);
 }
