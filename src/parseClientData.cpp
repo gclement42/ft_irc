@@ -18,7 +18,7 @@ static void			pass(std::string str, std::string &password);
 static void			user(std::string str, std::string &username, std::string &realname);
 static void			nick(std::string str, std::string &nickname);
 
-Client parseClientData(std::string buffer, int fd)
+Client parseClientData(std::string buffer, Client &client)
 {
 	std::stringstream	streamBuffer(buffer);
 	std::string 		token;

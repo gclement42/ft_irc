@@ -50,7 +50,7 @@ class Server;
 class Client;
 class Channel;
 
-Client 			parseClientData(std::string buffer, int fd);
+Client 			parseClientData(std::string buffer, Client &client);
 std::string 	readInBuffer(int fd);
 void 			printError(std::string error);
 void			parseBuffer(Client &client, std::string buffer, std::map<std::string, Channel> &channels);

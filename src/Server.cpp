@@ -164,20 +164,24 @@ void Server::checkFdsEvent() {
 }
 
 void Server::fillClientData(Client &client, std::string buffer) {
-	Client client(fd);
+	parseClientData(buffer, client);
 
-	if (client.checkIfNicknameIsValid(_clients)
-		&& client.checkIfPasswordIsValid(client, _password)
-		&& client.checkIfUsernameIsValid())
-		client.addMessageToSend(RPL_WELCOME(client.getUsername()));
-	else
+	if (client.checkIfAllDataIsFilled())
 	{
-		client.addMessageToSend(RPL_QUIT(std::string("Disconnected")));
-		client.setIsConnected(false);
+		if (client.checkIfNicknameIsValid(_clients)
+			&& client.checkIfPasswordIsValid(client, _password)
+			&& client.checkIfUsernameIsValid())
+		{
+			client.addMessageToSend(RPL_WELCOME(client.getUsername()));
+		}
+		else
+		{
+			client.addMessageToSend(RPL_QUIT(std::string("Disconnected")));
+			client.setIsConnected(false);
+		}
+		std::cout << "New client connected : " << std::endl;
+		std::cout << client << std::endl;
 	}
-    _clients.insert(std::pair<int, Client>(fd, client));
-    std::cout << "New client connected : " << std::endl;
-    std::cout << client << std::endl;
 }
 
 void Server::disconnectClient(int fd) {
