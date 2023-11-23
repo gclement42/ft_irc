@@ -14,7 +14,7 @@
 
 static	void	parseModeArgs(std::vector<std::string> args, std::vector<std::string> &modeArgs);
 static	bool	checkModeArgs(std::vector<std::string> args);
-static	bool	checkIfModeExist(char mode);
+static	bool	checkIfModeExist(char mode, Client &client);
 static	void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std::vector<std::string> arg, size_t &x);
 static	void	parseRemoveMode(Commands &cmd, Channel &channel, std::string mode);
 static	bool	checkIfError(Commands &cmd);
@@ -78,7 +78,7 @@ void Commands::reachModestring(std::string modestring, std::vector<std::string> 
 		std::string mode = std::string(&modestring[i]).substr(0, 1);
 		if (modestring[i] == '+' || modestring[i] == '-')
 			symbol = modestring[i];
-		else if (!checkIfModeExist(modestring[i]))
+		else if (!checkIfModeExist(modestring[i], this->_client))
 			continue ;
 		else
 		{
@@ -89,6 +89,11 @@ void Commands::reachModestring(std::string modestring, std::vector<std::string> 
 			}
 			if (modestring[i] == 'o')
 			{
+				if (x >= modeArgs.size())
+				{
+					this->_client.addMessageToSend(ERR_NEEDMOREPARAMS(this->_client.getNickname(), "o"));
+					continue ;
+				}
 				this->operatorMode(modeArgs[x], channel, symbol);
 				x++;
 			}
@@ -123,7 +128,10 @@ static void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std:
 	else
 	{
 		if (x >= args.size())
+		{
+			cmd.getClient().addMessageToSend(ERR_NEEDMOREPARAMS(cmd.getClient().getNickname(), mode));
 			return ;
+		}
 		arg = args[x];
 		channel.addMode(mode[0], 1, arg.c_str());
 		x++;
@@ -159,9 +167,10 @@ static void	parseModeArgs(std::vector<std::string> args, std::vector<std::string
 		modeArgs.push_back(args[i]);
 }
 
-static bool checkIfModeExist(char mode)
+static bool checkIfModeExist(char mode, Client &client)
 {
 	if (mode == 'o' || mode == 'k' || mode == 'l' || mode == 't' || mode == 'i')
 		return (true);
+	client.addMessageToSend(ERR_UNKNOWNMODE(client.getNickname(), mode));
 	return (false);
 }
