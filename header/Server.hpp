@@ -37,7 +37,7 @@ class Server {
 
 		void					acceptClientConnexion();
 		void 					disconnectClient(int fd);
-        void                    createClient(int fd);
+		void 					fillClientData(Client &client, std::string buffer);
 
 		void					checkFdsEvent();
 		bool                   	checkIfClientIsWaitingForSend(int fd);
@@ -54,6 +54,7 @@ class Server {
 		std::string 					_buffer;
         void receiveMessageFromClient(pollfd &pollClient);
         void sendMessageToClient(pollfd &pollClient);
+
 };
 
 #endif

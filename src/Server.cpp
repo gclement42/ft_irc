@@ -104,16 +104,18 @@ bool Server::checkIfClientIsWaitingForSend(int fd) {
 
 void Server::receiveMessageFromClient(pollfd &pollClient) {
     std::string		buffer;
-
-    if (_clients.find(pollClient.fd) == _clients.end())
-	{
-        createClient(pollClient.fd);
-		pollClient.revents |= POLLOUT;
-		return ;
-	}
+	Client			*client;
 
     buffer = this->readInBuffer(pollClient.fd);
-    Client &client = _clients.find(pollClient.fd)->second;
+	if (_clients.find(pollClient.fd) == _clients.end())
+	{
+		Client tmpClient(pollClient.fd);
+		*client = tmpClient;
+		_clients.insert(std::pair<int, Client>(pollClient.fd, *client));
+	}
+    *client = _clients.find(pollClient.fd)->second;
+	if (!client->checkIfAllDataIsFilled())
+		filledClientData(*client, buffer);
     if (buffer != "" && client.getIsConnected())
     {
         Commands        commands(_clients, _channels, client);
@@ -161,21 +163,9 @@ void Server::checkFdsEvent() {
 	}
 }
 
-void Server::createClient(int fd) {
-    std::string buffer;
+void Server::fillClientData(Client &client, std::string buffer) {
+	Client client(fd);
 
-    while (buffer.find("USER") == std::string::npos)
-	{
-		std::string tmp = this->readInBuffer(fd);
-		if (tmp == "") {
-			close(fd);
-			return ;
-		}
-		std::cout << "tmp = " << tmp << std::endl;
-		if (tmp.find("\n") != std::string::npos)
-			buffer += tmp;
-	}
-    Client client(parseClientData(buffer, fd));
 	if (client.checkIfNicknameIsValid(_clients)
 		&& client.checkIfPasswordIsValid(client, _password)
 		&& client.checkIfUsernameIsValid())

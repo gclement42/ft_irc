@@ -23,10 +23,11 @@ class Channel;
 class Client {
 
 	public :
-		Client(std::string nickname, std::string username, std::string realname, int fd, std::string password);
+		Client(int fd);
 		Client(const Client &src);
 		~Client();
 		Client		&operator=(const Client &src);
+
 		int						    getFd() const;
 		std::string				    getPassword() const;
 		std::string				    getNickname() const;
@@ -34,12 +35,11 @@ class Client {
         bool                        getIsConnected() const;
 		std::vector<std::string>    &getChannels();
 		bool				    	getWaitingForSend() const;
-		bool					    getIsOperator() const;
         std::vector<std::string>    getMessageToSend();
+
 		bool 					    checkIfPasswordIsValid(Client client, std::string passwordServer);
         bool                        checkIfNicknameIsValid(std::map<int, Client> clients);
 		bool						checkIfUsernameIsValid();
-		bool					    checkIfClientIsStillConnected() const;
 
 		void					    sendAllMessageToClient();
 		void					    addMessageToSend(std::string message);
@@ -49,20 +49,23 @@ class Client {
 		void				    	setWaitingForSend(bool waitingForSend);
 		void					    setIsOperator(bool isOperator);
 		void						setNickname(std::string nickname);
+		void						setUsername(std::string username);
+		void						setRealname(std::string realname);
+		void						setPassword(std::string password);
+		bool						checkIfAllDataIsFilled();
 
 
 
 	private :
 		const int					_fd;
-		const std::string			_password;
+		std::string					_password;
 		std::string					_nickname;
-		const std::string			_username;
-		const std::string			_realname;
+		std::string					_username;
+		std::string					_realname;
 		std::vector<std::string>	_channel;
 		std::vector<std::string>	_messagesToSend;
         bool                        _isConnected;
 		bool					    _waitingForSend;
-		bool						_isOperator;
 
 		bool 					    checkIfNicknameIsAlreadyUsed(std::map<int, Client> clients);
 		bool				   		checkIfNicknameIsNotEmpty();

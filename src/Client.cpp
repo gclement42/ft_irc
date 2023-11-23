@@ -13,13 +13,13 @@
 #include "Client.hpp"
 #include "main.hpp"
 
-Client::Client(std::string nickname, std::string username, std::string realname, int fd, std::string password):
- _fd(fd), _password(password), _nickname(nickname),
-  _username(username), _realname(realname),_isConnected(true), _waitingForSend(false), _isOperator(false) {}
+Client::Client(int fd):
+ _fd(fd), _password(""), _nickname(""),
+  _username(""), _realname(""),_isConnected(true), _waitingForSend(false) {}
 
 Client::Client(const Client &src):
  _fd(src._fd), _password(src._password), _nickname(src._nickname),
- _username(src._username), _realname(src._realname), _isOperator(src._isOperator)
+ _username(src._username), _realname(src._realname)
 {
     _messagesToSend = src._messagesToSend;
     _isConnected = src._isConnected;
@@ -37,7 +37,6 @@ Client	&Client::operator=(const Client &src)
 	this->_channel = src._channel;
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
-	this->_isOperator = src._isOperator;
 	this->_waitingForSend = src._waitingForSend;
 	return (*this);
 }
@@ -187,6 +186,24 @@ bool Client::checkIfUsernameIsValid() {
 
 void Client::setNickname(std::string nickname) {
 	this->_nickname = nickname;
+}
+
+void Client::setUsername(std::string username) {
+	this->_username = username;
+}
+
+void Client::setRealname(std::string realname) {
+	this->_realname = realname;
+}
+
+void Client::setPassword(std::string password) {
+	this->_password = password;
+}
+
+bool Client::checkIfAllDataIsFilled() {
+	if (!this->_nickname.empty() && !this->_username.empty() && !this->_realname.empty() && !this->_password.empty())
+		return (true);
+	return (false);
 }
 
 std::ostream	&operator<<(std::ostream &o, const Client &src)
