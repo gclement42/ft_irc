@@ -238,3 +238,19 @@ int Commands::isOperatorInChannel(std::string nickname, std::string channel)
 	}
 	return (FAILURE);
 }
+
+std::map<std::string, Channel> &Commands::getChannels(void) const {
+	return (this->_channels);
+}
+
+std::map<int, Client> &Commands::getClients() const {
+	return (this->_clients);
+}
+
+Client &Commands::getClient() const {
+	return (this->_client);
+}
+
+std::vector<std::string> &Commands::getArgs() {
+	return (this->_args);
+}

@@ -34,6 +34,12 @@ class Commands {
 		void						mode();
 
         //Utils commands
+
+		std::map<std::string, Channel>		&getChannels() const;
+		std::map<int, Client>				&getClients() const;
+		Client								&getClient() const;
+		std::vector<std::string>			&getArgs();
+
 		std::string					concatenate(std::vector<std::string> stringTab);
 		std::vector<std::string>	splitByComa(std::string str);
 		std::vector<std::string>	parseChannelName(std::vector<std::string> arg);
@@ -54,8 +60,7 @@ class Commands {
 
 		void 						reachModestring(std::string modestring, std::vector<std::string> modeArgs, Channel &channel);
 		void 						operatorMode(std::string arg, Channel &channel, char symbol);
-
-	void operatorRemove(Channel &channel, std::vector<std::string> &operators, Client &target);
+		void 						operatorRemove(Channel &channel, std::vector<std::string> &operators, Client &target);
 };
 
 
