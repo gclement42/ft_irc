@@ -28,5 +28,6 @@
 
 # define ERR_BADFORMATMODE() "MODE :Bad format mode\r\n"
 # define ERR_ISNOTOPER(nickname) nickname + " : Is not an IRC operator\r\n"
+# define ERR_UNKNOWNMODE(nickname, mode) ":irc 472 " + nickname + " " + mode + " :is unknown mode char to me\r\n"
 
 #endif

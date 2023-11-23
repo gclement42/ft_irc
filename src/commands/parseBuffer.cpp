@@ -17,7 +17,9 @@
 static std::vector<std::string> splitBuffer(std::string str);
 
 void	Commands::parseBuffer(std::string buffer)
-{	
+{
+	if (buffer.empty())
+		return ;
 	this->_args = splitBuffer(buffer);
 	std::string cmdName = this->_args[0];
 

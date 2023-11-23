@@ -12,46 +12,53 @@
 
 #include "main.hpp"
 
-/*
- 0 = MODE
- 1 = target
- 2 = modestring
- 3 et + = args
- */
 static	void	parseModeArgs(std::vector<std::string> args, std::vector<std::string> &modeArgs);
 static	bool	checkModeArgs(std::vector<std::string> args);
-static	bool	checkIfModeExist(char mode);
+static	bool	checkIfModeExist(char mode, Client &client);
 static	void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std::vector<std::string> arg, size_t &x);
 static	void	parseRemoveMode(Commands &cmd, Channel &channel, std::string mode);
+static	bool	checkIfError(Commands &cmd);
 
 void Commands::mode()
 {
 	std::string					modestring;
 	std::vector<std::string>	modeArgs;
 
-	if (!checkModeArgs(_args))
-	{
-		std::cout << "arg.size = " << _args.size() << std::endl;
-		if (_args.size() == 2)
-			this->displayModeChannel();
-		else
-			_client.addMessageToSend(ERR_NEEDMOREPARAMS(_client.getNickname(), "MODE"));
+	if (checkIfError(*this))
 		return ;
-	}
-	if (this->_channels.find(this->_args[1]) == this->_channels.end())
-	{
-		_client.addMessageToSend(ERR_NOSUCHCHANNEL(_client.getNickname(), _args[1]));
-		return ;
-	}
+	parseModeArgs(_args, modeArgs);
+	modestring = _args[2];
 	Channel &channel = this->_channels.find(this->_args[1])->second;
 	if (!channel.checkIfClientIsOperator(_client.getNickname()))
 	{
 		_client.addMessageToSend(ERR_CHANOPRIVSNEEDED(_client.getNickname(), channel.getName()));
 		return ;
 	}
-	parseModeArgs(_args, modeArgs);
-	modestring = _args[2];
 	this->reachModestring(modestring, modeArgs, channel);
+}
+
+static	bool	checkIfError(Commands &cmd)
+{
+	std::map<std::string, Channel> &channels = cmd.getChannels();
+	Client &client = cmd.getClient();
+	std::vector <std::string> &args = cmd.getArgs();
+
+	if (!checkModeArgs(args))
+	{
+		std::cout << "arg.size = " << args.size() << std::endl;
+		if (args.size() == 2)
+			cmd.displayModeChannel();
+		else
+			client.addMessageToSend(ERR_NEEDMOREPARAMS(client.getNickname(), "MODE"));
+		return (true); ;
+	}
+	if (channels.find(args[1]) == channels.end())
+	{
+		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[1]));
+		return (true);
+	}
+
+	return (false);
 }
 
 
@@ -66,10 +73,12 @@ void Commands::reachModestring(std::string modestring, std::vector<std::string> 
 	symbol = 0;
 	for (size_t i = 0; i < modestring.length(); i++)
 	{
+		std::cout << "modestring[i] = " << modestring[i] << std::endl;
+		std::cout << "x = " << x << std::endl;
 		std::string mode = std::string(&modestring[i]).substr(0, 1);
 		if (modestring[i] == '+' || modestring[i] == '-')
 			symbol = modestring[i];
-		else if (!checkIfModeExist(modestring[i]))
+		else if (!checkIfModeExist(modestring[i], this->_client))
 			continue ;
 		else
 		{
@@ -80,6 +89,11 @@ void Commands::reachModestring(std::string modestring, std::vector<std::string> 
 			}
 			if (modestring[i] == 'o')
 			{
+				if (x >= modeArgs.size())
+				{
+					this->_client.addMessageToSend(ERR_NEEDMOREPARAMS(this->_client.getNickname(), "o"));
+					continue ;
+				}
 				this->operatorMode(modeArgs[x], channel, symbol);
 				x++;
 			}
@@ -110,13 +124,16 @@ static void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std:
 
 	modeChar = mode[0];
 	if (modeChar != 'k' && modeChar != 'l')
-		channel.addMode(mode[0]);
+		channel.addMode(mode[0], 1);
 	else
 	{
 		if (x >= args.size())
+		{
+			cmd.getClient().addMessageToSend(ERR_NEEDMOREPARAMS(cmd.getClient().getNickname(), mode));
 			return ;
+		}
 		arg = args[x];
-		channel.addMode(mode[0], arg.c_str());
+		channel.addMode(mode[0], 1, arg.c_str());
 		x++;
 	}
 	cmd.sendMsgToAllClientsInChannel(cmd.allClientsOnChannel(channel.getName()),
@@ -126,8 +143,10 @@ static void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std:
 void Commands::displayModeChannel()
 {
 	if (this->_channels.find(this->_args[1]) == this->_channels.end())
+	{
 		_client.addMessageToSend(ERR_NOSUCHCHANNEL(_client.getNickname(), _args[1]));
-
+		return ;
+	}
 	Channel channel = this->_channels.find(this->_args[1])->second;
 	std::string msg = ":irc 324 " + _client.getNickname() + " " + _args[1] + " ";
 	this->_client.addMessageToSend(msg + channel.getMode() + "\r\n");
@@ -148,9 +167,10 @@ static void	parseModeArgs(std::vector<std::string> args, std::vector<std::string
 		modeArgs.push_back(args[i]);
 }
 
-static bool checkIfModeExist(char mode)
+static bool checkIfModeExist(char mode, Client &client)
 {
 	if (mode == 'o' || mode == 'k' || mode == 'l' || mode == 't' || mode == 'i')
 		return (true);
+	client.addMessageToSend(ERR_UNKNOWNMODE(client.getNickname(), mode));
 	return (false);
 }
