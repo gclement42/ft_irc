@@ -36,7 +36,6 @@ class Server {
 		pollfd					*getAllFds();
 
 		void					acceptClientConnexion();
-		void					displayClients();
 		void 					disconnectClient(int fd);
         void                    createClient(int fd);
 

@@ -109,6 +109,7 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		pollClient.revents |= POLLOUT;
 		return ;
 	}
+
     buffer = this->readInBuffer(pollClient.fd);
     Client &client = _clients.find(pollClient.fd)->second;
     if (buffer != "" && client.getIsConnected())
@@ -120,6 +121,8 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		// _clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
     }
+	else
+		disconnectClient(pollClient.fd);
 }
 
 void Server::sendMessageToClient(pollfd &pollClient) {
@@ -157,10 +160,19 @@ void Server::checkFdsEvent() {
 }
 
 void Server::createClient(int fd) {
-    std::string buffer = this->readInBuffer(fd);
+    std::string buffer;
 
     while (buffer.find("USER") == std::string::npos)
-        buffer += this->readInBuffer(fd);
+	{
+		std::string tmp = this->readInBuffer(fd);
+		if (tmp == "") {
+			close(fd);
+			return ;
+		}
+		std::cout << "tmp = " << tmp << std::endl;
+		if (tmp.find("\n") != std::string::npos)
+			buffer += tmp;
+	}
     Client client(parseClientData(buffer, fd));
 	if (client.checkIfNicknameIsValid(_clients)
 		&& client.checkIfPasswordIsValid(client, _password)
@@ -186,15 +198,6 @@ void Server::disconnectClient(int fd) {
 		_clients.erase(it);
 		eraseFd(_allFds[fd]);
 		close(fd);
-	}
-}
-
-void Server::displayClients() {
-	std::map<int, Client>::iterator it;
-
-	for (it = _clients.begin(); it != _clients.end(); it++)
-	{
-		std::cout << it->second << std::endl;
 	}
 }
 

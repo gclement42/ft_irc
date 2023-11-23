@@ -33,10 +33,7 @@ std::string Server::readInBuffer(int fd) {
 	}
 	if (bytes == -1) {
 		if ((errno == EAGAIN || errno == EWOULDBLOCK))
-		{
-			std::cout << "EAGAIN after while" << std::endl;
 			return (bufferString);
-		}
 		//std::cerr << "errno : " << errno << std::endl;
 		// throw exception (????)
 		return ("");

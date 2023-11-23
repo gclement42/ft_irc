@@ -32,7 +32,10 @@ Client parseClientData(std::string buffer, int fd)
 	{
 		token = token.substr(0, token.find("\r"));
 		if (token.find("PASS") != std::string::npos)
+		{
+			std::cout << "PASS= " << token << std::endl;
 			pass(token, password);
+		}
 		if (token.find("NICK") != std::string::npos)
 			nick(token, nickname);
 		if (token.find("USER") != std::string::npos)
