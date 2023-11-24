@@ -23,8 +23,9 @@ void parseClientData(std::string buffer, Client &client)
 	std::stringstream ss(buffer);
 	std::string 	token;
 
-	while (std::getline(ss, token, '\r'))
+	while (std::getline(ss, token))
 	{
+		token = token.substr(0, token.find("\r"));
 		if (token.find("PASS") != std::string::npos)
 			pass(token, client);
 		if (token.find("NICK") != std::string::npos)

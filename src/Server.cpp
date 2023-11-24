@@ -182,6 +182,7 @@ void Server::fillClientData(Client &client, std::string buffer) {
 			client.addMessageToSend(RPL_QUIT(std::string("Disconnected")));
 			client.setIsConnected(false);
 		}
+		client.setWaitingForSend(true);
 		std::cout << "New client connected : " << std::endl;
 		std::cout << client << std::endl;
 	}
@@ -195,7 +196,7 @@ void Server::disconnectClient(int fd) {
 	{
 		std::cout << it->second.getNickname() << " disconnected" << std::endl;
 		_clients.erase(it);
-		eraseFd(_allFds[fd]);
+		eraseFd(fd);
 		close(fd);
 	}
 }
@@ -217,7 +218,7 @@ void	Server::insertFd(pollfd client) {
 	_nbFds++;
 }
 
-void	Server::eraseFd(pollfd client) {
+void	Server::eraseFd(int fd) {
 	pollfd		*tmp;
 	size_t		i;
 	size_t		j;
@@ -227,7 +228,7 @@ void	Server::eraseFd(pollfd client) {
 	tmp = new pollfd[_nbFds - 1];
 	while (i < _nbFds)
 	{
-		if (_allFds[i].fd != client.fd)
+		if (_allFds[i].fd != fd)
 		{
 			tmp[j] = _allFds[i];
 			j++;

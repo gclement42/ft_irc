@@ -29,7 +29,7 @@ class Server {
 		void					start() const;
 		void					stop() const;
 		void					insertFd(pollfd client);
-		void					eraseFd(pollfd client);
+		void					eraseFd(int fd);
 
 		size_t					getNbFd() const;
 		int						getSocketServer() const;

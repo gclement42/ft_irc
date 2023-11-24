@@ -195,7 +195,6 @@ void Client::setPassword(std::string password) {
 bool Client::checkIfAllDataIsFilled() {
 	if (!this->_nickname.empty()
 	&& !this->_username.empty()
-	&& !this->_realname.empty()
 	&& !this->_password.empty())
 	{
 		return (true);
