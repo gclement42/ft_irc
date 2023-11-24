@@ -85,6 +85,7 @@ void	Client::sendAllMessageToClient() {
 
 void	Client::addMessageToSend(std::string message) {
 	_messagesToSend.push_back(message);
+	this->setWaitingForSend(true);
 }
 
 void Client::addChannel(std::string channelName) {

@@ -9,6 +9,7 @@
 
 // Passwords
 # define ERR_PASSWDMISMATCH(username) username + " :Password incorrect\r\n"
+# define ERR_NOPASSWDGIVEN() "No password given\r\n"
 
 // Nicknames and usernames
 # define ERR_NICKNAMEINUSE(nickname) nickname + " :Nickname is already in use\r\n"

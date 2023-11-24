@@ -179,6 +179,7 @@ void Server::fillClientData(Client &client, std::string buffer) {
 		}
 		else
 		{
+			std::cout << "Client disconnected : " << std::endl;
 			client.addMessageToSend(RPL_QUIT(std::string("Disconnected")));
 			client.setIsConnected(false);
 		}
