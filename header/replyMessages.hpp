@@ -8,7 +8,7 @@
 #include "main.hpp"
 
 #define RPL_WELCOME(nickname) "Welcome to the ft_irc " + nickname + "\r\n"
-#define RPL_YOUREOPER() ":irc 381You are now an IRC operator\r\n"
+#define RPL_YOUREOPER() ":irc 381 You are now an IRC operator\r\n"
 #define	RPL_QUIT(reason) "QUIT :" + reason + "\r\n"
 #define RPL_NAMREPLY(nickname, channel, listUsers) ":irc 353 " + nickname + " = " + channel + " " + listUsers + "\r\n"
 #define RPL_ENDOFNAMES(nickname, channel) ":irc 366 " + nickname + " " + channel + " :End of /NAMES list\r\n"
@@ -24,9 +24,10 @@
 #define RPL_PRIVMSGCHANNEL(nickname, channelName, msg) ":" + nickname + " PRIVMSG " + channelName + " :" + msg + "\r\n"
 #define RPL_PRIVMSGUSER(nickname, user, msg) ":" + nickname + " PRIVMSG " + user + " :" + msg + "\r\n"
 
-#define RPL_MODESET(mode, channelName) "MODE " + mode + " is set on channel : " + channelName + "\r\n"
+#define RPL_MODESET(channelName, nickname, mode) ":irc 324 PRIVMSG " + channelName + " :" + nickname + " set mode " + mode + "\r\n"
 #define RPL_MODEREMOVE(mode, channelName) "MODE " + mode + " is removed on channel : " + channelName + "\r\n"
 #define RPL_NOWISOPER(nickname) nickname + ": Is now an IRC operator\r\n"
 #define RPL_NOWISNOTOPER(nickname) nickname + ": Is no longer an IRC operator\r\n"
+
 
 #endif
