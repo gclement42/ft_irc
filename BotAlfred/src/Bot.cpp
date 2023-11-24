@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 13:03:42 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/22 09:42:31 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/23 14:14:18 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Bot::Bot(int port, std::string serverPassword)
 	this->_port = port;
 	
 	this->_serverPassword = serverPassword;
-	this->_botPassword = "PASS axou\r\n";
+	this->_botPassword = "PASS " + serverPassword + "\r\n";
 	this->_nickName = "NICK alfredo\r\n";
 	this->_userName = "USER alfredo\r\n";
 
@@ -113,14 +113,6 @@ void Bot::botResponse(std::string buffer, int socket)
 		privateMsgResponse(buffer, socket);
 }
 
-static void createBotChannel(int socket)
-{
-	std::string 	createChannelMsg;
-
-	createChannelMsg = "JOIN #BOT\r\n";
-	send(socket, createChannelMsg.c_str(), createChannelMsg.size(), 0);
-}
-
 void Bot::newUserInChannel(int socket)
 {
 	std::string 	newUserInChannel;
@@ -170,4 +162,14 @@ std::map<std::string, std::string> Bot::createResponsesMap(void)
 	responses["putain"] = format + "Pas de ca ici ! C'est un serveur friendly.\r\n";
 	
 	return (responses);
+}
+
+// ===== STATIC FUNCTIONS =====
+
+static void createBotChannel(int socket)
+{
+	std::string 	createChannelMsg;
+
+	createChannelMsg = "JOIN #BOT\r\n";
+	send(socket, createChannelMsg.c_str(), createChannelMsg.size(), 0);
 }

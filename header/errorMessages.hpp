@@ -26,6 +26,9 @@
 # define ERR_USERNOTINCHANNEL(srcNickname, targetNickname, channelName) ":irc 441 "+ srcNickname + " " + targetNickname + " " + channelName + " :They aren't on that channel\r\n"
 # define ERR_NOSUCHNICK(nickname, target) ":irc 401 " + nickname + " " + target + " :No such nick/channel\r\n"
 # define ERR_CHANOPRIVSNEEDED(nickname, channelName) ":irc 482 " + nickname + " " + channelName + " :You're not channel operator\r\n"
+# define ERR_BADCHANMASK(channelName) ":irc 476 " + channelName + " :Bad Channel Mask\r\n"
+# define ERR_CANNOTSENDTOCHAN(nickname, channelName) ":irc 404 " + nickname + " " + channelName + " :Cannot send to channel\r\n"
+# define ERR_NOTEXTTOSEND(nickname) ":irc 412 " + nickname + " :No text to send\r\n"
 
 # define ERR_BADFORMATMODE() "MODE :Bad format mode\r\n"
 # define ERR_ISNOTOPER(nickname) nickname + " : Is not an IRC operator\r\n"

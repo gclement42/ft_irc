@@ -45,7 +45,11 @@ class Commands {
 		std::vector<std::string>	parseKey(std::vector<std::string> arg);
         void						parseBuffer(std::string buffer);
         std::vector<std::string>    allClientsOnChannel(std::string channel);
-        void                        sendMsgToAllClientsInChannel(std::vector<std::string> allClients, std::string msg);
+		void 						sendPrivMsgChannel(std::map<int, Client> &clients, std::vector<std::string> allClients, \
+										std::string client, std::string channel, std::vector<std::string> args);
+		void						sendPrivMsgUser(std::map<int, Client> &clients, Client &client, \
+										std::vector<std::string> args, std::string target);
+		void                        sendMsgToAllClientsInChannel(std::vector<std::string> allClients, std::string msg);
 		bool						checkIfChannelExist(std::string channelName);
 		bool 						checkIfThisUserIsOnChannel(std::string channelName);
 		bool 						checkIfTargetClientIsOnChannel(std::string channelName, std::string targetClient);
