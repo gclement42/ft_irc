@@ -30,7 +30,6 @@ SRC						=	main.cpp \
 							Client.cpp \
 							readInBuffer.cpp \
 							\
-							commands/oper.cpp \
 							commands/quit.cpp \
 							commands/topic.cpp \
 							commands/parseBuffer.cpp \
