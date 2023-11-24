@@ -18,6 +18,7 @@ static void			pass(std::string str, Client &client);
 static void			user(std::string str, Client &client);
 static void			nick(std::string str, Client &client);
 static void			eraseSpaces(std::string &str);
+static void			stringToUpper(std::string &str);
 
 void parseClientData(std::string buffer, Client &client)
 {
@@ -29,11 +30,12 @@ void parseClientData(std::string buffer, Client &client)
 	{
 		token = token.substr(0, token.find("\r"));
 		cmd = token.substr(0, token.find_first_of(" "));
-		if (token.find("PASS") != std::string::npos)
+		stringToUpper(cmd);
+		if (cmd == "PASS")
 			pass(token, client);
-		if (token.find("NICK") != std::string::npos)
+		if (cmd == "NICK")
 			nick(token, client);
-		if (token.find("USER") != std::string::npos)
+		if (cmd == "USER")
 			user(token, client);
 		if (cmd != "PASS" && cmd != "NICK" && cmd != "USER" && token != "CAP LS 302" && token != "CAP END" && !token.empty())
 		{
@@ -106,7 +108,12 @@ static std::string searchRealname(std::string str)
 
 static void eraseSpaces(std::string &str)
 {
-	if (str.find(" ") != std::string::npos)
-		str = str.substr(0, str.find(" "));
+	while (str.find(" ") != std::string::npos)
+		str.erase(str.find(" "), 1);
 }
 
+static void stringToUpper(std::string &str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+		str[i] = std::toupper(str[i]);
+}
