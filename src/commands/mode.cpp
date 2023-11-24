@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gclement <gclement@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 07:39:36 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/20 07:39:36 by gclement         ###   ########.fr       */
+/*   Updated: 2023/11/24 10:58:31 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,8 +136,8 @@ static void	parseAddMode(Commands &cmd, Channel &channel, std::string mode, std:
 		channel.addMode(mode[0], 1, arg.c_str());
 		x++;
 	}
-	cmd.sendMsgToAllClientsInChannel(cmd.allClientsOnChannel(channel.getName()),
-									   RPL_MODESET(mode, channel.getName()));
+	cmd.sendMsgToAllClientsInChannel(cmd.allClientsOnChannel(channel.getName()), \
+			RPL_MODESET(channel.getName(), cmd.getClient().getNickname(), mode));
 }
 
 void Commands::displayModeChannel()
