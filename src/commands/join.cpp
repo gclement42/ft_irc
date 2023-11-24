@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/24 08:29:13 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/24 14:13:59 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static std::vector<std::string> split(std::string arg);
 
 static bool checkChannelNameIsValid(std::string channelName);
 static bool	checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
-static bool	checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels);
+static bool	checkAll(std::string channelName, Client &client, std::map<std::string, Channel> &channels);
 static bool checkKey(std::string channelName, std::vector<std::string> keys, std::map<std::string, Channel> channels, size_t i);
 
 void	Commands::join()
@@ -49,7 +49,6 @@ void	Commands::join()
 		{
 			Channel newChannel(argChannel[i], "", "", "", USER_LIMITS);
 			
-			newChannel.incrementUserCount();
 			newChannel.addOperator(_client.getNickname());
 			_channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
 			topic = newChannel.getTopic();
@@ -59,15 +58,16 @@ void	Commands::join()
 			std::map<std::string, Channel>::iterator it;
 
 			it = _channels.find(argChannel[i]);
-			it->second.incrementUserCount();
 			topic = it->second.getTopic();
 		}
 		
 		if (isChannelValid && !checkKey(argChannel[i], keys, _channels, i))
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
 		else if (isChannelValid && checkAll(argChannel[i], _client, _channels))
+		{
+			_channels.find(argChannel[i])->second.incrementUserCount();
 			addClientInChannel(argChannel[i], topic);
-		// std::cout << "\033[41m" << "DEBUG\n" << "\033[0m";
+		}
 	}
 }
 
@@ -138,21 +138,22 @@ static bool checkKey(std::string channelName, std::vector<std::string> keys, std
 	return (false);
 }
 
-static bool checkAll(std::string channelName, Client &client, std::map<std::string, Channel> channels)
+static bool checkAll(std::string channelName, Client &client, std::map<std::string, Channel> &channels)
 {
 	std::map<std::string, Channel>::iterator it;
 	it = channels.find(channelName);
 	Channel channel = it->second;
-
-	if (channel.getLimitMode() && channel.getUserCount() > channel.getUserLimit())
+	
+	if (channel.getLimitMode() && (channel.getUserCount() >= channel.getUserLimit()))
 	{
 		client.addMessageToSend(ERR_CHANNELISFULL(channelName));
 		return (false);
-	}
+	}		
 	if (channel.getInviteMode() && !channel.checkIfClientIsInvited(client.getNickname()))
 	{
 		client.addMessageToSend(ERR_INVITEONLYCHAN(channelName));
 		return (false);
 	}
+
 	return (true);
 }
