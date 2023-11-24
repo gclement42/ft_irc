@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 13:03:42 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/23 08:44:26 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/23 14:14:18 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Bot::Bot(int port, std::string serverPassword)
 	this->_port = port;
 	
 	this->_serverPassword = serverPassword;
-	this->_botPassword = "PASS axou\r\n";
+	this->_botPassword = "PASS " + serverPassword + "\r\n";
 	this->_nickName = "NICK alfredo\r\n";
 	this->_userName = "USER alfredo\r\n";
 
