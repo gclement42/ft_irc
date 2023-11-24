@@ -14,54 +14,76 @@
 # include "Client.hpp"
 
 static std::string	searchRealname(std::string str);
-static void			pass(std::string str, std::string &password);
-static void			user(std::string str, std::string &username, std::string &realname);
-static void			nick(std::string str, std::string &nickname);
+static void			pass(std::string str, Client &client);
+static void			user(std::string str, Client &client);
+static void			nick(std::string str, Client &client);
 
-Client parseClientData(std::string buffer, Client &client)
+void parseClientData(std::string buffer, Client &client)
 {
-	std::stringstream	streamBuffer(buffer);
-	std::string 		token;
-	std::string			nickname;
-	std::string			username;
-	std::string			password;
-	std::string 		realname;
+	std::stringstream ss(buffer);
+	std::string 	token;
 
-	password = "";
-	while (getline(streamBuffer, token))
+	while (std::getline(ss, token, '\r'))
 	{
-		token = token.substr(0, token.find("\r"));
 		if (token.find("PASS") != std::string::npos)
-			pass(token, password);
+			pass(token, client);
 		if (token.find("NICK") != std::string::npos)
-			nick(token, nickname);
+			nick(token, client);
 		if (token.find("USER") != std::string::npos)
-			user(token, username, realname);
+			user(token, client);
+
 	}
-	Client client(nickname, username, realname, fd, password);
-	return (client);
 }
 
-static void pass(std::string str, std::string &password)
+static void pass(std::string str, Client &client)
 {
+	std::string &password = client.getPassword();
+
 	if (str.length() > 5)
+	{
 		password = str.substr(str.find("PASS") + 5);
+		client.setPassword(password);
+	}
 }
 
-static void nick(std::string str, std::string &nickname)
+static void nick(std::string str, Client &client)
 {
-	if (str.length() > 5)
+	std::string &nickname = client.getNickname();
+
+	if (client.getPassword().empty())
+	{
+		client.addMessageToSend("ERROR : No password given");
+		return ;
+	}
+	if (str.length() > 5) {
 		nickname = str.substr(str.find("NICK") + 5);
+		client.setNickname(nickname);
+	}
 }
 
-static void user(std::string str, std::string &username, std::string &realname)
+static void user(std::string str, Client &client)
 {
+	std::string &username = client.getUsername();
+	std::string &realname = client.getRealname();
+
+	if (client.getPassword().empty())
+	{
+		client.addMessageToSend("ERROR : No password given");
+		return ;
+	}
 	int endUsername = str.find("0");
 	if (str.length() > 5)
+	{
 		username = str.substr(str.find("USER") + 5, endUsername - 1 - str.find("USER") - 5);
+	}
 	if (username.length() > USERLEN)
+	{
 		username = username.substr(0, USERLEN);
+	}
+	client.setUsername(username);
 	realname = searchRealname(str);
+	if (!realname.empty())
+		client.setRealname(realname);
 }
 
 static std::string searchRealname(std::string str)

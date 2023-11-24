@@ -110,17 +110,18 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 	if (_clients.find(pollClient.fd) == _clients.end())
 	{
 		Client tmpClient(pollClient.fd);
-		*client = tmpClient;
+		client = &tmpClient;
 		_clients.insert(std::pair<int, Client>(pollClient.fd, *client));
 	}
-    *client = _clients.find(pollClient.fd)->second;
+    client = &_clients.find(pollClient.fd)->second;
 	if (!client->checkIfAllDataIsFilled())
-		filledClientData(*client, buffer);
-    if (buffer != "" && client.getIsConnected())
+		fillClientData(*client, buffer);
+    else if (buffer != "" && client->getIsConnected())
     {
-        Commands        commands(_clients, _channels, client);
+        Commands	commands(_clients, _channels, *client);
+
         buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-        std::cout << client.getNickname() << " : " << buffer << std::endl;
+        std::cout << client->getNickname() << " : " << buffer << std::endl;
         commands.parseBuffer(buffer);
 		// _clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
@@ -132,7 +133,9 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 void Server::sendMessageToClient(pollfd &pollClient) {
     if (_clients.find(pollClient.fd) == _clients.end())
         return ;
+
     Client client(_clients.find(pollClient.fd)->second);
+
     client.sendAllMessageToClient();
 	client.setWaitingForSend(false);
 	if (!client.getIsConnected())

@@ -21,7 +21,6 @@ Commands::Commands(std::map<int, Client> &clients, std::map<std::string, Channel
 	this->_cmd["QUIT"] = &Commands::quit;
 	this->_cmd["TOPIC"] = &Commands::topic;
     this->_cmd["PRIVMSG"] = &Commands::privateMsg;
-    this->_cmd["OPER"] = &Commands::oper;
 	this->_cmd["NICK"] = &Commands::nick;
 	this->_cmd["INVITE"] = &Commands::invite;
 	this->_cmd["PART"] = &Commands::part;

@@ -73,8 +73,6 @@ void Commands::reachModestring(std::string modestring, std::vector<std::string> 
 	symbol = 0;
 	for (size_t i = 0; i < modestring.length(); i++)
 	{
-		std::cout << "modestring[i] = " << modestring[i] << std::endl;
-		std::cout << "x = " << x << std::endl;
 		std::string mode = std::string(&modestring[i]).substr(0, 1);
 		if (modestring[i] == '+' || modestring[i] == '-')
 			symbol = modestring[i];

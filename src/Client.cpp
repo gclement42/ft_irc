@@ -34,6 +34,9 @@ Client	&Client::operator=(const Client &src)
 	if (&src == this)
 		return (*this);
 	this->_nickname = src._nickname;
+	this->_password = src._password;
+	this->_realname = src._realname;
+	this->_username = src._username;
 	this->_channel = src._channel;
 	this->_messagesToSend = src._messagesToSend;
 	this->_isConnected = src._isConnected;
@@ -68,7 +71,6 @@ void	Client::sendAllMessageToClient() {
 
     for (std::vector<std::string>::iterator it = _messagesToSend.begin(); it != _messagesToSend.end(); it++)
     {
-		std::cout << "message to send : " << *it << std::endl;
         ret = send(_fd, (*it).c_str(), (*it).length(), 0);
         if (ret == -1)
         {
@@ -85,28 +87,23 @@ void	Client::addMessageToSend(std::string message) {
 	_messagesToSend.push_back(message);
 }
 
-void Client::addChannel(std::string channelName)
-{
+void Client::addChannel(std::string channelName) {
 	_channel.push_back(channelName);
 }
 
-int		Client::getFd() const
-{
+int		Client::getFd() const {
 	return (_fd);
 }
 
-std::string	Client::getPassword() const
-{
+std::string	&Client::getPassword() {
 	return (_password);
 }
 
-std::string	Client::getNickname() const
-{
+std::string	&Client::getNickname() {
 	return (_nickname);
 }
 
-std::string	Client::getUsername() const
-{
+std::string	&Client::getUsername() {
 	return (_username);
 }
 
@@ -124,9 +121,8 @@ bool	Client::getWaitingForSend() const
 	return (_waitingForSend);
 }
 
-bool	Client::getIsOperator() const
-{
-	return (_isOperator);
+std::string &Client::getRealname() {
+	return (_realname);
 }
 
 void Client::setIsConnected(bool isConnected){
@@ -138,14 +134,10 @@ void	Client::setWaitingForSend(bool waitingForSend)
 	_waitingForSend = waitingForSend;
 }
 
-void	Client::setIsOperator(bool isOperator)
-{
-	_isOperator = isOperator;
-}
-
 bool Client::getIsConnected() const {
     return (_isConnected);
 }
+
 
 bool Client::checkIfNicknameIsNotEmpty() {
 	if (this->_nickname.empty()) {
@@ -201,12 +193,18 @@ void Client::setPassword(std::string password) {
 }
 
 bool Client::checkIfAllDataIsFilled() {
-	if (!this->_nickname.empty() && !this->_username.empty() && !this->_realname.empty() && !this->_password.empty())
+	if (!this->_nickname.empty()
+	&& !this->_username.empty()
+	&& !this->_realname.empty()
+	&& !this->_password.empty())
+	{
 		return (true);
+	}
 	return (false);
 }
 
-std::ostream	&operator<<(std::ostream &o, const Client &src)
+
+std::ostream	&operator<<(std::ostream &o, Client &src)
 {
 	o << "Client fd: " << src.getFd() << std::endl;
 	o << "Client password: " << src.getPassword() << std::endl;

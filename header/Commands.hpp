@@ -26,7 +26,6 @@ class Commands {
         void	                    join();
 		void	                    topic();
         void                        privateMsg();
-        void                        oper();
 		void						nick();
 		void						kick();
 		void						invite();

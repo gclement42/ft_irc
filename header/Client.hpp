@@ -29,9 +29,10 @@ class Client {
 		Client		&operator=(const Client &src);
 
 		int						    getFd() const;
-		std::string				    getPassword() const;
-		std::string				    getNickname() const;
-		std::string				    getUsername() const;
+		std::string				    &getPassword();
+		std::string				    &getNickname();
+		std::string				    &getUsername();
+		std::string				    &getRealname();
         bool                        getIsConnected() const;
 		std::vector<std::string>    &getChannels();
 		bool				    	getWaitingForSend() const;
@@ -72,6 +73,6 @@ class Client {
 		bool						checkIfNicknameContainsForbiddenCharacters();
 };
 
-std::ostream	&operator<<(std::ostream &o, const Client &src);
+std::ostream	&operator<<(std::ostream &o, Client &src);
 
 #endif
