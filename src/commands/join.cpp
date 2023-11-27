@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/03 11:20:34 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/24 14:13:59 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/27 14:08:33 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 static std::vector<std::string> split(std::string arg);
 
+static bool clientIsAlreadyInChannel(Client &client, std::string channelName);
 static bool checkChannelNameIsValid(std::string channelName);
 static bool	checkChannelExist(std::string channelName, std::map<std::string, Channel> channels);
 static bool	checkAll(std::string channelName, Client &client, std::map<std::string, Channel> &channels);
@@ -27,10 +28,11 @@ void	Commands::join()
 	std::vector<std::string> 	keys;
 	std::string					topic;
 	bool						isChannelValid = true;
-
+	bool						alreadyInChannel = false;
+	
 	if (this->_args.size() < 2)
 	{
-		std::cout << "ERROR: Not enough parameters" << std::endl;
+		_client.addMessageToSend(ERR_NEEDMOREPARAMSJOIN(_client.getNickname()));
 		return ;
 	}
 	
@@ -40,12 +42,13 @@ void	Commands::join()
 	
 	for (size_t i = 0; i < argChannel.size(); i++)
 	{
+		alreadyInChannel = clientIsAlreadyInChannel(_client, argChannel[i]);
 		if (!checkChannelNameIsValid(argChannel[i]))
 		{
 			_client.addMessageToSend(ERR_BADCHANMASK(argChannel[i]));
 			isChannelValid = false;
 		}
-		else if (!checkChannelExist(argChannel[i], _channels))
+		else if (!checkChannelExist(argChannel[i], _channels) && !alreadyInChannel)
 		{
 			Channel newChannel(argChannel[i], "", "", "", USER_LIMITS);
 			
@@ -53,7 +56,7 @@ void	Commands::join()
 			_channels.insert(std::pair<std::string, Channel>(argChannel[i], newChannel));
 			topic = newChannel.getTopic();
 		}
-		else
+		else if (!alreadyInChannel)
 		{
 			std::map<std::string, Channel>::iterator it;
 
@@ -63,7 +66,7 @@ void	Commands::join()
 		
 		if (isChannelValid && !checkKey(argChannel[i], keys, _channels, i))
 			_client.addMessageToSend(ERR_BADCHANNELKEY(argChannel[i]));
-		else if (isChannelValid && checkAll(argChannel[i], _client, _channels))
+		else if (isChannelValid && checkAll(argChannel[i], _client, _channels) && !alreadyInChannel)
 		{
 			_channels.find(argChannel[i])->second.incrementUserCount();
 			addClientInChannel(argChannel[i], topic);
@@ -104,6 +107,21 @@ static std::vector<std::string> split(std::string arg)
 	targets.push_back(arg);
 
 	return (targets);
+}
+
+static bool clientIsAlreadyInChannel(Client &client, std::string channelName)
+{
+	std::vector<std::string> channels = client.getChannels();
+
+	for (size_t i = 0; i < channels.size(); i++)
+	{
+		if (channels[i] == channelName)
+		{
+			client.addMessageToSend(ERR_USERONCHANNEL(client.getNickname(), channelName));
+			return (true);
+		}
+	}
+	return (false);
 }
 
 static bool checkChannelNameIsValid(std::string channelName)

@@ -29,6 +29,8 @@
 # define ERR_BADCHANMASK(channelName) ":irc 476 " + channelName + " :Bad Channel Mask\r\n"
 # define ERR_CANNOTSENDTOCHAN(nickname, channelName) ":irc 404 " + nickname + " " + channelName + " :Cannot send to channel\r\n"
 # define ERR_NOTEXTTOSEND(nickname) ":irc 412 " + nickname + " :No text to send\r\n"
+# define ERR_NEEDMOREPARAMSJOIN(nickname) ":irc 461 " + nickname + " JOIN :Not enough parameters\r\n"
+# define ERR_USERONCHANNEL(nickname, channelName) ":irc 443 " + nickname + " " + channelName + " :is already on channel\r\n"
 
 # define ERR_BADFORMATMODE() "MODE :Bad format mode\r\n"
 # define ERR_ISNOTOPER(nickname) nickname + " : Is not an IRC operator\r\n"
