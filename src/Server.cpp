@@ -97,10 +97,11 @@ bool Server::checkIfClientIsWaitingForSend(int fd) {
 }
 
 void Server::receiveMessageFromClient(pollfd &pollClient) {
-    std::string		buffer;
+    int 			ret;
 	Client			*client;
 
-    buffer = this->readInBuffer(pollClient.fd);
+    ret = this->readInBuffer(pollClient.fd);
+	std::cout << "ret : " << ret << std::endl;
 	if (_clients.find(pollClient.fd) == _clients.end())
 	{
 		Client tmpClient(pollClient.fd);
@@ -109,19 +110,19 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 	}
     client = &_clients.find(pollClient.fd)->second;
 	if (!client->checkIfAllDataIsFilled())
-		fillClientData(*client, buffer);
-    else if (buffer != "" && client->getIsConnected())
-    {
-        Commands	commands(_clients, _channels, *client);
+		fillClientData(*client, _buffer);
+    else if (ret == 1 && client->getIsConnected()) {
+		Commands commands(_clients, _channels, *client);
 
-        buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
-        std::cout << client->getNickname() << " : " << buffer << std::endl;
-        commands.parseBuffer(buffer);
+		_buffer = _buffer.substr(0, _buffer.find_first_of("\r\n"));
+		std::cout << client->getNickname() << " : " << _buffer << std::endl;
+		commands.parseBuffer(_buffer);
 		// _clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
-    }
-	else
+	}
+	else if (ret == 0 && this->_buffer.empty())
 		disconnectClient(pollClient.fd);
+	this->_buffer.clear();
 }
 
 void Server::sendMessageToClient(pollfd &pollClient) {

@@ -14,27 +14,26 @@
 
 static std::map<int, std::string>::iterator 		getBufferByFd(std::map<int, std::string> &buffer, int fd);
 
-std::string Server::readInBuffer(int fd) {
+int Server::readInBuffer(int fd) {
 	char		buffer[1024];
-	std::string	bufferString;
 	ssize_t 	bytes;
 	std::map<int, std::string>::iterator it;
 
-	it = getBufferByFd(this->_buffer, fd);
+	it = getBufferByFd(this->_bufferByFd, fd);
 	bytes = recv(fd, buffer, 1024, 0);
-//	std::cout << "buffer: " << buffer << std::endl;
 	if (bytes == -1)
-		return ("");
-	bufferString = buffer;
-	bufferString = bufferString.substr(0, bytes);
-	it->second += bufferString;
+		return (-1);
+	this->_buffer = buffer;
+	this->_buffer = this->_buffer.substr(0, bytes);
+	it->second += this->_buffer;
 	if (it->second.find('\n', 0) != std::string::npos)
 	{
-		bufferString = it->second;
+		_buffer = it->second;
 		it->second.clear();
-		return (bufferString);
+		return (1);
 	}
-	return ("");
+	else
+		return (0);
 }
 
 static std::map<int, std::string>::iterator 		getBufferByFd(std::map<int, std::string> &buffer, int fd)

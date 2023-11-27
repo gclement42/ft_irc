@@ -41,7 +41,7 @@ class Server {
 
 		void					checkFdsEvent();
 		bool                   	checkIfClientIsWaitingForSend(int fd);
-		std::string				readInBuffer(int fd);
+		int						readInBuffer(int fd);
 
 	private:
 		std::map<int, Client>	        _clients;
@@ -51,7 +51,8 @@ class Server {
 		int						        _socketServer;
 		int						        _port;
 		std::string				        _password;
-		std::map<int, std::string>		_buffer;
+		std::map<int, std::string>		_bufferByFd;
+		std::string						_buffer;
         void receiveMessageFromClient(pollfd &pollClient);
         void sendMessageToClient(pollfd &pollClient);
 
