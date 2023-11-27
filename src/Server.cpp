@@ -126,8 +126,6 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		// _clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
     }
-	else
-		disconnectClient(pollClient.fd);
 }
 
 void Server::sendMessageToClient(pollfd &pollClient) {
@@ -140,9 +138,10 @@ void Server::sendMessageToClient(pollfd &pollClient) {
 	client.setWaitingForSend(false);
 	if (!client.getIsConnected())
 		disconnectClient(pollClient.fd);
-	else
+	else {
     	_clients.find(pollClient.fd)->second = client;
-    pollClient.revents = 0;
+    	pollClient.revents = 0;
+	}
 }
 
 void Server::checkFdsEvent() {

@@ -160,6 +160,7 @@ void Channel::setUserLimit(char *userLimit)
 	int userLimitInt = atoi(userLimit);
 	this->_userLimit = userLimitInt;
 	this->_limitMode = true;
+	std::cout << "userlimit : " << this->_userLimit << std::endl;
 }
 
 bool Channel::getKeyMode(void) const {
