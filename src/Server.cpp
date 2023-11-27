@@ -101,7 +101,6 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 	Client			*client;
 
     ret = this->readInBuffer(pollClient.fd);
-	std::cout << "ret : " << ret << std::endl;
 	if (_clients.find(pollClient.fd) == _clients.end())
 	{
 		Client tmpClient(pollClient.fd);
