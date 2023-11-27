@@ -120,6 +120,8 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		// _clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
     }
+	else
+		disconnectClient(pollClient.fd);
 }
 
 void Server::sendMessageToClient(pollfd &pollClient) {
@@ -150,10 +152,10 @@ void Server::checkFdsEvent() {
 		{
 			if (checkIfClientIsWaitingForSend(_allFds[i].fd))
 				_allFds[i].revents |= POLLOUT;
-			if (_allFds[i].revents & POLLIN)
-                receiveMessageFromClient(_allFds[i]);
             if (_allFds[i].revents & POLLOUT)
                 sendMessageToClient(_allFds[i]);
+			if (_allFds[i].revents & POLLIN)
+                receiveMessageFromClient(_allFds[i]);
 		}
 	}
 }

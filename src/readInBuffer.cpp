@@ -22,7 +22,7 @@ std::string Server::readInBuffer(int fd) {
 
 	it = getBufferByFd(this->_buffer, fd);
 	bytes = recv(fd, buffer, 1024, 0);
-	std::cout << "buffer: " << buffer << std::endl;
+//	std::cout << "buffer: " << buffer << std::endl;
 	if (bytes == -1)
 		return ("");
 	bufferString = buffer;
