@@ -74,8 +74,7 @@ void	Client::sendAllMessageToClient() {
         ret = send(_fd, (*it).c_str(), (*it).length(), 0);
         if (ret == -1)
         {
-            std::cerr << "errno : " << errno << std::endl;
-            // throw exception (????)
+			perror("send");
             return;
         }
     }

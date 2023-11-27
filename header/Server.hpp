@@ -51,7 +51,7 @@ class Server {
 		int						        _socketServer;
 		int						        _port;
 		std::string				        _password;
-		std::string 					_buffer;
+		std::map<int, std::string>		_buffer;
         void receiveMessageFromClient(pollfd &pollClient);
         void sendMessageToClient(pollfd &pollClient);
 

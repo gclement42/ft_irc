@@ -80,12 +80,7 @@ void Server::acceptClientConnexion() {
 	socklen_t len = sizeof(sockaddrInClient);
 	pollClient.fd = accept(_socketServer, (sockaddr *)(&sockaddrInClient), &len);
 	if (pollClient.fd == -1) {
-		if (errno == EAGAIN || errno == EWOULDBLOCK)
 			return ;
-		else {
-			std::cout << "error accept:" << errno << std::endl;
-			return ;
-		}
 	}
 	pollClient.events = POLLIN;
 	pollClient.revents = 0;
@@ -149,7 +144,6 @@ void Server::checkFdsEvent() {
 
 	ret = poll(_allFds, _nbFds, 0);
 	if (ret == -1) {
-		//Rajouter gestions des erreurs
 		return ;
 	} else {
 		for (size_t i = 0; i < _nbFds; i++)

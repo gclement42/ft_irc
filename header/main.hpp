@@ -33,6 +33,7 @@
 # include <cstdlib>
 # include <algorithm>
 # include <map>
+# include <cstdio>
 # include "errorMessages.hpp"
 # include "replyMessages.hpp"
 # include "Server.hpp"

@@ -12,28 +12,39 @@
 
 # include "main.hpp"
 
+static std::map<int, std::string>::iterator 		getBufferByFd(std::map<int, std::string> &buffer, int fd);
+
 std::string Server::readInBuffer(int fd) {
 	char		buffer[1024];
 	std::string	bufferString;
 	ssize_t 	bytes;
+	std::map<int, std::string>::iterator it;
 
+	it = getBufferByFd(this->_buffer, fd);
 	bytes = recv(fd, buffer, 1024, 0);
-	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+	std::cout << "buffer: " << buffer << std::endl;
+	if (bytes == -1)
 		return ("");
 	bufferString = buffer;
 	bufferString = bufferString.substr(0, bytes);
-	this->_buffer += bufferString;
-	if (this->_buffer.find('\n', 0) != std::string::npos)
+	it->second += bufferString;
+	if (it->second.find('\n', 0) != std::string::npos)
 	{
-		bufferString = this->_buffer;
-		this->_buffer.clear();
+		bufferString = it->second;
+		it->second.clear();
+		return (bufferString);
 	}
-	if (bytes == -1) {
-		if ((errno == EAGAIN || errno == EWOULDBLOCK))
-			return (bufferString);
-		//std::cerr << "errno : " << errno << std::endl;
-		// throw exception (????)
-		return ("");
+	return ("");
+}
+
+static std::map<int, std::string>::iterator 		getBufferByFd(std::map<int, std::string> &buffer, int fd)
+{
+	std::map<int, std::string>::iterator it;
+
+	if (buffer.find(fd) == buffer.end())
+	{
+		it = buffer.insert(std::pair<int, std::string>(fd, "")).first;
+		return (it);
 	}
-	return (bufferString);
+	return (buffer.find(fd));
 }
