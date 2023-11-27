@@ -57,6 +57,11 @@ static	bool	checkIfError(Commands &cmd)
 		client.addMessageToSend(ERR_NOSUCHCHANNEL(client.getNickname(), args[1]));
 		return (true);
 	}
+	if (!cmd.checkIfThisUserIsOnChannel(args[1]))
+	{
+		client.addMessageToSend(ERR_NOTONCHANNEL(client.getNickname(), args[1]));
+		return (true);
+	}
 
 	return (false);
 }

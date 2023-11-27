@@ -19,10 +19,7 @@ std::string Server::readInBuffer(int fd) {
 
 	bytes = recv(fd, buffer, 1024, 0);
 	if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
-	{
-		std::cout << "EAGAIN" << std::endl;
 		return ("");
-	}
 	bufferString = buffer;
 	bufferString = bufferString.substr(0, bytes);
 	this->_buffer += bufferString;

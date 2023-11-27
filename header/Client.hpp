@@ -48,7 +48,6 @@ class Client {
 
         void                        setIsConnected(bool isConnected);
 		void				    	setWaitingForSend(bool waitingForSend);
-		void					    setIsOperator(bool isOperator);
 		void						setNickname(std::string nickname);
 		void						setUsername(std::string username);
 		void						setRealname(std::string realname);

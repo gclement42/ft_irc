@@ -37,6 +37,8 @@ void	Commands::kick()
 
 	std::map<std::string, Channel>::iterator channel = this->_channels.find(channelNameTab[0]);
 
+	if (!channel->second.checkIfClientIsOperator(this->_client.getNickname()))
+		return (this->_client.addMessageToSend(ERR_CHANOPRIVSNEEDED(this->_client.getNickname(), channel->first)));
 	if (!(errorMessage = checkAllClientsExist(this, channel->first, usersTab)).empty())
 		return (this->_client.addMessageToSend(ERR_USERNOTINCHANNEL(this->_client.getNickname(), errorMessage, channel->first)));
 

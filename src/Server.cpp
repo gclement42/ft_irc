@@ -83,8 +83,7 @@ void Server::acceptClientConnexion() {
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
 			return ;
 		else {
-			std::cout << "errno : " << errno << std::endl;
-			//Rajouter gestions des erreurs
+			std::cout << "error accept:" << errno << std::endl;
 			return ;
 		}
 	}
