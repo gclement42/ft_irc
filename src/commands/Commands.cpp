@@ -6,13 +6,11 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 10:22:14 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/28 10:02:49 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/28 12:27:35 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
-
-// static int isOperatorInChannel(std::string nickname, std::vector<std::string> operators);
 
 Commands::Commands(std::map<int, Client> &clients, std::map<std::string, Channel> &channels, Client &client):
     _clients(clients), _channels(channels), _client(client) {

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   operatorMode.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/28 12:26:34 by lboulatr          #+#    #+#             */
+/*   Updated: 2023/11/28 12:26:35 by lboulatr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "main.hpp"
 
 void Commands::operatorMode(std::string arg, Channel &channel, char symbol)

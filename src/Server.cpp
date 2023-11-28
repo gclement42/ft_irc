@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/28 10:55:44 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/28 12:27:26 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		_buffer = _buffer.substr(0, _buffer.find_first_of("\r\n"));
 		std::cout << client->getNickname() << " : " << _buffer << std::endl;
 		commands.parseBuffer(_buffer);
-		// _clients.find(pollClient.fd)->second = client;
 		pollClient.revents |= POLLOUT;
 	}
 	else if (ret == 0 && this->_buffer.empty())
