@@ -1,0 +1,6 @@
+/build
+/.vscode
+.nfs*
+outfile
+ircserv
+/.idea
