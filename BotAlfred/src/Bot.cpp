@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 13:03:42 by lboulatr          #+#    #+#             */
-/*   Updated: 2023/11/28 11:25:07 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/11/28 12:49:36 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int Bot::startBot(void)
 	status = 1;
 	if (setsockopt(this->_socket, SOL_SOCKET, SO_REUSEADDR, &(status), sizeof(int)) == -1) 
         return (FAILURE);
-	
 	if (connect(this->_socket, (struct sockaddr *)&this->_addr, sizeof(this->_addr)) < 0)
 		return (FAILURE);
 	send(_socket, this->_botPassword.c_str(), this->_botPassword.size(), 0);
@@ -65,9 +64,18 @@ int Bot::startBot(void)
 	
 	std::cout << "Bot Alfredo is now connected on the server." << std::endl;
 
-	while (readInBuffer(this->_socket) == "")
+	while (buffer.empty())
+	{
+		buffer = readInBuffer(this->_socket);
 		std::cout << "Waiting for server response..." << std::endl;
-
+	}
+	
+	buffer = buffer.substr(0, buffer.find_first_of("\r\n"));
+	if (buffer == "alfredo :Password incorrect")
+	{
+		std::cout << "Wrong password." << std::endl;
+		return (FAILURE);
+	}
 	return (SUCCESS);
 }
 
