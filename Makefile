@@ -54,7 +54,7 @@ CLEAR					= clear
 
 $(BUILD_DIR)%.o: 		$(DIR)%.cpp $(HEADER_DIR)* Makefile
 						@mkdir -p $(@D)
-						$(GCC) $(CFLAGS) -I$(HEADER_DIR) -I/usr/include -O3 -c $< -o $@
+						$(GCC) $(CFLAGS) -I$(HEADER_DIR) -I/usr/include -c $< -o $@
 						@echo "$(BG_BLUE)[CREATE]$(EOC) $@"
 
 

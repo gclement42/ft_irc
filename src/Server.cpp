@@ -6,7 +6,7 @@
 /*   By: lboulatr <lboulatr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 10:31:00 by gclement          #+#    #+#             */
-/*   Updated: 2023/11/28 12:27:26 by lboulatr         ###   ########.fr       */
+/*   Updated: 2023/12/05 10:21:07 by lboulatr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void Server::receiveMessageFromClient(pollfd &pollClient) {
 		_clients.insert(std::pair<int, Client>(pollClient.fd, *client));
 	}
     client = &_clients.find(pollClient.fd)->second;
-	if (!client->checkIfAllDataIsFilled())
+	if (ret == 1 && !client->checkIfAllDataIsFilled())
 		fillClientData(*client, _buffer);
     else if (ret == 1 && client->getIsConnected()) {
 		Commands commands(_clients, _channels, *client);
@@ -199,6 +199,7 @@ void Server::disconnectClient(int fd) {
 		commands.removeOperatorFromChannels();
 		std::cout << it->second.getNickname() << " disconnected" << std::endl;
 		eraseFd(fd);
+		_bufferByFd.erase(fd);
 		_clients.erase(it);
 		close(fd);
 	}
