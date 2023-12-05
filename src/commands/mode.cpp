@@ -45,7 +45,6 @@ static	bool	checkIfError(Commands &cmd)
 
 	if (!checkModeArgs(args))
 	{
-		std::cout << "arg.size = " << args.size() << std::endl;
 		if (args.size() == 2)
 			cmd.displayModeChannel();
 		else

@@ -24,12 +24,12 @@ void	sigint_handler(int sig)
 
 bool checkArgs(int argc, char **argv)
 {
-	if (argc < 2)
+	if (argc != 3)
 	{
 		std::cout << "Usage: ./ft_irc <port> <password>" << std::endl;
 		return (false);
 	}
-	if (checkPort(argv[1]) == false)
+	if (!checkPort(argv[1]))
 	{
 		std::cout << "Invalid port" << std::endl;
 		return (false);

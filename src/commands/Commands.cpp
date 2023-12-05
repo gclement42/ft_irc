@@ -255,6 +255,12 @@ int Commands::isOperatorInChannel(std::string nickname, std::string channel)
 	return (FAILURE);
 }
 
+Channel &Commands::getChannelFromName(std::string name) {
+	if (this->_channels.find(name) != this->_channels.end())
+		return (this->_channels.find(name)->second);
+	return (this->_channels.end()->second);
+}
+
 std::map<std::string, Channel> &Commands::getChannels(void) const {
 	return (this->_channels);
 }

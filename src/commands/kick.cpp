@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../header/main.hpp"
-#include <string>
 
 std::string					parseReason(Commands *cmds, std::vector<std::string> arg);
 std::vector<std::string>	parseComaSeparatedArgs(Commands *cmds, std::vector<std::string> arg);
@@ -81,6 +80,8 @@ void	kickClients(Commands *cmds, std::string kickerName, std::string channelToBe
 		Client &client = cmds->getClientFromNickname(usersTab[i]);
 		std::vector<std::string>::iterator it = std::find(client.getChannels().begin(), client.getChannels().end(), channelToBeKickedOut);
 		client.getChannels().erase(it);
+		Channel &channel = cmds->getChannelFromName(channelToBeKickedOut);
+		channel.removeOperator(client.getNickname());
 		if (reason.empty())
 			reason = "No reason was specified.";
 		std::string message = ":" + kickerName + " KICK " + channelToBeKickedOut+ " " + client.getNickname() + " " + reason + "\r\n";

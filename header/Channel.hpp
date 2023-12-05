@@ -48,6 +48,7 @@ class Channel
 		bool					getTopicMode(void) const;
 		std::vector<std::string>	&getOperators(void);
 		void 						addOperator(std::string nickname);
+		void						removeOperator(std::string nickname);
 		bool						checkIfClientIsOperator(std::string nickname);
 		void						addInvite(std::string nickname);
 		bool						checkIfClientIsInvited(std::string nickname);

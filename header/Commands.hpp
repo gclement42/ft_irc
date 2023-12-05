@@ -69,6 +69,7 @@ class Commands {
 		Client						&getClientFromNickname(std::string nickname);
         void                        addChannelInMap(std::string nickname, std::string channelName);
         int                         isOperatorInChannel(std::string nickname, std::string channel);
+		Channel						&getChannelFromName(std::string name);
 
         void	                    addClientInChannel(std::string channel, std::string topic);
 	    void                        displayListClientOnChannel(std::string channelName);

@@ -106,6 +106,19 @@ void	Channel::addOperator(std::string nickname)
 	this->_operators.push_back(nickname);
 }
 
+void	Channel::removeOperator(std::string nickname)
+{
+	std::vector<std::string>::iterator it;
+
+	it = std::find(this->_operators.begin(), this->_operators.end(), nickname);
+	std::cout << "removeOperator nickname : " << nickname << std::endl;
+	if (it != this->_operators.end())
+	{
+		std::cout << "erase" << std::endl;
+		this->_operators.erase(it);
+	}
+}
+
 void Channel::addMode(char mode, int n, ...)
 {
 	std::cout << "addmode : " << mode << std::endl;
